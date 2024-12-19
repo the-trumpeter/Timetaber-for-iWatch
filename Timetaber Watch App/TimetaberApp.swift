@@ -13,8 +13,9 @@ var period = 1
 var viewNo = 1
 
 let userDefaults = UserDefaults.standard
-let standardKey = "timetaber.userdefalts.termdata1"
-var keyExists: Bool = false
+let runningKey = "timetaber.userdefalts.termRunning"
+let ghostWeekKey = "timetaber.userdefalts.ghostWeek"
+let startDateKey = "timetaber.userdefalts.startDate"
 
 
 
@@ -22,39 +23,30 @@ var keyExists: Bool = false
 
 func readStoredData(key: String) -> Any {
     let readData = userDefaults.object(forKey: key)
-    print("reading key:", readData as Any); return readData ?? false
+    print("reading key:", readData as Any)
+    return readData as Any
 }
 
 func checkForStoredData(key: String) -> Bool {
-    if readStoredData(key: key) as? Bool ?? false {
-        return true
-    } else {
-        return false
-    }
+    let store = userDefaults.object(forKey: key)
+    if store != nil { return true
+    } else { return false }
 }
 
-func writeStoredData(key: String, subject: Array<Any>) {
-    userDefaults.set(subject, forKey: key)
+func writeToStore(key: String, data: Any) {
+    userDefaults.set(data, forKey: key)
 }
 
-func trySetup(dataKey: String) -> Void {
-    //this can be dangerous because if it is run with different keys then its gonna make multiple stores
+func trySetup() -> Void {
     
-    //ensure key exists
-    if checkForStoredData(key: dataKey) {
-        // if the key exists
-        keyExists = true
-    } else {
-        keyExists = false
-        //it aint exist, gotta make one
-        let newKey = [false, Date.now, false] as [Any]
-        writeStoredData(key: dataKey, subject: newKey)
-        keyExists = true
+    if !checkForStoredData(key: runningKey) {
+        writeToStore(key: runningKey, data: false)
+        if termRunningGB != readStoredData(key: runningKey) as! Bool {
+            termRunningGB = readStoredData(key: runningKey) as! Bool
+        }
     }
-    
-    //resync the local variable with the store
-    if termRunningGB != (readStoredData(key: dataKey) as! Array<Any>)[0] as! Bool {
-        termRunningGB = (readStoredData(key: dataKey) as! Array<Any>)[0] as! Bool
+    if !checkForStoredData(key: ghostWeekKey) {
+        
     }
 }
 
