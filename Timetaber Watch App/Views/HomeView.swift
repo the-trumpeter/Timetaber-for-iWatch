@@ -55,7 +55,8 @@ struct HomeView: View {
         }
         .padding()
         .onAppear {
-            trySetup(dataKey: standardKey)
+            trySetup()
+            print(time24())
         }
     }
     

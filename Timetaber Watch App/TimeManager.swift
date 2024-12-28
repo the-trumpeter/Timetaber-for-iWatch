@@ -14,7 +14,6 @@
 
 import Foundation
 
-let dcs = DateComponents()
 var theDate = Date()
 let calendar = Calendar.current
 let dFormatter = DateFormatter()
@@ -52,6 +51,10 @@ func odd(number: Int) -> Bool {
     }
 }
 
+func time24() -> Int {
+    dFormatter.dateFormat = "HHmm" // or hh:mm for 12 h
+    return Int(dFormatter.string(from: theDate))!
+}
 
 func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
     //week A and B alternate each week. he input date is always a week a unless ghost is true.
@@ -74,4 +77,11 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
         }
     }
 
+}
+
+func getCurrentClass() -> Class {
+    if !termRunningGB {
+        return noSchool
+    }
+    return noSchool
 }

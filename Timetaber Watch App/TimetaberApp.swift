@@ -41,12 +41,11 @@ func trySetup() -> Void {
     
     if !checkForStoredData(key: runningKey) {
         writeToStore(key: runningKey, data: false)
-        if termRunningGB != readStoredData(key: runningKey) as! Bool {
-            termRunningGB = readStoredData(key: runningKey) as! Bool
-        }
     }
+    termRunningGB = readStoredData(key: runningKey) as! Bool
+
     if !checkForStoredData(key: ghostWeekKey) {
-        
+        writeToStore(key: ghostWeekKey, data: false)
     }
 }
 
