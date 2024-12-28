@@ -20,7 +20,7 @@ let MathsClass = Class(id: 2, name: "Maths", icon: "number", room: "FT3", colour
 let EnglishClass = Class(id: 3, name: "English", icon: "book.closed", room: "BT4", colour: "Lemon")
 let LanguageClass = Class(id: 4, name: "French", icon: "bubble.left", room: "FT8", colour: "Apricot")
 let ScienceClass = Class(id: 26, name: "Science", icon: "flask", room: "FT11", colour: "Ice")
-let ArmyClass = Class(id: 27, name: "Science", icon: "flask", room: "FG2", colour: "Ice")
+let Science2Class = Class(id: 27, name: "Science", icon: "flask", room: "FG2", colour: "Ice")
 
 let HSIERees = Class(id: 5, name: "HSIE", icon: "archivebox", room: "BG4", colour: "Rees")
 let PDHPEPrac = Class(id:6 , name: "PDHPE", icon: "figure.run", room: "HALL", colour: "Lime")
@@ -57,4 +57,4 @@ let JSBClass = Class(id: 29, name: "Jr Stage", icon: "music.note", room: "BT1", 
 let MLClass = Class(id: 30, name: "Music Lesson", icon: "music.note", room: "None", colour: "White")
 
 
-let allClasses = [CheckInClass, MathsClass, EnglishClass, LanguageClass, ScienceClass, ArmyClass, HSIERees, PDHPEPrac, HSIEAnder, PDHPETheo, TAS_G, TAS_H, PAClassBT, PAClassBG, PAClassC1, PAClassC2, MusicClassBG, MusicClassBT, MusicClassC1, MusicClassC2, MSBClass, CBClass, TCClass, LunchClass, RecessClass, yearAssemblyClass, JSBClass, MLClass]//noSchool excluded
+let allClasses = [CheckInClass, MathsClass, EnglishClass, LanguageClass, ScienceClass, Science2Class, HSIERees, PDHPEPrac, HSIEAnder, PDHPETheo, TAS_G, TAS_H, PAClassBT, PAClassBG, PAClassC1, PAClassC2, MusicClassBG, MusicClassBT, MusicClassC1, MusicClassC2, MSBClass, CBClass, TCClass, LunchClass, RecessClass, yearAssemblyClass, JSBClass, MLClass]//noSchool excluded
