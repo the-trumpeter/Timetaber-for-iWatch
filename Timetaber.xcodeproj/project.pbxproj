@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		AE5BB4C22D12962C009928BD /* Timetaber Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = AE5BB4C12D12962C009928BD /* Timetaber Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		AE5BB4C32D12962C009928BD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,7 +23,6 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				AE5BB4C22D12962C009928BD /* Timetaber Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -35,8 +30,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AE5BB4BB2D12962C009928BD /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE5BB4C12D12962C009928BD /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timetaber Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE5BB4BB2D12962C009928BD /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Timetaber.app; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-iphoneos/Timetaber.app"; sourceTree = "<absolute>"; };
+		AE5BB4C12D12962C009928BD /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Timetaber Watch App.app"; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-watchos/Timetaber Watch App.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -62,17 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
-				AE5BB4BC2D12962C009928BD /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		AE5BB4BC2D12962C009928BD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AE5BB4BB2D12962C009928BD /* Timetaber.app */,
-				AE5BB4C12D12962C009928BD /* Timetaber Watch App.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -147,7 +132,7 @@
 			mainGroup = AE5BB4B42D12962C009928BD;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = AE5BB4BC2D12962C009928BD /* Products */;
+			productRefGroup = AE5BB4B42D12962C009928BD;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

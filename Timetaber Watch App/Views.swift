@@ -2,14 +2,6 @@
 //  Views.swift
 //  Timetaber
 //
-//  Created by Gill Palmer on 30/12/2024.
-//
-
-
-//
-//  Views.swift
-//  Timetaber
-//
 //  Created by Gill Palmer on 17/12/2024.
 //
 
