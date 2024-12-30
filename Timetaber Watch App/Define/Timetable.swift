@@ -13,17 +13,15 @@ let thuTimes = [0900,910,1010,1110,1130,1230,1330,1410,1630]
 
 
 
-//  the following are to be replaced with a direct reference to the class structure.
 //class id's def'd in Classes.swift
-let monA = [1, 9,30,4, 24, 16,3, 29,2]
-let tueA = [1, 7,26, 24, 5,2, 23,15]
-let wedA = [2,27, 28,24, 3,11, 23, 21, 19]
-let thuA = [1, 2,4, 24, 11,10, 23, 20]
-let friA = [1, 5,9, 24, 26,15, 23, 3]
+let monA = [CheckInClass, PDHPETheo,MLClass,LanguageClass, RecessClass, MusicClassBT,EnglishClass, JSBClass,MathsClass]
+let tueA = [CheckInClass, TAS_H,ScienceClass, RecessClass, HSIERees,MathsClass, LunchClass,MusicClassBG]
+let wedA = [MathsClass,Science2Class, yearAssemblyClass,RecessClass, EnglishClass,PAClassBT, LunchClass, TCClass, MSBClass]
+let thuA = [CheckInClass, MathsClass,LanguageClass, RecessClass, PAClassBT,TAS_G, LunchClass, CBClass]
+let friA = [CheckInClass, HSIERees,PDHPETheo, RecessClass, ScienceClass,MusicClassBG, LunchClass, EnglishClass]
 
-let monB = [1, 2,30,3, 24, 13,26, 29, 10]
-let tueB = [1, 4,5, 24, 13,26, 23, 10]
-let wedB = [2,6, 28,24, 8,12, 23, 21, 19]
-let thuB = [1, 7,18, 24, 3,4, 23, 20]
-let friB = [1, 9,3, 24, 8,26, 23, 4]
-
+let monB = [CheckInClass, MathsClass,MLClass,EnglishClass, RecessClass, PAClassC1,ScienceClass, JSBClass, TAS_G]
+let tueB = [CheckInClass, LanguageClass,HSIERees, RecessClass, PAClassC1,ScienceClass, LunchClass, TAS_G]
+let wedB = [MathsClass,PDHPEPrac, yearAssemblyClass,RecessClass, HSIEAnder,PAClassBG, LunchClass, TCClass, MSBClass]
+let thuB = [CheckInClass, TAS_H,MusicClassC2, RecessClass, EnglishClass,LanguageClass, LunchClass, CBClass]
+let friB = [CheckInClass, PDHPETheo,EnglishClass, RecessClass, HSIEAnder,ScienceClass, LunchClass, LanguageClass]
