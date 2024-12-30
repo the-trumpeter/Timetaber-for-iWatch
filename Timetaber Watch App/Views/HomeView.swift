@@ -56,7 +56,7 @@ struct HomeView: View {
         .padding()
         .onAppear {
             trySetup()
-            print(time24())
+            getCurrentClass()
         }
     }
     

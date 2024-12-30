@@ -18,29 +18,32 @@ var theDate = Date()
 let calendar = Calendar.current
 let dFormatter = DateFormatter()
 
+let weekdayTimes = [monTimes, normTimes, wedTimes, thuTimes, normTimes] //how best to handle weekends? make it only weekdays!
 
-func hour(inDate: Date) -> String {
-    return String(calendar.component(.hour, from: inDate))
+
+
+func hour(inDate: Date) -> Int {
+    return Int(calendar.component(.hour, from: inDate))
 }
 
-func minutes(inDate: Date) -> String {
-    return String(calendar.component(.minute, from: inDate))
+func minutes(inDate: Date) -> Int {
+    return Int(calendar.component(.minute, from: inDate))
 }
 
-func weekday(inDate: Date) -> String {
-    return String(calendar.component(.weekday, from: inDate))
+func weekday(inDate: Date) -> Int {
+    return Int(calendar.component(.weekday, from: inDate))
 }
 
-func day(inDate: Date) -> String {
-    return String(calendar.component(.day, from: inDate))
+func day(inDate: Date) -> Int {
+    return Int(calendar.component(.day, from: inDate))
 }
 
-func month(inDate: Date) -> String {
-    return String(calendar.component(.month, from: inDate))
+func month(inDate: Date) -> Int {
+    return Int(calendar.component(.month, from: inDate))
 }
 
-func year(inDate: Date) -> String {
-    return String(calendar.component(.year, from: inDate))
+func year(inDate: Date) -> Int {
+    return Int(calendar.component(.year, from: inDate))
 }
 
 func odd(number: Int) -> Bool {
@@ -80,8 +83,12 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 }
 
 func getCurrentClass() -> Class {
-    if !termRunningGB {
+    let todayWeekday = weekday(inDate: .now)
+    print(todayWeekday)
+    if !termRunningGB || todayWeekday==1 || todayWeekday==7 {
         return noSchool
     }
+    let times2Day = weekdayTimes[todayWeekday-1]
+    print("timesTodayL:",times2Day)
     return noSchool
 }
