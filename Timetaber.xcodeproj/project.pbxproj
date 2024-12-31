@@ -30,8 +30,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AE5BB4BB2D12962C009928BD /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Timetaber.app; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-iphoneos/Timetaber.app"; sourceTree = "<absolute>"; };
-		AE5BB4C12D12962C009928BD /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Timetaber Watch App.app"; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-watchos/Timetaber Watch App.app"; sourceTree = "<absolute>"; };
+		AE32F8D72D249AAD00EABFE1 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Timetaber.app; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-iphoneos/Timetaber.app"; sourceTree = "<absolute>"; };
+		AE32F8D82D249AAD00EABFE1 /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Timetaber Watch App.app"; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-watchos/Timetaber Watch App.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,7 +79,7 @@
 			packageProductDependencies = (
 			);
 			productName = Timetaber;
-			productReference = AE5BB4BB2D12962C009928BD /* Timetaber.app */;
+			productReference = AE32F8D72D249AAD00EABFE1 /* Timetaber.app */;
 			productType = "com.apple.product-type.application.watchapp2-container";
 		};
 		AE5BB4C02D12962C009928BD /* Timetaber Watch App */ = {
@@ -101,7 +101,7 @@
 			packageProductDependencies = (
 			);
 			productName = "Timetaber Watch App";
-			productReference = AE5BB4C12D12962C009928BD /* Timetaber Watch App.app */;
+			productReference = AE32F8D82D249AAD00EABFE1 /* Timetaber Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

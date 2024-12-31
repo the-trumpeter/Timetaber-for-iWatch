@@ -56,7 +56,6 @@ struct HomeView: View {
         .padding()
         .onAppear {
             trySetup()
-            getCurrentClass()
         }
     }
     
