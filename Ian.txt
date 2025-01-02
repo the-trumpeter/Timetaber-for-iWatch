@@ -1,0 +1,63 @@
+Ian.txt / Gill Palmer 1/1/2025
+
+
+hello mr Ian
+i am Gill
+you remember Ray?
+yea his son
+
+anywaysa
+
+this is my timetable application
+as told by my superlative readme
+
+> there's a lot of stuff going on that need other things that I haven't done yet
+    eg. {getCurrentClass()} - to write that I need to have fixed up the timetable itself, and so on
+    it's really messy but from what im told you can probably work out what i'm trying to script.
+
+so here are some of the key things I'd be interested to have your input on, but first here's a quick overview of how my school timetable works, and its relation to the app (called Timetaber; more on that later):
+
+Please note: If you are familiar with the comcepts of Week A, Week B and ghost weeks, you can probably skip to line 30.
+
+    My timetable has two variations, being Week A and Week B. These two variations alternate every (IRL) week.
+    The school year (as you know) is split into four terms, where the first week of each terms is timetabled as a Week A (starting the alternation between timetable variations) UNLESS
+    If the teachers go back the week before the students, THAT week may be considered as 'week A', meaning when the STUDENTS go back it is actually week B. This usually happens on Term 1 each year, and it is called a ghost week. Example:
+    
+            week A (GW) \/| week B \/
+            ______________|______________
+            |W|N|N|N|T|T|W|W|S|S|S|S|S|W|
+            -----------------------------
+            (N = no school, T = teachers @ school, S = normal day with T's and S's)
+            (W = weekend, GW = ghost week)
+            
+Now the whole ghost week concept is the bane of my app, the key question being: How do I know what week it is?
+I've come up with various solutions for this, including:
+
+> Web scraping the online timetable on sentral.com.au, or the start/end dates of school terms.
+    Issue: Does not show holidays or weekends; so there's ALWAYS a class on.
+        I don't want my app to show classes during holidays or weekends. Set {currentClass} to {noSchool} (then run {HomeView}) to see what I mean.
+        Issue: At the moment, with the introduction of electives and other changes for 2025 (Happy new year btw), the timetable page is not available. That will probably crash it all.
+        Issue: Web scraping seems to be like a whole other programming language and it seems to be an absoloute mess to lear and I have enough on my time-plate already.
+        Issue: I had a look at the DoE page for term start dates, and believe it or not there was actually an error in the dates! They've fixed it now but I think it was something like 'Term 4 End: Friday 18 Dec 2024'
+        Note: I was examining all this with the SwiftSoup package
+
+> Knowing (embedding, hard-coding) how long the terms and holidays last, and counting the weeks down.
+    Issue: Term lengths vary with every term, and every year.
+    Issue: This does not account ghost weeks (which cannot be pinpointed or guaranteed)
+    
+> Having the user manually start and end the term (and decide if there is a ghost week)
+    Note: This is the solution I've gone for, you can see my work in {SettingsView}
+    Issue: Requires manual operation. This is only a minor issue, and if I make starting/stopping terms as entertaining and satisfying as it can be then everybody will probably overlook this issue and I won't have to worry about it.
+    Issue: This means the app has to remember WHEN, GHOSTWEEK? and IF the term has started.
+    
+And that's where I go over what I'd appreciate advice on.
+
+So here are your key things:
+
+> UserDefalts and data storage concepts. I'm using UserDefaults for storing if a) a/the term is running, b) does term have a ghost week and c) when did the term start so we can count forward week a/bs to today, and I can be 80% sure I'm using it (UserD's)' pretty darn badly. And I refuse to go near SwiftData.
+
+> Interface. How am I displaying data to the user? Is it easy and intuitive? Can we make it simpler or neater?
+
+> Design process. The process of having an idea, developing that idea into something that works, using that idea and sharing it with the world (and maybe getting something back!)
+
+> GitHub. A wholly different and crazy concept. (which has been gone over loosely but yknow...its github. 😑)

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AE32F8F52D249C0F00EABFE1 /* Ian.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE32F8F42D249C0F00EABFE1 /* Ian.txt */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		AE5BB4C32D12962C009928BD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -32,6 +36,7 @@
 /* Begin PBXFileReference section */
 		AE32F8D72D249AAD00EABFE1 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Timetaber.app; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-iphoneos/Timetaber.app"; sourceTree = "<absolute>"; };
 		AE32F8D82D249AAD00EABFE1 /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Timetaber Watch App.app"; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-watchos/Timetaber Watch App.app"; sourceTree = "<absolute>"; };
+		AE32F8F42D249C0F00EABFE1 /* Ian.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Ian.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,6 +61,7 @@
 		AE5BB4B42D12962C009928BD = {
 			isa = PBXGroup;
 			children = (
+				AE32F8F42D249C0F00EABFE1 /* Ian.txt */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
 			);
 			sourceTree = "<group>";
@@ -154,6 +160,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE32F8F52D249C0F00EABFE1 /* Ian.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
