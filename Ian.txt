@@ -4,7 +4,7 @@ Ian.txt / Gill Palmer 1/1/2025
 * I'm told that (there's a 99% chance) you are familiar with XCode so you'll know that you should probably open this with aforementioned.
 If you don't feel like doing that or just don't have a mac (poor non-mac'er), there's probably a VS Code extension for it (theres one for everything :D )
 
-
+* Commit, discussion, issue with my dislike of markdown, translation of Ian.txt to .md file, go for your life! I mean, who would leave me in charge of an app anyway?
 
 hello mr Ian
 i am Gill
