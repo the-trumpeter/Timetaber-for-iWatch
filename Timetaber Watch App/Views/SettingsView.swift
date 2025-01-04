@@ -8,8 +8,7 @@
 
 import SwiftUI
 
-var termRunningGB = false
-var ghostWeekGB = false
+
 
 func test(){
     print("yest")
@@ -30,7 +29,7 @@ func endTermProcess() -> Bool {
 
 
 
-struct OptionsView: View {
+struct NewTermView: View {
     @State var isGhostWeek = false
     @Environment(\.dismiss) var dismiss
     @Binding var termRunning: Bool
@@ -89,7 +88,7 @@ struct SettingsView: View {
                             RoundedRectangle(cornerRadius: 100)
                                 .stroke(.white, lineWidth: isTermRunning ? 1: 0))
             
-                        .sheet(isPresented: $showingSheet) { OptionsView(termRunning: $isTermRunning) }
+                        .sheet(isPresented: $showingSheet) { NewTermView(termRunning: $isTermRunning) }
             
                         .confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
                             
@@ -99,7 +98,7 @@ struct SettingsView: View {
                                     isTermRunning = false
                                     print("Ended term")
                                 } else {
-                                    print("SettingsView, line 104: Error!")
+                                    print("SettingsView, line 102: Error!")
                                 }
                             }
                             

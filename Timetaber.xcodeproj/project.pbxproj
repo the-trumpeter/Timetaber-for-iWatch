@@ -34,9 +34,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AE32F8D72D249AAD00EABFE1 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Timetaber.app; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-iphoneos/Timetaber.app"; sourceTree = "<absolute>"; };
-		AE32F8D82D249AAD00EABFE1 /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Timetaber Watch App.app"; path = "/Users/Gill/Documents/GitHub/Timetaber/build/Debug-watchos/Timetaber Watch App.app"; sourceTree = "<absolute>"; };
 		AE32F8F42D249C0F00EABFE1 /* Ian.txt */ = {isa = PBXFileReference; explicitFileType = text; path = Ian.txt; sourceTree = "<group>"; };
+		AEEC74B52D290163003BC9DF /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timetaber Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -63,6 +63,8 @@
 			children = (
 				AE32F8F42D249C0F00EABFE1 /* Ian.txt */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
+				AEEC74B52D290163003BC9DF /* Timetaber.app */,
+				AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,7 +87,7 @@
 			packageProductDependencies = (
 			);
 			productName = Timetaber;
-			productReference = AE32F8D72D249AAD00EABFE1 /* Timetaber.app */;
+			productReference = AEEC74B52D290163003BC9DF /* Timetaber.app */;
 			productType = "com.apple.product-type.application.watchapp2-container";
 		};
 		AE5BB4C02D12962C009928BD /* Timetaber Watch App */ = {
@@ -107,7 +109,7 @@
 			packageProductDependencies = (
 			);
 			productName = "Timetaber Watch App";
-			productReference = AE32F8D82D249AAD00EABFE1 /* Timetaber Watch App.app */;
+			productReference = AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

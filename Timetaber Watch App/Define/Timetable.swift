@@ -20,6 +20,8 @@ let wedA = [MathsClass,Science2Class, yearAssemblyClass,RecessClass, EnglishClas
 let thuA = [CheckInClass, MathsClass,LanguageClass, RecessClass, PAClassBT,TAS_G, LunchClass, CBClass]
 let friA = [CheckInClass, HSIERees,PDHPETheo, RecessClass, ScienceClass,MusicClassBG, LunchClass, EnglishClass]
 
+
+
 let monB = [CheckInClass, MathsClass,MLClass,EnglishClass, RecessClass, PAClassC1,ScienceClass, JSBClass, TAS_G]
 let tueB = [CheckInClass, LanguageClass,HSIERees, RecessClass, PAClassC1,ScienceClass, LunchClass, TAS_G]
 let wedB = [MathsClass,PDHPEPrac, yearAssemblyClass,RecessClass, HSIEAnder,PAClassBG, LunchClass, TCClass, MSBClass]

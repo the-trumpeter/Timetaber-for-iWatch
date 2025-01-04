@@ -30,9 +30,15 @@ func minutes(inDate: Date) -> Int {
     return Int(calendar.component(.minute, from: inDate))
 }
 
+
+
+
 func weekday(inDate: Date) -> Int {
     return Int(calendar.component(.weekday, from: inDate))
 }
+
+
+
 
 func day(inDate: Date) -> Int {
     return Int(calendar.component(.day, from: inDate))
@@ -46,6 +52,18 @@ func year(inDate: Date) -> Int {
     return Int(calendar.component(.year, from: inDate))
 }
 
+
+
+
+func time24() -> Int {
+    dFormatter.dateFormat = "HHmm" // or hh:mm for 12 h
+    return Int(dFormatter.string(from: theDate))!
+}
+
+
+
+
+
 func odd(number: Int) -> Bool {
     if number % 2 == 0 {
         return false
@@ -54,16 +72,21 @@ func odd(number: Int) -> Bool {
     }
 }
 
-func time24() -> Int {
-    dFormatter.dateFormat = "HHmm" // or hh:mm for 12 h
-    return Int(dFormatter.string(from: theDate))!
-}
+
+
+
+
+
+
+
 
 func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
     //week A and B alternate each week. he input date is always a week a unless ghost is true.
     
     let originWeek = calendar.component(.weekOfYear, from: originDate)
     let currentWeek = calendar.component(.weekOfYear, from: Date())
+    
+    
     
     if odd(number: originWeek) == odd(number: currentWeek) {
         //they match, so the numbers must be same
@@ -82,13 +105,44 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 
 }
 
+
+
+func findClassfromTimeNGhostweek(startTime: Int, ghostWeek: Bool) {
+    
+}
+
+
+
+
 func getCurrentClass() -> Class {
     let todayWeekday = weekday(inDate: .now)
     print(todayWeekday)
-    if !termRunningGB || todayWeekday==1 || todayWeekday==7 {
+    
+    if !termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday or monday then noSchool
         return noSchool
     }
+    
+    
     let times2Day = weekdayTimes[todayWeekday-1]
-    print("timesTodayL:",times2Day)
+    let time24Now = time24()
+    
+    let isweekA = getIfWeekIsA_FromDateAndGhost(originDate: readStoredData(key: startDateKey) as! Date, ghostWeek: readStoredData(key: ghostWeekKey) as! Bool)
+    
+    print("timesToday:",times2Day)
+    
+    
+    //cycle through times til we find the two we are inbetween
+    for n in 1...times2Day.count {
+        
+        let t = times2Day[n] // time we r comparing to
+        let c = time24Now // current time
+        let i = times2Day[n+1] // next comparitive time
+        
+        if c==t {  } //either of these mean its the current class
+        else if c>t &&  c<i { }
+            
+    }
+    
+    
     return noSchool
 }
