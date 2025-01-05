@@ -8,32 +8,32 @@
 import Foundation
 
 func getNextString() -> String{
-    if nextClass.room=="None" {
-        return nextClass.name
+    if nextCourse.room=="None" {
+        return nextCourse.name
         
-    } else if nextClass.name=="No classes"{
+    } else if nextCourse.name=="No classes"{
         return ""
     } else {
         
-        return nextClass.name+" - "+nextClass.room
+        return nextCourse.name+" - "+nextCourse.room
     }
 }
 func roomOrNil() -> String{
-    if currentClass.room=="None" {
+    if currentCourse.room=="None" {
         return ""
     } else {
-        return currentClass.room
+        return currentCourse.room
     }
 }
 func isNextNothing() -> String{
-    if nextClass.name=="No classes"{
+    if nextCourse.name=="No classes"{
         return ""
     } else {
         return "Next up:"
     }
 }
 func isPeriodNothing() -> String{
-    if currentClass.name=="No classes"{
+    if currentCourse.name=="No classes"{
         return ""
     } else {
         return "Period "+String(period)

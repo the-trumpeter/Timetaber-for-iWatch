@@ -8,9 +8,9 @@
 import SwiftUI
 
 
-private var icon = currentClass.icon
-private var name = currentClass.name
-private var colour = currentClass.colour
+private var icon = currentCourse.icon
+private var name = currentCourse.name
+private var colour = currentCourse.colour
 private var room = roomOrNil()
 
 

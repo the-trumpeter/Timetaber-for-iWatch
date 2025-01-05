@@ -19,6 +19,17 @@ let calendar = Calendar.current
 let dFormatter = DateFormatter()
 
 let weekdayTimes = [monTimes, normTimes, wedTimes, thuTimes, normTimes] //how best to handle weekends? make it only weekdays!
+let weekA = [monA, tueA, wedA, thuA, friA]
+let weekB = [monB, tueB, wedB, thuB, friB]
+
+
+
+enum ClassCalculationError: Error {
+    case exhaustedAllPotentialTimes(startDate: Date, ghostWeek: Bool)
+    case variableFailed
+    case somethingWasMissingExternally
+    case error
+}
 
 
 
@@ -95,8 +106,7 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
         } else {
             return false
         }
-    } else {
-        if !ghostWeek {
+    } else { if !ghostWeek {
             return false
         } else {
             return true
@@ -107,18 +117,28 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 
 
 
-func findClassfromTimeNGhostweek(startTime: Int, ghostWeek: Bool) {
+func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
+    let workingWeekDay = weekDay-1
+    if !termRunningGB { return noSchool }
     
+    if isWeekA {
+        let timetableDay = weekA[workingWeekDay]
+        return timetableDay[sessionStartTime]!
+    } else /* if weekB */ {
+        let timetableDay = weekB[workingWeekDay]
+        return timetableDay[sessionStartTime]!
+    }
 }
 
 
 
 
-func getCurrentClass() -> Class {
-    let todayWeekday = weekday(inDate: .now)
-    print(todayWeekday)
+func getCurrentClass(date: Date) throws -> Course {
+    let todayWeekday = weekday(inDate: date)
+    print("the weekday today is \(todayWeekday)")
     
-    if !termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday or monday then noSchool
+    if !termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday or monday then noSchool - '||' means [OR]
+        print("> There's no school at the moment.")
         return noSchool
     }
     
@@ -126,7 +146,9 @@ func getCurrentClass() -> Class {
     let times2Day = weekdayTimes[todayWeekday-1]
     let time24Now = time24()
     
-    let isweekA = getIfWeekIsA_FromDateAndGhost(originDate: readStoredData(key: startDateKey) as! Date, ghostWeek: readStoredData(key: ghostWeekKey) as! Bool)
+    let isweekA = getIfWeekIsA_FromDateAndGhost(
+        originDate: readStoredData(key: startDateKey) as! Date,
+        ghostWeek: readStoredData(key: ghostWeekKey) as! Bool)
     
     print("timesToday:",times2Day)
     
@@ -136,13 +158,33 @@ func getCurrentClass() -> Class {
         
         let t = times2Day[n] // time we r comparing to
         let c = time24Now // current time
-        let i = times2Day[n+1] // next comparitive time
+        let i = if times2Day.count >= n+1 { times2Day[n+1] } else { Int(Double.infinity) }// next comparitive time; ensure we are not at end of array already
         
-        if c==t {  } //either of these mean its the current class
-        else if c>t &&  c<i { }
+        if c==t {
             
-    }
+            let currentClass = findClassfromTimeWeekDayNifWeekIsA(
+            sessionStartTime: c,
+            weekDay: todayWeekday, isWeekA: isweekA
+            )
+            
+            print("The current class is \(currentClass)")
+            return currentClass
+            
+            
+        } else if c>t &&  c<i {
+            
+            let currentClass = findClassfromTimeWeekDayNifWeekIsA(
+            sessionStartTime: c,
+            weekDay: todayWeekday, isWeekA: isweekA
+            )
+            
+            print("The current class is \(currentClass)")
+            return currentClass
+            
+        } // if | either of these mean its the current class
+            
+    } // for n
     
+    throw ClassCalculationError.exhaustedAllPotentialTimes(startDate: date, ghostWeek: ghostWeekGB) //all class options should be exhausted, so this should not run. If it does, ERROR!!
     
-    return noSchool
 }

@@ -7,9 +7,8 @@
 
 import SwiftUI
 
-var currentClass: Class = LanguageClass //the current timetabled class in session.
-var nextClass: Class = MathsClass
-var period = 1
+var currentCourse: Course = getCurrentClass(date: .now) //the current timetabled class in session.
+var nextCourse: Course = MathsClass
 var viewNo = 1
 
 
