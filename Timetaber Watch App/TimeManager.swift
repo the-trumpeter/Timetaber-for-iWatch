@@ -133,24 +133,28 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 
 
 
-func getCurrentClass(date: Date) throws -> Course {
+func getCurrentClass(date: Date) -> Course {
+    
     let todayWeekday = weekday(inDate: date)
     print("the weekday today is \(todayWeekday)")
     
-    if !termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday or monday then noSchool - '||' means [OR]
+    let times2Day = weekdayTimes[todayWeekday-1]
+    let time24Now = time24()
+    
+    if !termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! { //if it is either holidays, sunday, monday or before school starts then noSchool - '||' means [OR]
         print("> There's no school at the moment.")
         return noSchool
     }
     
     
-    let times2Day = weekdayTimes[todayWeekday-1]
-    let time24Now = time24()
+
     
     let isweekA = getIfWeekIsA_FromDateAndGhost(
         originDate: readStoredData(key: startDateKey) as! Date,
         ghostWeek: readStoredData(key: ghostWeekKey) as! Bool)
     
-    print("timesToday:",times2Day)
+    
+    print("Times today:",times2Day)
     
     
     //cycle through times til we find the two we are inbetween
@@ -185,6 +189,6 @@ func getCurrentClass(date: Date) throws -> Course {
             
     } // for n
     
-    throw ClassCalculationError.exhaustedAllPotentialTimes(startDate: date, ghostWeek: ghostWeekGB) //all class options should be exhausted, so this should not run. If it does, ERROR!!
+    return failCourse //all class options should be exhausted, so this should not run. If it does, ERROR!!
     
 }

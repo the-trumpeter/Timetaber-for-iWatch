@@ -20,12 +20,6 @@ struct HomeView: View {
         
         VStack {
             
-            /// PERIOD
-            Text(isPeriodNothing())//add a text element
-                .foregroundStyle(.gray)//foreground properties: 1. grey text; 2. size 15 font; 3. 0.2 padding
-                .font(.system(size: 15))
-                .padding(0.2)
-            
             
             // CURRENT CLASS
             Image(systemName: icon)

@@ -7,6 +7,9 @@
 
 //  Define Course (subject, class etc) structure
 
+import SwiftUI
+import Foundation
+
 struct Course {
     let id: Int
     let name: String
@@ -18,10 +21,11 @@ struct Course {
 
 
 
-
+//
 //  Define all courses for user's timetable
+//
 //  (Will later script timetable builder thing in iOS companion app to create/edit these.)
-
+//
 
 let CheckInClass = Course(id: 1,name: "Check In", icon: "face.smiling", room: "None", colour: "White")
 
@@ -64,6 +68,9 @@ let yearAssemblyClass = Course(id: 28, name: "Year Assembly", icon: "person.3", 
 let JSBClass = Course(id: 29, name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White")
 
 let MLClass = Course(id: 30, name: "Music Lesson", icon: "music.note", room: "None", colour: "White")
+
+
+let failCourse = Course(id: 0, name: "Error", icon: "exclamationmark.triangle", room: "None", colour: "White")
 
 
 let allClasses = [CheckInClass, MathsClass, EnglishClass, LanguageClass, ScienceClass, Science2Class, HSIERees, PDHPEPrac, HSIEAnder, PDHPETheo, TAS_G, TAS_H, PAClassBT, PAClassBG, PAClassC1, PAClassC2, MusicClassBG, MusicClassBT, MusicClassC1, MusicClassC2, MSBClass, CBClass, TCClass, LunchClass, RecessClass, yearAssemblyClass, JSBClass, MLClass]//noSchool excluded

@@ -11,7 +11,7 @@ func getNextString() -> String{
     if nextCourse.room=="None" {
         return nextCourse.name
         
-    } else if nextCourse.name=="No classes"{
+    } else if nextCourse.name=="No classes" || nextCourse.name == "Error" {
         return ""
     } else {
         
@@ -26,16 +26,9 @@ func roomOrNil() -> String{
     }
 }
 func isNextNothing() -> String{
-    if nextCourse.name=="No classes"{
+    if nextCourse.name=="No classes" || nextCourse.name=="Error"{
         return ""
     } else {
         return "Next up:"
-    }
-}
-func isPeriodNothing() -> String{
-    if currentCourse.name=="No classes"{
-        return ""
-    } else {
-        return "Period "+String(period)
     }
 }
