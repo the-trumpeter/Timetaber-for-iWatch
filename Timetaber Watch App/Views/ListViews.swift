@@ -8,20 +8,20 @@
 import SwiftUI
 
 struct CheckInList: View {
+    var highlighted: Bool
     var body: some View {
         HStack{
             Image(systemName: "face.smiling.inverse")
                 .foregroundColor(Color("Graphite"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Check In")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("9:00")
-            Text("HG4").bold()
-            
+            Text("HG4").bold().padding(.trailing, 5)
         }
-        .padding(.bottom,1)
-        .background(Color.black)
+        .padding(.bottom, 1)
+        .background(Color("Graphite").colorInvert())
     }
 }
 struct MathList: View {
@@ -29,12 +29,12 @@ struct MathList: View {
         HStack{
             Image(systemName: "number.circle.fill")
                 .foregroundColor(Color("Rose"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Math")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("9:10")
-            Text("FT3").bold()
+            Text("FT3").bold().padding(.trailing, 5)
                 
                 
         }
@@ -48,12 +48,12 @@ struct EnglishList: View {
         HStack{
             Image(systemName: "book.closed.circle.fill")
                 .foregroundColor(Color("Lemon"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("English")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("10:10")
-            Text("BT4").bold()
+            Text("BT4").bold().padding(.trailing, 5)
                 
                 
         }
@@ -66,11 +66,11 @@ struct RecessList: View {
     var body: some View {
         HStack{
             Image(systemName: "fork.knife.circle")
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Recess")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
-            Text("11:10")
+            Text("11:10").padding(.trailing,5)
             
             
         }
@@ -82,11 +82,11 @@ struct LunchList: View {
     var body: some View {
         HStack{
             Image(systemName: "fork.knife.circle")
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Lunch")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
-            Text("1:30")
+            Text("1:30").padding(.trailing,5)
             
             
         }
@@ -99,12 +99,12 @@ struct HSIEList: View {
         HStack{
             Image(systemName: "clock.circle.fill")
                 .foregroundColor(Color("Rees"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("HSIE")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("11:30")
-            Text("BG4").bold()
+            Text("BG4").bold().padding(.trailing, 5)
             
         }
         .padding(.bottom,1)
@@ -116,12 +116,12 @@ struct TASList: View {
         HStack{
             Image(systemName: "hammer.circle.fill")
                 .foregroundColor(Color("Blueberry"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("TAS")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("12:30")
-            Text("GG3").bold()
+            Text("GG3").bold().padding(.trailing, 5)
             
         }
         .padding(.bottom,1)
@@ -133,12 +133,12 @@ struct PDHPEList: View {
         HStack{
             Image(systemName: "figure.run.circle.fill")
                 .foregroundColor(Color("Lime"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("PDHPE")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("2:10")
-            Text("HALL").bold()
+            Text("HALL").bold().padding(.trailing, 5)
             
         }
         .padding(.bottom,1)
@@ -150,12 +150,12 @@ struct LanguageList: View {
         HStack{
             Image(systemName: "bubble.left.circle.fill")
                 .foregroundColor(Color("Apricot"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("French")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("12:30")
-            Text("FT8").bold()
+            Text("FT8").bold().padding(.trailing, 5)
             
         }
         .padding(.bottom,1)
@@ -167,12 +167,11 @@ struct TheatreList: View {
         HStack{
             Image(systemName: "headset.circle.fill")
                 .foregroundColor(Color("Peach"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Theatre Crew")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("1:30")
-            
         }
         .padding(.bottom,1)
         .background(Color.black)
@@ -183,12 +182,11 @@ struct MSBList: View {
         HStack{
             Image(systemName: "flag.circle.fill")
                 .foregroundColor(Color("Cherry"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Marching B.")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("3:30")
-            
         }
         .padding(.bottom,1)
         .background(Color.black)
@@ -199,9 +197,9 @@ struct ConcertList: View {
         HStack{
             Image(systemName: "pencil.circle.fill")
                 .foregroundColor(Color("Cherry"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Concert Band")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("3:30")
             
@@ -215,9 +213,9 @@ struct ScienceList: View {
         HStack{
             Image(systemName: "flame.circle.fill")
                 .foregroundColor(Color("Ice"))
-                .font(.system(size: 15))
+                .padding(.leading, 5)
             Text("Sciecne")
-                .font(.system(size: 15).bold())
+                .bold()
             Spacer()
             Text("3:30")
             
@@ -232,7 +230,7 @@ struct ListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                CheckInList()
+                CheckInList(highlighted: false)
                 MathList()
                 EnglishList()
                 RecessList()
@@ -241,6 +239,7 @@ struct ListView: View {
                 LunchList()
                 PDHPEList()
                 TASList()
+                ScienceList()
                 TheatreList()
                 MSBList()
                 ConcertList()
