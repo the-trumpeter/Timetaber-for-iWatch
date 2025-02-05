@@ -4,7 +4,3 @@
 
 Developed by Gill Palmer (a.k.a. the-trumpeter), this app is made to solve one of his biggest educational issues:
 <b>forgetting his timetable.</b> If only he was finished it... Ah well, may be useless not but there's still more to come! <img src="https://img.shields.io/badge/0.6.1-red"/>
-
-
-## Welcome Ian!!
-#### I'm ~~very relieved to have another person on the team~~ glad to have you here!
