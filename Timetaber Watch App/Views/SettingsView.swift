@@ -9,14 +9,15 @@
 import SwiftUI
 
 
-
-func test(){
-    print("yest")
-}
-
 func startTermProcess(ghostWeek: Bool) -> Bool {
     //process to start a term, local 'termrunning' should be changed externally dependent on error/success outcome
-    print("SettingsView, line 17:", getIfWeekIsA_FromDateAndGhost(originDate: Date.now, ghostWeek: ghostWeek))
+    print("SettingsView, line 17 - weekA?:", getIfWeekIsA_FromDateAndGhost(originDate: Date.now, ghostWeek: ghostWeek))
+    
+    // ! Need to store that a term is running!!
+    writeToStore(key: runningKey, data: true)
+    writeToStore(key: ghostWeekKey, data: ghostWeek)
+    writeToStore(key: startDateKey, data: Date.now)
+    
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
     
 }
@@ -24,12 +25,15 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
 func endTermProcess() -> Bool {
     //processes to end a term, local 'termrunning' should be changed externally
     
+    // ! Need to store that term is not running!
+    writeToStore(key: runningKey, data: false)
+    
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
 }
 
 
 
-struct NewTermView: View {
+struct NewTermSheet: View {
     @State var isGhostWeek = false
     @Environment(\.dismiss) var dismiss
     @Binding var termRunning: Bool
@@ -41,7 +45,8 @@ struct NewTermView: View {
                 Button("Start") {
                     if startTermProcess(ghostWeek: isGhostWeek) {
                         termRunning = true
-                        print("Started termn")
+                        print("Started term")
+                        trySetup()
                     } else {
                         //call an error if function returns error
                         print("SettingsView, line 47: Error!")
@@ -67,7 +72,7 @@ struct NewTermView: View {
 struct SettingsView: View {
     
     @State var showingSheet = false
-    @State var isTermRunning = false
+    @State var isTermRunning = termRunningGB
     @State private var showConf = false
     
     
@@ -88,7 +93,7 @@ struct SettingsView: View {
                             RoundedRectangle(cornerRadius: 100)
                                 .stroke(.white, lineWidth: isTermRunning ? 1: 0))
             
-                        .sheet(isPresented: $showingSheet) { NewTermView(termRunning: $isTermRunning) }
+                        .sheet(isPresented: $showingSheet) { NewTermSheet(termRunning: $isTermRunning) }
             
                         .confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
                             

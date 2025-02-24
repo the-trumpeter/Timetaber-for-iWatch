@@ -145,23 +145,6 @@ struct PDHPEList: View {
         .background(Color.black)
     }
 }
-struct LanguageList: View {
-    var body: some View {
-        HStack{
-            Image(systemName: "bubble.left.circle.fill")
-                .foregroundColor(Color("Apricot"))
-                .padding(.leading, 5)
-            Text("French")
-                .bold()
-            Spacer()
-            Text("12:30")
-            Text("FT8").bold().padding(.trailing, 5)
-            
-        }
-        .padding(.bottom,1)
-        .background(Color.black)
-    }
-}
 struct TheatreList: View {
     var body: some View {
         HStack{
@@ -224,6 +207,22 @@ struct ScienceList: View {
         .background(Color.black)
     }
 }
+struct VisArtsList: View {
+    var body: some View {
+        HStack{
+            Image("paintbrush.pointed.circle.fill")
+                .foregroundColor(Color("Ice"))
+                .padding(.leading, 5)
+            Text("Sciecne")
+                .bold()
+            Spacer()
+            Text("3:30")
+            
+        }
+        .padding(.bottom,1)
+        .background(Color.black)
+    }
+}
 
 
 struct ListView: View {
@@ -235,7 +234,6 @@ struct ListView: View {
                 EnglishList()
                 RecessList()
                 HSIEList()
-                LanguageList()
                 LunchList()
                 PDHPEList()
                 TASList()
@@ -243,6 +241,7 @@ struct ListView: View {
                 TheatreList()
                 MSBList()
                 ConcertList()
+                VisArtsList()
             }
         }
     }

@@ -25,7 +25,7 @@ var ghostWeekGB = false
 
 func readStoredData(key: String) -> Any {
     let readData = userDefaults.object(forKey: key)
-    print("reading key:", readData as Any)
+    print("reading key: ", readData as Any)
     return readData as Any
 }
 
@@ -34,8 +34,8 @@ func readStoredData(key: String) -> Any {
 
 func checkForStoredData(key: String) -> Bool {
     let store = userDefaults.object(forKey: key)
-    if store != nil { return true
-    } else { return false }
+    if store != nil { print("\(key) exists!"); return true
+    } else { print("\(key) doesn't exist!"); return false }
 }
 
 
@@ -43,6 +43,7 @@ func checkForStoredData(key: String) -> Bool {
 
 func writeToStore(key: String, data: Any) {
     userDefaults.set(data, forKey: key)
+    print("Set data of \(data) to key \(key)!")
 }
 
 
@@ -50,9 +51,7 @@ func writeToStore(key: String, data: Any) {
 
 
 
-
 func trySetup() -> Void {
-    
     if !checkForStoredData(key: runningKey) { //ensure term-running store exists
         writeToStore(key: runningKey, data: false) //if not, make it
     }
@@ -61,4 +60,17 @@ func trySetup() -> Void {
     if !checkForStoredData(key: ghostWeekKey) { // ensure ghost-week store exists
         writeToStore(key: ghostWeekKey, data: false) // if not, make it
     }
+    
+    if !checkForStoredData(key: startDateKey) {
+        writeToStore(key: startDateKey, data: Date.now)
+    }
+    
+    
+    if termRunningGB == true {
+        updateCurrents()
+    }
+    
+    print("Setup done")
+    print("Current course: \(currentCourse.name)")
+    
 }

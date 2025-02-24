@@ -14,11 +14,10 @@
 
 import Foundation
 
-var theDate = Date()
 let calendar = Calendar.current
 let dFormatter = DateFormatter()
 
-let weekdayTimes = [monTimes, normTimes, wedTimes, thuTimes, normTimes] //how best to handle weekends? make it only weekdays!
+let weekdayTimes: Array<Array<Int>> = [monTimes, normTimes, wedTimes, thuTimes, normTimes] //how best to handle weekends? make it only weekdays!
 let weekA = [monA, tueA, wedA, thuA, friA]
 let weekB = [monB, tueB, wedB, thuB, friB]
 
@@ -68,7 +67,7 @@ func year(inDate: Date) -> Int {
 
 func time24() -> Int {
     dFormatter.dateFormat = "HHmm" // or hh:mm for 12 h
-    return Int(dFormatter.string(from: theDate))!
+    return Int(dFormatter.string(from: .now))!
 }
 
 
@@ -118,15 +117,14 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 
 
 func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
-    let workingWeekDay = weekDay-1
     if !termRunningGB { return noSchool }
     
     if isWeekA {
-        let timetableDay = weekA[workingWeekDay]
-        return timetableDay[sessionStartTime]!
+        let timetableDay = weekA[weekDay-1]
+        return timetableDay[sessionStartTime] ?? failCourse
     } else /* if weekB */ {
-        let timetableDay = weekB[workingWeekDay]
-        return timetableDay[sessionStartTime]!
+        let timetableDay = weekB[weekDay-1]
+        return timetableDay[sessionStartTime] ?? failCourse
     }
 }
 
@@ -134,14 +132,22 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 
 
 func getCurrentClass(date: Date) -> Course {
-    
-    let todayWeekday = weekday(inDate: date)
+    let todayWeekday = Int(weekday(inDate: date))//sunday = 1, mon = 2, etc
     print("the weekday today is \(todayWeekday)")
     
-    let times2Day = weekdayTimes[todayWeekday-1]
+    
+    var times2Day: Array<Int>
+    
+    if todayWeekday == 6 {
+        times2Day = weekdayTimes.last!
+    } else {
+        times2Day = weekdayTimes[todayWeekday-1]
+    }
+    
+    
     let time24Now = time24()
     
-    if !termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! { //if it is either holidays, sunday, monday or before school starts then noSchool - '||' means [OR]
+    if !termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - '||' means [OR]
         print("> There's no school at the moment.")
         return noSchool
     }
@@ -171,7 +177,7 @@ func getCurrentClass(date: Date) -> Course {
             weekDay: todayWeekday, isWeekA: isweekA
             )
             
-            print("The current class is \(currentClass)")
+            print("The current class is \(currentClass.name)")
             return currentClass
             
             
@@ -182,7 +188,7 @@ func getCurrentClass(date: Date) -> Course {
             weekDay: todayWeekday, isWeekA: isweekA
             )
             
-            print("The current class is \(currentClass)")
+            print("The current class is \(currentClass.name)")
             return currentClass
             
         } // if | either of these mean its the current class
