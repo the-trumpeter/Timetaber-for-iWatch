@@ -10,3 +10,8 @@ I'm encountering some large problems that are pretty much beyond my understandin
 Welcome if you read this, and please let me know if you are able to help!
 
 
+#### Note on errors in repository
+The code on GitHub is up to date at the cost of errors.
+Since I'm not actively collaborating with anybody I commit all my changes after each session.
+Sorry if the repository's code is erroring, you can probably guess that I don't know how to fix it.
+
