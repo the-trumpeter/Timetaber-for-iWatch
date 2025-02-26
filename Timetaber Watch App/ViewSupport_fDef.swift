@@ -1,6 +1,7 @@
 //
 //  ViewSuppport.swift
-//  Timetaber
+//  Timetaber Watch App
+//  Function definition script
 //
 //  Created by Gill Palmer on 17/12/2024.
 //

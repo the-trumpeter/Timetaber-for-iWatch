@@ -1,6 +1,7 @@
 //
 //  Courses.swift
 //  Timetaber for iWatch
+//  Variable definition script
 //
 //  Created by Gill Palmer on 3/11/2024.
 //

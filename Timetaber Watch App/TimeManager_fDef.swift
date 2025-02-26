@@ -1,6 +1,7 @@
 //
-//  TimeManager.swift
+//  TimeManager_fDef.swift
 //  Timetaber for iWatch
+//  Function definition script
 //
 //  Created by Gill Palmer on 6/11/2024.
 //
@@ -23,12 +24,6 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 
 
-enum ClassCalculationError: Error {
-    case exhaustedAllPotentialTimes(startDate: Date, ghostWeek: Bool)
-    case variableFailed
-    case somethingWasMissingExternally
-    case error
-}
 
 
 

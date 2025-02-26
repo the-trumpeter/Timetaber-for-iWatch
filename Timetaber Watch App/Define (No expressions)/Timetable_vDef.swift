@@ -1,6 +1,7 @@
 //
 //  Timetable.swift
 //  Timetaber for iWatch
+//  Variable definition script
 //
 //  Created by Gill Palmer on 5/11/2024
 

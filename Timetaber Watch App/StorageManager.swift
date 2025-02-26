@@ -19,8 +19,7 @@ let ghostWeekKey = "timetaber.userdefalts.ghostWeek"
 let startDateKey = "timetaber.userdefalts.startDate"
 
 
-var termRunningGB = false
-var ghostWeekGB = false
+
 
 
 func readStoredData(key: String) -> Any {

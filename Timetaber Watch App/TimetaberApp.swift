@@ -8,6 +8,8 @@
 import SwiftUI
 
 
+
+
 var currentCourse: Course = getCurrentClass(date: .now) //the current timetabled class in session.
 var nextCourse: Course = noSchool
 
@@ -22,6 +24,11 @@ func updateCurrents() {
 @main
 
 struct Timetaber_Watch_AppApp: App {
+    
+    @AppStorage(runningKey) var termRunningGB = false
+    @AppStorage(ghostWeekKey) var ghostWeekGB = false
+    @AppStorage(startDateKey) var startDateGB = Date.now
+    
     var body: some Scene {
         WindowGroup {
             TabView{
