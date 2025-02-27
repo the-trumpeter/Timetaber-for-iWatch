@@ -124,7 +124,7 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
         }
         return re_turn
     } else /* if weekB */ {
-        let timetableDay = weekB[weekDay-1]
+        let timetableDay = weekB[weekDay-2]
         let re_turn = timetableDay[sessionStartTime] ?? failCourse
         if re_turn.name==failCourse.name {
             print("findClassFromTimeWeekDayNifWeekIsAohBoyThatsLong returned NIL/FAILCOURSE L129")

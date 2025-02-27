@@ -18,6 +18,10 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
     //writeToStore(key: ghostWeekKey, data: ghostWeek)
     //writeToStore(key: startDateKey, data: Date.now)
     
+    globalStorage.shared.termRunningGB = true
+    reload()
+    log()
+    
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
     
 }
@@ -27,6 +31,10 @@ func endTermProcess() -> Bool {
     
     // ! Need to store that term is not running!
     //writeToStore(key: runningKey, data: false)
+    
+    globalStorage.shared.termRunningGB = false
+    reload()
+    log()
     
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
 }
@@ -94,6 +102,8 @@ struct SettingsView: View {
                                 .stroke(.white, lineWidth: isTermRunning ? 1: 0))
             
                         .sheet(isPresented: $showingSheet) { NewTermSheet(termRunning: $isTermRunning) }
+            
+                        .padding(10)
             
                         .confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
                             
