@@ -14,9 +14,9 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
     print("SettingsView, line 17 - weekA?:", getIfWeekIsA_FromDateAndGhost(originDate: Date.now, ghostWeek: ghostWeek))
     
     // ! Need to store that a term is running!!
-    writeToStore(key: runningKey, data: true)
-    writeToStore(key: ghostWeekKey, data: ghostWeek)
-    writeToStore(key: startDateKey, data: Date.now)
+    //writeToStore(key: runningKey, data: true)
+    //writeToStore(key: ghostWeekKey, data: ghostWeek)
+    //writeToStore(key: startDateKey, data: Date.now)
     
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
     
@@ -26,7 +26,7 @@ func endTermProcess() -> Bool {
     //processes to end a term, local 'termrunning' should be changed externally
     
     // ! Need to store that term is not running!
-    writeToStore(key: runningKey, data: false)
+    //writeToStore(key: runningKey, data: false)
     
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
 }

@@ -153,8 +153,9 @@ func getCurrentClass(date: Date) -> Course {
     
     let time24Now = time24()
     
-    if !globalStorage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - '||' means [OR]
+    if !globalStorage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
         print("> There's no school at the moment.")
+        nextCourse = noSchool
         return noSchool
     }
     
@@ -162,8 +163,8 @@ func getCurrentClass(date: Date) -> Course {
 
     
     let isweekA = getIfWeekIsA_FromDateAndGhost(
-        originDate: readStoredData(key: startDateKey) as! Date,
-        ghostWeek: readStoredData(key: ghostWeekKey) as! Bool)
+        originDate: globalStorage.shared.startDateGB,
+        ghostWeek: globalStorage.shared.ghostWeekGB)
     
     
     print("Times today:",times2Day)
@@ -190,17 +191,18 @@ func getCurrentClass(date: Date) -> Course {
         } else if c>t &&  c<i {
             
             let currentClass = findClassfromTimeWeekDayNifWeekIsA(
-            sessionStartTime: c,
+            sessionStartTime: t,
             weekDay: todayWeekday, isWeekA: isweekA
             )
             
             print("The current class is \(currentClass.name)")
+            
             return currentClass
             
-        } // if | either of these mean its the current class
+        } // either of these if's mean its the current class
             
     } // for n
-    
+    print("> Exhausted all possible course options of day")
     return failCourse //all class options should be exhausted, so this should not run. If it does, ERROR!!
     
 }

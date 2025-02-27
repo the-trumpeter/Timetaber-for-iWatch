@@ -21,7 +21,7 @@ let startDateKey = "timetaber.userdefalts.startDate"
 
 
 
-
+/*
 func readStoredData(key: String) -> Any {
     let readData = userDefaults.object(forKey: key)
     print("reading key: ", readData as Any)
@@ -44,7 +44,7 @@ func writeToStore(key: String, data: Any) {
     userDefaults.set(data, forKey: key)
     print("Set data of \(data) to key \(key)!")
 }
-
+*/
 
 
 
