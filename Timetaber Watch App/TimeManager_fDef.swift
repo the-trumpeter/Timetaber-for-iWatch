@@ -116,7 +116,7 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
     if !globalStorage.shared.termRunningGB { return noSchool }
     
     if isWeekA {
-        let timetableDay = weekA[weekDay-1]
+        let timetableDay = weekA[weekDay-2]
         let re_turn = timetableDay[sessionStartTime] ?? failCourse //needs work
         if re_turn.name==failCourse.name {
             print("findClassFromTimeWeekDayNifWeekIsAohBoyThatsLong returned NIL/FAILCOURSE L122")
