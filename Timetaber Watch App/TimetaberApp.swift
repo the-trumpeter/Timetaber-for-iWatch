@@ -21,13 +21,29 @@ func updateCurrents() {
 }
 
 
+
+class globalStorage {
+    
+    static let shared = globalStorage()
+    
+    @State @AppStorage(runningKey) var termRunningGB = false
+    @State @AppStorage(ghostWeekKey) var ghostWeekGB = false
+    @State @AppStorage(startDateKey) var startDateGB = Date.now
+    
+}
+let storage = globalStorage.shared
+
+
+
+func log() {
+    print("Current class is \(currentCourse.name).")
+    print("Term running is \(storage.termRunningGB), ghost week is \(storage.ghostWeekGB).")
+    print("It is \(Date().description).")
+}
+
 @main
 
 struct Timetaber_Watch_AppApp: App {
-    
-    @AppStorage(runningKey) var termRunningGB = false
-    @AppStorage(ghostWeekKey) var ghostWeekGB = false
-    @AppStorage(startDateKey) var startDateGB = Date.now
     
     var body: some Scene {
         WindowGroup {
@@ -37,6 +53,9 @@ struct Timetaber_Watch_AppApp: App {
                 SettingsView()
             }
             .tabViewStyle(.carousel)
+            .onAppear() {
+                log()
+            }
         }
     }
 }

@@ -50,8 +50,8 @@ func writeToStore(key: String, data: Any) {
 
 
 
-func trySetup() -> Void {
-    if !checkForStoredData(key: runningKey) { //ensure term-running store exists
+func reload() -> Void {
+    /*if !checkForStoredData(key: runningKey) { //ensure term-running store exists
         writeToStore(key: runningKey, data: false) //if not, make it
     }
     termRunningGB = readStoredData(key: runningKey) as! Bool // update global term-running var
@@ -62,14 +62,13 @@ func trySetup() -> Void {
     
     if !checkForStoredData(key: startDateKey) {
         writeToStore(key: startDateKey, data: Date.now)
-    }
+    }*/
     
     
-    if termRunningGB == true {
-        updateCurrents()
-    }
+    updateCurrents()
     
-    print("Setup done")
-    print("Current course: \(currentCourse.name)")
+    print("Setup done\n")
+    log()
     
 }
+

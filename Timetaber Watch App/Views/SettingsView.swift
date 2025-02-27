@@ -46,7 +46,7 @@ struct NewTermSheet: View {
                     if startTermProcess(ghostWeek: isGhostWeek) {
                         termRunning = true
                         print("Started term")
-                        trySetup()
+                        reload()
                     } else {
                         //call an error if function returns error
                         print("SettingsView, line 47: Error!")
@@ -72,7 +72,7 @@ struct NewTermSheet: View {
 struct SettingsView: View {
     
     @State var showingSheet = false
-    @State var isTermRunning = termRunningGB
+    @State var isTermRunning = globalStorage.shared.termRunningGB
     @State private var showConf = false
     
     

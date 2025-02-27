@@ -112,14 +112,25 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 
 
 func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
-    if !termRunningGB { return noSchool }
+
+    if !globalStorage.shared.termRunningGB { return noSchool }
     
     if isWeekA {
         let timetableDay = weekA[weekDay-1]
-        return timetableDay[sessionStartTime] ?? failCourse
+        let re_turn = timetableDay[sessionStartTime] ?? failCourse //needs work
+        if re_turn.name==failCourse.name {
+            print("findClassFromTimeWeekDayNifWeekIsAohBoyThatsLong returned NIL/FAILCOURSE L122")
+            print(timetableDay, "<tDay | sessTime>", sessionStartTime)
+        }
+        return re_turn
     } else /* if weekB */ {
         let timetableDay = weekB[weekDay-1]
-        return timetableDay[sessionStartTime] ?? failCourse
+        let re_turn = timetableDay[sessionStartTime] ?? failCourse
+        if re_turn.name==failCourse.name {
+            print("findClassFromTimeWeekDayNifWeekIsAohBoyThatsLong returned NIL/FAILCOURSE L129")
+            print(timetableDay, "<tDay | sessTime>", sessionStartTime)
+        }
+        return re_turn
     }
 }
 
@@ -142,7 +153,7 @@ func getCurrentClass(date: Date) -> Course {
     
     let time24Now = time24()
     
-    if !termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - '||' means [OR]
+    if !globalStorage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - '||' means [OR]
         print("> There's no school at the moment.")
         return noSchool
     }
