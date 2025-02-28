@@ -213,7 +213,7 @@ struct VisArtsList: View {
             Image("paintbrush.pointed.circle.fill")
                 .foregroundColor(Color("Ice"))
                 .padding(.leading, 5)
-            Text("Sciecne")
+            Text("Art")
                 .bold()
             Spacer()
             Text("3:30")

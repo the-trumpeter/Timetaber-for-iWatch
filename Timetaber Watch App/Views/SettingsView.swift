@@ -17,7 +17,8 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
     //writeToStore(key: runningKey, data: true)
     //writeToStore(key: ghostWeekKey, data: ghostWeek)
     //writeToStore(key: startDateKey, data: Date.now)
-    
+    globalStorage.shared.ghostWeekGB = ghostWeek
+    globalStorage.shared.startDateGB = Date.now
     globalStorage.shared.termRunningGB = true
     reload()
     log()
@@ -52,7 +53,7 @@ struct NewTermSheet: View {
                 
                 Button("Start") {
                     if startTermProcess(ghostWeek: isGhostWeek) {
-                        termRunning = true
+                        termRunning = globalStorage.shared.termRunningGB
                         print("Started term")
                         reload()
                     } else {
