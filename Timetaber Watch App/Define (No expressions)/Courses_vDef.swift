@@ -16,6 +16,24 @@ struct Course {
     let icon: String
     let room: String
     let colour: String
+    
+    let listName: String
+    let listIcon: String
+    
+    init(name: String, icon: String, room: String? = nil, colour: String,
+         listName: String? = nil, listIcon: String? = nil)
+    {
+        
+        self.name = name
+        self.icon = icon
+        self.room = room ?? "None"
+        self.colour = colour
+        
+        self.listName = listName ?? name
+        self.listIcon = listIcon ?? icon+".circle.fill"
+    }
+    
+    
 }
 
 
@@ -27,42 +45,60 @@ struct Course {
 //  (Will later script timetable builder thing in iOS companion app to create/edit these.)
 //
 
-let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "White")
+
+let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "White", listIcon: "face.smiling.inverse")
+
+let English6 = Course(name: "English", icon: "book.closed", room: "BT6", colour: "Lemon")
+let English9 = Course(name: "English", icon: "book.closed", room: "BT9", colour: "Lemon")
+
+let HSIE = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "Rees", listIcon: "clock.circle.fill")
 
 let MathsCourse = Course(name: "Maths", icon: "number", room: "FT5", colour: "Rose")
-let English9 = Course(name: "English", icon: "book.closed", room: "BT9", colour: "Lemon")
-let English6 = Course(name: "English", icon: "book.closed", room: "BT6", colour: "Lemon")
-let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour: "Ice")
 
-let HSIE = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "Rees")
+let MultimediaCourse = Course(name: "Multimedia", icon: "camera", room: "GG2", colour: "Blueberry")
 
+let PACourseBG = Course(name: "PA Music", icon: "music.micophone", room: "BG1", colour: "Cherry")
+let PACourseBT = Course(name: "PA Music", icon: "music.micophone", room: "BT1", colour: "Cherry")
+let PACourseC1 = Course(name: "PA Music", icon: "music.micophone", room: "CG1", colour: "Cherry")
 
 let PDHPE1 = Course(name: "PDHPE", icon: "figure.run", room: "AG1", colour: "Lime")
 let PDHPE3 = Course(name: "PDHPE", icon: "figure.run", room: "AG3", colour: "Lime")
+
+let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour: "Ice", listIcon: "flame.circle.fill")
+
 let TAS = Course(name: "TAS", icon: "hammer", room: "HG7", colour: "Blueberry")
 
-let PACourseBT = Course(name: "PA Music", icon: "music.micophone", room: "BT1", colour: "Cherry")
-let PACourseBG = Course(name: "PA Music", icon: "music.micophone", room: "BG1", colour: "Cherry")
-let PACourseC1 = Course(name: "PA Music", icon: "music.micophone", room: "CG1", colour: "Cherry")
-//let PAClassC2 = Course(name: "PA Music", icon: "music.micophone", room: "CG2", colour: "Cherry")
+let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art")
 
-let MSBourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", room: "None", colour: "Cherry")
-let JCBCourse = Course(name: "Junior C.B.", icon: "pencil", room: "None", colour: "Cherry")
-//let SCBClass = Course(name: "Senior C.B.", icon: "pencil", room: "None", colour: "Cherry")
-let TCCourse = Course(name: "Theatre Crew", icon: "headset", room: "None", colour: "Peach")
+let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", room: "food", colour: "White")
 
-let MultimediaCourse = Course(name: "Multimedia", icon: "camera", room: "GG2", colour: "Blueberry")
-let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot")
+let RecessPeriod = Course(name: "Recess", icon: "fork.knife", room: "like lunch but short", colour: "White")
 
-let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", room: "None", colour: "White")
-let RecessPeriod = Course(name: "Recess", icon: "fork.knife", room: "None", colour: "White")
+let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White")
 
-let noSchool = Course(name: "No classes", icon: "clock", room: globalStorage.shared.termRunningGB ? "Kick back & relax!": "Waiting for a term to start", colour: "White")
-let yearAssembly = Course(name: "Year Assembly", icon: "person.3", room: "None", colour: "White")
+let MSBourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Marching B.")
+
+let JCBCourse = Course(name: "Junior C.B.", icon: "pencil", colour: "Cherry", listName: "Concert Band")
 
 let JSBCourse = Course(name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White")
 
-let MLPeriod = Course(name: "Music Lesson", icon: "music.note", room: "None", colour: "White")
+let TCCourse = Course(name: "Theatre Crew", icon: "headset", colour: "Peach")
+
+let MLPeriod = Course(name: "Music Lesson", icon: "music.note", colour: "White")
 
 
-let failCourse = Course(name: "Error", icon: "exclamationmark.triangle", room: "None", colour: "White")
+
+
+let noSchool = Course(
+    name: "No school", icon: "clock",
+    room: storage.shared.termRunningGB ?
+    (weekday(inDate: .now)==1 || weekday(inDate: .now)==7 ?
+     "Happy weekend!" :"Not yet, anyway..."):
+        "Waiting for a term to start",
+    colour: "White"
+)
+
+
+func failCourse(feedback: String? = "None") -> Course {
+    return Course(name: "Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "White")
+}

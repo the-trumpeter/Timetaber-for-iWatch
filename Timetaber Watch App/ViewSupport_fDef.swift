@@ -12,22 +12,21 @@ import Foundation
 func getNextString() -> String{
     if nextCourse.room=="None" {
         return nextCourse.name
-        
-    } else if nextCourse.name=="No classes" || nextCourse.name == "Error" {
+    } else if nextCourse.name==noSchool.name || nextCourse.name == "Error" {
         return ""
     } else {
         
         return nextCourse.name+" - "+nextCourse.room
     }
 }
-func roomOrNil() -> String{
-    if currentCourse.room=="None" {
+func roomOrBlank(course: Course) -> String{
+    if course.room=="None" {
         return ""
     } else {
-        return currentCourse.room
+        return course.room
     }
 }
-func isNextNothing() -> String{
+func nextPrefix() -> String{
     if nextCourse.name=="No classes" || nextCourse.name=="Error"{
         return ""
     } else {

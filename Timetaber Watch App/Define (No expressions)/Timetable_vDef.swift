@@ -19,7 +19,7 @@ let monA: Dictionary<Int, Course> = [
     0900: CheckInCourse, 0910: English9, 1000: MLPeriod, 1030: PACourseBG,
     1110: RecessPeriod, 1130: PDHPE3, 1230: ScienceCourse,
     1330: JSBCourse, 1410: VisualArtsCourse, 1510: noSchool
-]//
+]
 
 let tueA: Dictionary<Int, Course> = [
     0900: CheckInCourse, 0910: VisualArtsCourse, 1010: PACourseC1,
@@ -28,7 +28,7 @@ let tueA: Dictionary<Int, Course> = [
 ]
 
 let wedA: Dictionary<Int, Course> = [
-    0900: TAS, 1000: TAS, 1050: yearAssembly,
+    0900: TAS, 1050: yearAssembly,
     1100: RecessPeriod, 1120: ScienceCourse, 1210: MathsCourse,
     1300: LunchPeriod, 1330: TCCourse, 1510: MSBourse, 1730: noSchool
 ]
@@ -44,6 +44,8 @@ let friA: Dictionary<Int, Course> = [
     1110: RecessPeriod, 1130: ScienceCourse, 1230: English9,
     1330: LunchPeriod, 1410: MultimediaCourse, 1510: noSchool
 ]
+
+
 
 let monB: Dictionary<Int, Course> = [
     0900: CheckInCourse, 0910: English9, 1000: MLPeriod, 1030: VisualArtsCourse,

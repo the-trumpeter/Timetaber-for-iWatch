@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import SwiftUI
 
 
 let userDefaults = UserDefaults.standard
@@ -21,51 +21,21 @@ let startDateKey = "timetaber.userdefalts.startDate"
 
 
 
-/*
-func readStoredData(key: String) -> Any {
-    let readData = userDefaults.object(forKey: key)
-    print("reading key: ", readData as Any)
-    return readData as Any
+class storage {
+    static let shared = storage()
+    
+    @State @AppStorage(runningKey) var termRunningGB = false
+    @State @AppStorage(ghostWeekKey) var ghostWeekGB = false
+    @State @AppStorage(startDateKey) var startDateGB = Date.now
+    
 }
 
 
 
-
-func checkForStoredData(key: String) -> Bool {
-    let store = userDefaults.object(forKey: key)
-    if store != nil { print("\(key) exists!"); return true
-    } else { print("\(key) doesn't exist!"); return false }
-}
-
-
-
-
-func writeToStore(key: String, data: Any) {
-    userDefaults.set(data, forKey: key)
-    print("Set data of \(data) to key \(key)!")
-}
-*/
-
-
-
-
-
-func reload() -> Void {
-    /*if !checkForStoredData(key: runningKey) { //ensure term-running store exists
-        writeToStore(key: runningKey, data: false) //if not, make it
-    }
-    termRunningGB = readStoredData(key: runningKey) as! Bool // update global term-running var
-
-    if !checkForStoredData(key: ghostWeekKey) { // ensure ghost-week store exists
-        writeToStore(key: ghostWeekKey, data: false) // if not, make it
-    }
+func reload() -> Void {    
     
-    if !checkForStoredData(key: startDateKey) {
-        writeToStore(key: startDateKey, data: Date.now)
-    }*/
-    
-    
-    updateCurrents()
+    currentCourse = getCurrentClass(date: .now)
+    nextCourse = noSchool
     
     print("Setup done\n")
     log()

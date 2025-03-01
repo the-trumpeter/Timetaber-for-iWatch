@@ -14,12 +14,9 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
     print("SettingsView, line 17 - weekA?:", getIfWeekIsA_FromDateAndGhost(originDate: Date.now, ghostWeek: ghostWeek))
     
     // ! Need to store that a term is running!!
-    //writeToStore(key: runningKey, data: true)
-    //writeToStore(key: ghostWeekKey, data: ghostWeek)
-    //writeToStore(key: startDateKey, data: Date.now)
-    globalStorage.shared.ghostWeekGB = ghostWeek
-    globalStorage.shared.startDateGB = Date.now
-    globalStorage.shared.termRunningGB = true
+    storage.shared.ghostWeekGB = ghostWeek
+    storage.shared.startDateGB = Date.now
+    storage.shared.termRunningGB = true
     reload()
     log()
     
@@ -30,10 +27,7 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
 func endTermProcess() -> Bool {
     //processes to end a term, local 'termrunning' should be changed externally
     
-    // ! Need to store that term is not running!
-    //writeToStore(key: runningKey, data: false)
-    
-    globalStorage.shared.termRunningGB = false
+    storage.shared.termRunningGB = false
     reload()
     log()
     
@@ -53,12 +47,12 @@ struct NewTermSheet: View {
                 
                 Button("Start") {
                     if startTermProcess(ghostWeek: isGhostWeek) {
-                        termRunning = globalStorage.shared.termRunningGB
+                        termRunning = storage.shared.termRunningGB
                         print("Started term")
                         reload()
                     } else {
                         //call an error if function returns error
-                        print("SettingsView, line 47: Error!")
+                        print("SettingsView, line 55: Error!")
                     }
                     dismiss()
                 }
@@ -81,7 +75,7 @@ struct NewTermSheet: View {
 struct SettingsView: View {
     
     @State var showingSheet = false
-    @State var isTermRunning = globalStorage.shared.termRunningGB
+    @State var isTermRunning = storage.shared.termRunningGB
     @State private var showConf = false
     
     
@@ -114,7 +108,7 @@ struct SettingsView: View {
                                     isTermRunning = false
                                     print("Ended term")
                                 } else {
-                                    print("SettingsView, line 102: Error!")
+                                    print("SettingsView, line 111: Error!")
                                 }
                             }
                             

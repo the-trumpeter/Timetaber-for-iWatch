@@ -11,7 +11,7 @@ import SwiftUI
 private var icon = currentCourse.icon
 private var name = currentCourse.name
 private var colour = currentCourse.colour
-private var room = roomOrNil()
+private var room = roomOrBlank(course: currentCourse)
 
 
 
@@ -38,7 +38,7 @@ struct HomeView: View {
                 .padding(.bottom, 8)
             
             // NEXT CLASS
-            Text(isNextNothing())
+            Text(nextPrefix())
                 .font(.system(size: 15))
             
             Text(getNextString())

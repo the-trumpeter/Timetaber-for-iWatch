@@ -15,37 +15,28 @@ var nextCourse: Course = noSchool
 
 var viewNo = 1
 
-func updateCurrents() {
-    currentCourse = getCurrentClass(date: .now)//getCurrentClass(date: .now) //the current timetabled class in session.
-    nextCourse = noSchool
-}
 
-
-
-class globalStorage {
-    
-    static let shared = globalStorage()
-    
-    @State @AppStorage(runningKey) var termRunningGB = false
-    @State @AppStorage(ghostWeekKey) var ghostWeekGB = false
-    @State @AppStorage(startDateKey) var startDateGB = Date.now
-    
-}
-let storage = globalStorage.shared
 
 
 
 func log() {
-    print("Current class is \(currentCourse.name).")
-    print("Term running is \(storage.termRunningGB), ghost week is \(storage.ghostWeekGB).")
-    print("It is \(Date().description).")
+    print("""
+    ~ Log - \(Date().description) {
+        Current class is \(currentCourse.name).
+        Term running is \(storage.shared.termRunningGB), ghost week is \(storage.shared.ghostWeekGB).
+    } End Log ~
+    """)
 }
+
+
+
+
 
 @main
 
 struct Timetaber_Watch_AppApp: App {
-    
     var body: some Scene {
+        
         WindowGroup {
             TabView{
                 HomeView()
@@ -57,5 +48,6 @@ struct Timetaber_Watch_AppApp: App {
                 log()
             }
         }
+        
     }
 }
