@@ -5,9 +5,9 @@
 Developed by me, Gill Palmer, the-trumpeter, this app is made to solve one of my biggest educational issues:
 <b>forgetting my timetable.</b> If only I'm finished... Ah well, may be useless but there's still more to come!
 
-### Major issues: Looking for guidance
-I'm encountering some large problems that are pretty much beyond my understanding of Swift, and I've pretty much given up on them and instead am deciding to reach out.
-Welcome if you read this, and please let me know if you are able to help!
+### Looking for guidance
+It's no secret to developers that you usually encounter a LOT of errors, and as a big amateur, most of those are pretty much beyond my understanding of Swift (especially whe people would indent with SPACES), and while I seem to have fixed them I am completely baffled as to what caused them, why they threw and how did I actually fix them.
+Welcome if you read this, and please let me know if you are able to answer my questions!
 
 
 #### Note on errors in repository
