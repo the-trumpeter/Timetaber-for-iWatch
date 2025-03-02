@@ -11,7 +11,7 @@ import SwiftUI
 
 func getListView(course: Course, time: String) -> some View {
     
-    struct ListView: View {
+    struct listing: View {
         var localCourse: Course
         var localTimeValue: String
         
@@ -37,7 +37,7 @@ func getListView(course: Course, time: String) -> some View {
         
     }
     
-    return ListView(localCourse: course, localTimeValue: time)
+    return listing(localCourse: course, localTimeValue: time)
 }
 
 
@@ -49,9 +49,14 @@ struct ListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                getListView(course: MathsCourse, time: "")
-                getListView(course: PDHPE3, time: "")
-                getListView(course: English6, time: "")
+                getListView(course: CheckInCourse, time: "9:00")
+                getListView(course: PDHPE3, time: "9:10")
+                getListView(course: English6, time: "10:10")
+                getListView(course: RecessPeriod, time: "11:10")
+                getListView(course: TAS, time: "11:30")
+                getListView(course: MathsCourse, time: "12:30")
+                getListView(course: LunchPeriod, time: "1:30")
+                getListView(course: PACourseBG, time: "2:10")
             }
         }
     }

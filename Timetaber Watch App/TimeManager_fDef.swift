@@ -25,47 +25,15 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 
 
-
-
-func hour(inDate: Date) -> Int {
-    return Int(calendar.component(.hour, from: inDate))
-}
-
-func minutes(inDate: Date) -> Int {
-    return Int(calendar.component(.minute, from: inDate))
-}
-
-
-
-
 func weekday(inDate: Date) -> Int {
     return Int(calendar.component(.weekday, from: inDate))
 }
-
-
-
-
-func day(inDate: Date) -> Int {
-    return Int(calendar.component(.day, from: inDate))
-}
-
-func month(inDate: Date) -> Int {
-    return Int(calendar.component(.month, from: inDate))
-}
-
-func year(inDate: Date) -> Int {
-    return Int(calendar.component(.year, from: inDate))
-}
-
-
 
 
 func time24() -> Int {
     dFormatter.dateFormat = "HHmm" // or hh:mm for 12 h
     return Int(dFormatter.string(from: .now))!
 }
-
-
 
 
 
@@ -76,13 +44,6 @@ func odd(number: Int) -> Bool {
         return true
     }
 }
-
-
-
-
-
-
-
 
 
 func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
@@ -111,25 +72,22 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 
 
 
+
+
+
+
+
 func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
 
     if !storage.shared.termRunningGB { return noSchool }
     
     if isWeekA {
         let timetableDay = weekA[weekDay-2]
-        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.120") //needs work
-        if re_turn.name==failCourse().name {
-            print("findClassFromTimeWeekDayNifWeekIsAohBoyThatsLong returned NIL/FAILCOURSE L122")
-            print(timetableDay, "<tDay | sessTime>", sessionStartTime)
-        }
+        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.125") //needs work
         return re_turn
     } else /* if weekB */ {
         let timetableDay = weekB[weekDay-2]
-        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.128")
-        if re_turn.name==failCourse().name {
-            print("findClassFromTimeWeekDayNifWeekIsAohBoyThatsLong returned NIL/FAILCOURSE L129")
-            print(timetableDay, "<tDay | sessTime>", sessionStartTime)
-        }
+        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.129")
         return re_turn
     }
 }
@@ -137,7 +95,15 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 
 
 
-func getCurrentClass(date: Date) -> Course {
+
+
+
+
+
+
+func getCurrentClass(date: Date) -> Array<Course> {
+    
+    
     let todayWeekday = Int(weekday(inDate: date))//sunday = 1, mon = 2, etc
     print("the weekday today is \(todayWeekday)")
     
@@ -149,14 +115,17 @@ func getCurrentClass(date: Date) -> Course {
     } else {
         times2Day = weekdayTimes[todayWeekday-1]
     }
-    
+
     
     let time24Now = time24()
+    
+    
+    
     
     if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
         print("> There's no school at the moment.")
         nextCourse = noSchool
-        return noSchool
+        return [noSchool]
     }
     
     
@@ -170,39 +139,74 @@ func getCurrentClass(date: Date) -> Course {
     print("Times today:",times2Day)
     
     
+    
+    
+    
+    
+    
     //cycle through times til we find the two we are inbetween
     for n in 1...times2Day.count {
         
-        let t = times2Day[n] // time we r comparing to
-        let c = time24Now // current time
-        let i = if times2Day.count >= n+1 { times2Day[n+1] } else { Int(Double.infinity) }// next comparitive time; ensure we are not at end of array already
         
-        if c==t {
+        let compare = times2Day[n] // time we r comparing to
+        let now = time24Now // current time
+        let next = if times2Day.count >= n+1 { times2Day[n+1] } else { Int(Double.infinity) }// next comparitive time; ensure we are not at end of array already
+        
+        
+        
+        if now==compare {
             
-            let currentClass = findClassfromTimeWeekDayNifWeekIsA(
-            sessionStartTime: c,
+            
+            let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
+            sessionStartTime: now,
             weekDay: todayWeekday, isWeekA: isweekA
             )
             
-            print("The current class is \(currentClass.name)")
-            return currentClass
+            
+            let nextCourseLocal: Course = if next != Int(Double.infinity) {
+                    findClassfromTimeWeekDayNifWeekIsA(
+                        sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
+                    )
+                } else { noSchool }
             
             
-        } else if c>t &&  c<i {
             
-            let currentClass = findClassfromTimeWeekDayNifWeekIsA(
-            sessionStartTime: t,
+            print("The current class is \(currentCourseLocal.name)")
+            
+            return [currentCourseLocal, nextCourseLocal]
+            
+            
+            
+            
+        } else if now>compare &&  now<next {
+            
+            
+            let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
+            sessionStartTime: compare,
             weekDay: todayWeekday, isWeekA: isweekA
             )
             
-            print("The current class is \(currentClass.name)")
             
-            return currentClass
+            let nextCourseLocal: Course = if next != Int(Double.infinity) {
+                    findClassfromTimeWeekDayNifWeekIsA(
+                        sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
+                    )
+                } else { noSchool }
+            
+            
+            
+            print("The current class is \(currentCourseLocal.name)")
+            
+            return [currentCourseLocal, nextCourseLocal]
             
         } // either of these if's mean its the current class
-            
+        
+        
     } // for n
-    print("> Exhausted all possible course options of day")
-    return failCourse() //all class options should be exhausted, so this should not run. If it does, ERROR!!
     
+    
+    print("> Exhausted all possible course options of day")
+    
+    let failed = failCourse(feedback: "exhaust getCur.222")
+    return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
 }

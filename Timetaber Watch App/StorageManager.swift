@@ -34,7 +34,7 @@ class storage {
 
 func reload() -> Void {    
     
-    currentCourse = getCurrentClass(date: .now)
+    currentCourse = getCurrentClass(date: .now)[0]
     nextCourse = noSchool
     
     print("Setup done\n")
