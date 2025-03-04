@@ -124,8 +124,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
         print("> There's no school at the moment.")
-        nextCourse = noSchool
-        return [noSchool]
+        return [noSchool, noSchool]
     }
     
     
@@ -187,7 +186,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             )
             
             
-            let nextCourseLocal: Course = if next != Int(Double.infinity) {
+            let nextCourseLocal: Course = if next != FP_INFINITE {
                     findClassfromTimeWeekDayNifWeekIsA(
                         sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
                     )

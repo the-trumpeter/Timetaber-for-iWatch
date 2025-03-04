@@ -9,9 +9,9 @@ import SwiftUI
 
 
 
-var nowData = getCurrentClass(date: .now)
-var currentCourse: Course =  nowData[0] //  the current timetabled class in session.
-var nextCourse: Course = nowData[1] //  the next timetabled class in session
+//var nowData = getCurrentClass(date: .now)
+var currentCourse: Course =  getCurrentClass(date: .now)[0] //  the current timetabled class in session.
+var nextCourse: Course = getCurrentClass(date: .now)[1] //  the next timetabled class in session
 
 var viewNo = 1
 
