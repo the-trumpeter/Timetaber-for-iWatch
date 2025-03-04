@@ -19,9 +19,10 @@ struct Course {
     
     let listName: String
     let listIcon: String
+    let joke: String
     
     init(name: String, icon: String, room: String? = nil, colour: String,
-         listName: String? = nil, listIcon: String? = nil)
+         listName: String? = nil, listIcon: String? = nil, joke: String? = nil)
     {
         
         self.name = name
@@ -31,6 +32,8 @@ struct Course {
         
         self.listName = listName ?? name
         self.listIcon = listIcon ?? icon+".circle.fill"
+        
+        self.joke = joke ?? ""
     }
     
     
@@ -59,20 +62,21 @@ let MultimediaCourse = Course(name: "Multimedia", icon: "camera", room: "GG2", c
 
 let PACourseBG = Course(name: "PA Music", icon: "music.micophone", room: "BG1", colour: "Cherry")
 let PACourseBT = Course(name: "PA Music", icon: "music.micophone", room: "BT1", colour: "Cherry")
-let PACourseC1 = Course(name: "PA Music", icon: "music.micophone", room: "CG1", colour: "Cherry")
+let PACourseC1 = Course(name: "PA Music", icon: "music.micophone", room: "CG1", colour: "Cherry", listIcon: "music.microphone.circle.fill")
 
 let PDHPE1 = Course(name: "PDHPE", icon: "figure.run", room: "AG1", colour: "Lime")
 let PDHPE3 = Course(name: "PDHPE", icon: "figure.run", room: "AG3", colour: "Lime")
+let PDHPEPrac = Course(name: "PDHPE", icon: "figure.run", room: "HALL", colour: "Lime")
 
 let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour: "Ice", listIcon: "flame.circle.fill")
 
 let TAS = Course(name: "TAS", icon: "hammer", room: "HG7", colour: "Blueberry")
 
-let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art")
+let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art", listIcon: "paintbrush.pointed.circle.fill")
 
-let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", room: "food", colour: "White")
+let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "food")
 
-let RecessPeriod = Course(name: "Recess", icon: "fork.knife", room: "like lunch but short", colour: "White")
+let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", joke: "like lunch but short")
 
 let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White")
 
@@ -91,11 +95,11 @@ let MLPeriod = Course(name: "Music Lesson", icon: "music.note", colour: "White")
 
 let noSchool = Course(
     name: "No school", icon: "clock",
-    room: storage.shared.termRunningGB ?
+    colour: "White",
+    joke: storage.shared.termRunningGB ?
     (weekday(inDate: .now)==1 || weekday(inDate: .now)==7 ?
      "Happy weekend!" :"Not yet, anyway..."):
-        "Waiting for a term to start",
-    colour: "White"
+        "No term running."
 )
 
 

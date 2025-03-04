@@ -10,9 +10,7 @@
 import Foundation
 
 func getNextString() -> String{
-    if nextCourse.room=="None" {
-        return nextCourse.name
-    } else if nextCourse.name==noSchool.name || nextCourse.name == "Error" {
+    if nextCourse.room=="None" || nextCourse.name == noSchool.name || nextCourse.name == "Error" {
         return ""
     } else {
         
@@ -21,13 +19,16 @@ func getNextString() -> String{
 }
 func roomOrBlank(course: Course) -> String{
     if course.room=="None" {
+        if course.joke != "" {
+            return course.joke
+        }
         return ""
     } else {
         return course.room
     }
 }
 func nextPrefix() -> String{
-    if nextCourse.name=="No classes" || nextCourse.name=="Error"{
+    if nextCourse.name==noSchool.name || nextCourse.name=="Error"{
         return ""
     } else {
         return "Next up:"
