@@ -91,11 +91,14 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
     if !storage.shared.termRunningGB { return noSchool }
     
     if isWeekA {
-        let timetableDay = getTimetableDay(isWeekA: isWeekA, weekDay: weekDay)
+        let timetableDay = weekA[weekDay-2]
+        print("timetableDay: ",timetableDay)
+        print("ses. start:", sessionStartTime)
+        
         let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.95") //needs work
         return re_turn
     } else /* if weekB */ {
-        let timetableDay = getTimetableDay(isWeekA: isWeekA, weekDay: weekDay)
+        let timetableDay = weekB[weekDay-2]
         let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.99")
         return re_turn
     }
