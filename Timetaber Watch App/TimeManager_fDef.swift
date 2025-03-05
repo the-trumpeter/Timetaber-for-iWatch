@@ -92,11 +92,11 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
     
     if isWeekA {
         let timetableDay = getTimetableDay(isWeekA: isWeekA, weekDay: weekDay)
-        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.125") //needs work
+        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.95") //needs work
         return re_turn
     } else /* if weekB */ {
         let timetableDay = getTimetableDay(isWeekA: isWeekA, weekDay: weekDay)
-        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.129")
+        let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.99")
         return re_turn
     }
 }
