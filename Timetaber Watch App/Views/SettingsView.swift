@@ -120,12 +120,12 @@ struct SettingsView: View {
             Spacer()
         
             
-            Text("Timetaber for iWatch")
+            Text("Timetaber for iWatch\nGill Palmer, 2024")
+                .multilineTextAlignment(.center)
                 .foregroundStyle(.gray)
                 .font(.system(size: 13))
-            Text("Gill Palmer, 2024")
-                .foregroundStyle(.gray)
-                .font(.system(size: 13))
+                
+            
         }
     }
 }

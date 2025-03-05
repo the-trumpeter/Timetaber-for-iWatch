@@ -35,3 +35,14 @@ func nextPrefix() -> String{
     }
 }
 
+func time24toNormal(time24: Int) -> String {
+    var stringTime = String(time24)
+    if stringTime.count == 3 {
+        stringTime.insert(":", at: stringTime.index(stringTime.startIndex, offsetBy: 1))
+        return stringTime
+    } else if stringTime.count == 4 {
+        stringTime.insert(":", at: stringTime.index(stringTime.startIndex, offsetBy: 2))
+        return stringTime
+    }
+    return stringTime
+}

@@ -25,7 +25,7 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 
 
-func weekday(inDate: Date) -> Int {
+func weekdayFunc(inDate: Date) -> Int {
     return Int(calendar.component(.weekday, from: inDate))
 }
 
@@ -72,7 +72,16 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 
 
 
-
+func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
+    if isWeekA {
+        let timetableDay = weekA[weekDay-2]
+        return timetableDay
+    } else {
+        let timetableDay = weekB[weekDay-2]
+        return timetableDay
+    }
+    
+}
 
 
 
@@ -82,11 +91,11 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
     if !storage.shared.termRunningGB { return noSchool }
     
     if isWeekA {
-        let timetableDay = weekA[weekDay-2]
+        let timetableDay = getTimetableDay(isWeekA: isWeekA, weekDay: weekDay)
         let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.125") //needs work
         return re_turn
     } else /* if weekB */ {
-        let timetableDay = weekB[weekDay-2]
+        let timetableDay = getTimetableDay(isWeekA: isWeekA, weekDay: weekDay)
         let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.129")
         return re_turn
     }
@@ -104,7 +113,7 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 func getCurrentClass(date: Date) -> Array<Course> {
     
     
-    let todayWeekday = Int(weekday(inDate: date))//sunday = 1, mon = 2, etc
+    let todayWeekday = Int(weekdayFunc(inDate: date))//sunday = 1, mon = 2, etc
     print("the weekday today is \(todayWeekday)")
     
     

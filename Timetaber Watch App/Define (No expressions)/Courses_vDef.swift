@@ -31,7 +31,7 @@ struct Course {
         self.colour = colour
         
         self.listName = listName ?? name
-        self.listIcon = listIcon ?? icon+".circle.fill"
+        self.listIcon = listIcon ?? (icon+".circle.fill")
         
         self.joke = joke ?? ""
     }
@@ -72,15 +72,15 @@ let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour:
 
 let TAS = Course(name: "TAS", icon: "hammer", room: "HG7", colour: "Blueberry")
 
-let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art", listIcon: "paintbrush.pointed.circle.fill")
+let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art", listIcon: "custom1")
 
 let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "food")
 
 let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", joke: "like lunch but short")
 
-let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White")
+let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White", listIcon: "person.2.circle.fill")
 
-let MSBourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Marching B.")
+let MSBourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Marching B.", listIcon: "flag.2.crossed.circle.fill")
 
 let JCBCourse = Course(name: "Junior C.B.", icon: "pencil", colour: "Cherry", listName: "Concert Band")
 
@@ -97,7 +97,7 @@ let noSchool = Course(
     name: "No school", icon: "clock",
     colour: "White",
     joke: storage.shared.termRunningGB ?
-    (weekday(inDate: .now)==1 || weekday(inDate: .now)==7 ?
+    (weekdayFunc(inDate: .now)==1 || weekdayFunc(inDate: .now)==7 ?
      "Happy weekend!" :"Not yet, anyway..."):
         "No term running."
 )
