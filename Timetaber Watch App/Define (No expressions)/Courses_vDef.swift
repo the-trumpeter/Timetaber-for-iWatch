@@ -103,6 +103,14 @@ let noSchool = Course(
 )
 
 
+let promoCourse = Course(
+    name: "Timetaber",
+    icon: "applewatch",
+    room: "The Apple Watch Timetable App",
+    colour: "Promo"
+)
+
+
 func failCourse(feedback: String? = "None") -> Course {
     return Course(name: "Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "White")
 }

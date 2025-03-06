@@ -29,22 +29,25 @@ struct HomeView: View {
             Text(name)
                 .font(.system(size:23).weight(.bold))
                 .foregroundColor(Color(colour))
+                .padding(.bottom, 0.1)
             
             // ROOM
-            Text(room)
+            Text(room+"\n")
+                .multilineTextAlignment(.center)
                 .foregroundStyle(.gray)
                 .font(.system(size: 15))
-                .padding(.top, 0.1)
-                .padding(.bottom, 8)
-            
-            // NEXT CLASS
-            Text(nextPrefix())
-                .font(.system(size: 15))
-            
-            Text(getNextString())
-                .font(.system(size: 15))
-                .multilineTextAlignment(.center)
-            
+                
+            if nextCourse.name != noSchool.name {
+                Spacer()
+                
+                // NEXT CLASS
+                Text(nextPrefix())
+                    .font(.system(size: 15))
+                
+                Text(getNextString())
+                    .font(.system(size: 15))
+                    .multilineTextAlignment(.center)
+            }
         }
         .padding()
     }
