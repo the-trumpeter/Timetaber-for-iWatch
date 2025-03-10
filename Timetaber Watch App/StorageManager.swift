@@ -32,10 +32,11 @@ class storage {
 
 
 
-func reload() -> Void {    
+func reload(globalData: GlobalData) -> Void {    
     
-    currentCourse = getCurrentClass(date: .now)[0]
-    nextCourse = noSchool
+    globalData.currentCourse = getCurrentClass(date: .now)[0]
+    globalData.nextCourse = getCurrentClass(date: .now)[1]
+    
     
     print("Setup done\n")
     log()

@@ -10,6 +10,8 @@ import SwiftUI
 
 struct listTemplate: View {
     
+    @Environment(GlobalData.self) private var data
+    
     var listedCourse: Course = failCourse(feedback: "lT.12")
     var courseTime: String = ""
     
@@ -42,7 +44,7 @@ struct listTemplate: View {
             
         }
         .padding(.bottom, 1)
-        .background(currentCourse.name==listedCourse.name ? Color(listedCourse.colour).colorInvert(): nil)
+        .background(data.currentCourse.name==listedCourse.name ? Color(listedCourse.colour).colorInvert(): nil)
         
     }
 }
@@ -52,10 +54,11 @@ struct listedDay: View {
     let day: Dictionary<Int, Course>
     var body: some View {
         let dayKeys = Array(day.keys).sorted(by: <)
-        VStack(alignment: .leading) {
+        List {
             ForEach((0...dayKeys.count-2), id: \.self) {
                 let num = $0
                 listTemplate(course: day[dayKeys[num]] ?? failCourse(feedback: "lD.53"), courseTime: time24toNormal(time24: dayKeys[num]))
+                    .environment(GlobalData())
             }
         }
         
@@ -105,5 +108,6 @@ struct ListView: View {
 
 #Preview {
     ListView()
+        .environment(GlobalData())
 }
     

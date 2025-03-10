@@ -10,8 +10,10 @@ import SwiftUI
 
 
 //var nowData = getCurrentClass(date: .now)
-var currentCourse: Course = getCurrentClass(date: .now)[0] //  the current timetabled class in session.
-var nextCourse: Course = getCurrentClass(date: .now)[1] //  the next timetabled class in session
+@Observable class GlobalData {
+    var currentCourse: Course = getCurrentClass(date: .now)[0] //  the current timetabled class in session.
+    var nextCourse: Course = getCurrentClass(date: .now)[1] //  the next timetabled class in session
+}
 
 var viewNo = 1
 
@@ -22,7 +24,7 @@ var viewNo = 1
 func log() {
     print("""
     ~ Log - \(Date().description) {
-        Current class is \(currentCourse.name).
+        Current class is \(GlobalData().currentCourse.name).
         Term running is \(storage.shared.termRunningGB), ghost week is \(storage.shared.ghostWeekGB).
     } End Log ~
     """)
@@ -38,15 +40,23 @@ struct Timetaber_Watch_AppApp: App {
     var body: some Scene {
         
         WindowGroup {
+            
             TabView{
                 HomeView()
+                    .environment(GlobalData())
+                
                 ListView()
+                    .environment(GlobalData())
+                
                 SettingsView()
+                    .environment(GlobalData())
+                
             }
             .tabViewStyle(.carousel)
             .onAppear() {
                 log()
             }
+            
         }
         
     }

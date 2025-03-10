@@ -9,12 +9,12 @@
 //
 import Foundation
 
-func getNextString() -> String{
-    if nextCourse.room=="None" || nextCourse.name == noSchool.name || nextCourse.name == "Error" {
+func getNextString(course: Course) -> String{
+    if course.room=="None" || course.name == noSchool.name || course.name == "Error" {
         return ""
     } else {
         
-        return nextCourse.name+" - "+nextCourse.room
+        return course.name+" - "+course.room
     }
 }
 func roomOrBlank(course: Course) -> String{
@@ -27,8 +27,8 @@ func roomOrBlank(course: Course) -> String{
         return course.room
     }
 }
-func nextPrefix() -> String{
-    if nextCourse.name==noSchool.name || nextCourse.name=="Error"{
+func nextPrefix(course: Course) -> String{
+    if course.name==noSchool.name || course.name=="Error"{
         return ""
     } else {
         return "Next up:"

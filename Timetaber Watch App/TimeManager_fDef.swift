@@ -121,26 +121,26 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     
     var times2Day: Array<Int>
-    
-    if todayWeekday == 6 {
-        times2Day = weekdayTimes.last!
-    } else {
-        times2Day = weekdayTimes[todayWeekday-1]
-    }
 
-    
     let time24Now = time24()
     
     
     
     
-    if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 || time24Now<times2Day.first! || time24Now>=times2Day.last!{ //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
+    if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
         print("> There's no school at the moment.")
         return [noSchool, noSchool]
     }
     
     
+    times2Day = weekdayTimes[todayWeekday-2]
 
+    if time24Now<times2Day.first! || time24Now>=times2Day.last! {
+        print("> There's no school at the moment.")
+        return [noSchool, noSchool]
+        
+    }
+    
     
     let isweekA = getIfWeekIsA_FromDateAndGhost(
         originDate: storage.shared.startDateGB,

@@ -8,15 +8,19 @@
 import SwiftUI
 
 
-private var icon = currentCourse.icon
-private var name = currentCourse.name
-private var colour = currentCourse.colour
-private var room = roomOrBlank(course: currentCourse)
-
-
-
 struct HomeView: View {
+    
+    @Environment(GlobalData.self) private var data
+    
     var body: some View {
+        
+        let icon = data.currentCourse.icon
+        let name = data.currentCourse.name
+        let colour = data.currentCourse.colour
+        let room = roomOrBlank(course: data.currentCourse)
+        
+        let next = data.nextCourse
+        
         VStack {
             
             
@@ -37,14 +41,14 @@ struct HomeView: View {
                 .foregroundStyle(.gray)
                 .font(.system(size: 15))
                 
-            if nextCourse.name != noSchool.name {
+            if next.name != noSchool.name {
                 Spacer()
                 
                 // NEXT CLASS
-                Text(nextPrefix())
+                Text(nextPrefix(course: next))
                     .font(.system(size: 15))
                 
-                Text(getNextString())
+                Text(getNextString(course: next))
                     .font(.system(size: 15))
                     .multilineTextAlignment(.center)
             }
@@ -56,4 +60,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environment(GlobalData())
 }
