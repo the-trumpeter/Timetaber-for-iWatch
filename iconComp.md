@@ -3,6 +3,8 @@ title: YOUR Icon
 layout: default
 ---
 
+![IconCompPoster](https://github.com/user-attachments/assets/b7586311-f6fa-48a5-9eaa-8ae2414b920f)
+
 
 > #### **Note**
 > This competition is only open to students at Hunter School of the Performing Arts. Sorry.
