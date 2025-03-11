@@ -11,7 +11,7 @@ layout: default
 
 
 <h3>
-  What <s>we're</s> I'm looking for
+  What I'm looking for
 </h3>
 
 <ul>
