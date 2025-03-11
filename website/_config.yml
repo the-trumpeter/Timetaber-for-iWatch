@@ -1,0 +1,6 @@
+title: Timetaber
+
+theme: minima
+
+titles_from_headings:
+  enabled: false
