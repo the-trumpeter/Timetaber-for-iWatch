@@ -9,6 +9,8 @@ layout: default
 > #### **Note**
 > This competition is only open to students at Hunter School of the Performing Arts. Sorry.
 
+<br>
+<br>
 
 <h3>
   What I'm looking for
