@@ -3,6 +3,8 @@ title: Home
 layout: default
 ---
 
+<!-- This is the homepage, appears when you click the title in the menu bar-->
+
 <h2>
 	Timetaber
 </h2>
@@ -26,4 +28,8 @@ So hence an...
 
 ### *[~ GO HERE FOR ALL THE INFO ~](/iconComp.md)*
 
+> #### **Note**
+> Timetaber is unfinished and currently has no stable versions available for testing.\
+> If you are interested in getting the app, follow the repository and let me know!
+> Always happy to have other people's opinions on UI & UX!
 
