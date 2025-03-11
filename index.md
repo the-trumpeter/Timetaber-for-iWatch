@@ -28,6 +28,9 @@ So hence an...
 
 ### *[~ GO HERE FOR ALL THE INFO ~](/iconComp.md)*
 
+<br/>
+<br/>
+
 > #### **Note**
 > Timetaber is unfinished and currently has no stable versions available for testing.\
 > If you are interested in getting the app, follow the repository and let me know!
