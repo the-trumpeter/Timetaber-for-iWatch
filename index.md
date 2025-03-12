@@ -3,7 +3,7 @@ title: Home
 layout: default
 ---
 
-<!-- This is the homepage, appears when you click the title in the menu bar-->
+<!-- This is the landing page, appears when you click the title in the menu bar-->
 
 <h2>
 	Timetaber
@@ -14,9 +14,12 @@ layout: default
 	The Apple Watch Timetable App
 </h4>
 
+<img src="https://github.com/user-attachments/assets/e25b447b-585c-4a78-821d-36c81308d112" align="right" width="200">
+
 I'm in year 8, and I constantly forget my timetable, or don't want to dig it out of the rubbish tip known as my backpack. Luckily, I seem to be somewhat okay at coding, so let's put that to good use and make a timetable application that I can put on my Apple Watch (I can't be bothered to install one that already exists!)
 And that's when Timetaber was born.<br>
 <br>
+
 And now, after a few months and my graduation from year seven, it's on the back end of development and I hope I can release something that remotely resembles what I want of a finished product soon! But alas, one looming task (and several that are much shorter than I am) remain: Making an icon.<br>
 But why should <i>I</i> do that? There are loads of people better at it than I am. Just look at my early designs, they suck!<br>
 So hence an...
