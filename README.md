@@ -1,7 +1,7 @@
 ## Files for the Timetaber website
 
 > [!CAUTION]
-> Do not merge this branch with `main`.\
+> **Do not merge this branch with `main`.**\
 > Doing so will interfere with GitHub Pages and may cause a website outage.
 
 **This branch of the Timetaber repository contains all files relevant to the website.**\
