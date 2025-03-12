@@ -9,11 +9,8 @@ Timetaber is an Apple Watch timetable application that I started developing in N
 I constantly forget my timetable and it seemed like a pretty nifty solution, since I am very proudly a nerd and have large experience in programming already.\
 That's right, Portelli, your official rival is back and he's coming in strong for a big finish - but of course, our rivalry is yet to be over...
 
-<br>
-
-<img align="right" width="200" src="https://github.com/user-attachments/assets/a17015f5-f75b-49a0-9be3-8e8377116cbe">
 <h3>What is Gill Palmer?</h3>
-
+<img align="right" width="200" src="https://github.com/user-attachments/assets/a17015f5-f75b-49a0-9be3-8e8377116cbe">
 Gill Palmer is *me*, thank you very much, and *I* am a *human*.\
 I'm a great big nerd, and proud of it.
 By day, I slave away at my Macbook Pro 2020 and write code (usually Swift) while my classmates exploit the hard efforts of my cousins, the video game developers.\
