@@ -3,7 +3,7 @@ title: YOUR Icon
 layout: default
 ---
 
-![IconCompPoster](https://github.com/user-attachments/assets/b7586311-f6fa-48a5-9eaa-8ae2414b920f)
+![IconCompPoster](https://github.com/user-attachments/assets/848b04e2-fa68-497f-845c-030d1fba1672)
 
 
 > #### **Note**
@@ -40,7 +40,7 @@ Submit **up to three circular designs** by...<br/>
 - **Finding me in person**, if you know me, etc.
 <br>
 <br>
-<h1 style="color:red;"><b>Submissions Close Saturday 5<sup>th</sup> April</b></h1>
+<h1 style="color:red;"><b>Submissions Close Saturday 19<sup>th</sup> April</b></h1>
 <h3 style="color:red;"><b>Have your design(s) in <b>on or before</b> Saturday the 5<sup>th</sup> of April, 2025.</b></h3><br>
 
 > #### **Disclaimer**
