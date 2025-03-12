@@ -15,3 +15,10 @@ The code on GitHub is up to date at the cost of errors.
 Since I'm not actively collaborating with anybody I commit all my changes after each session.
 Sorry if the repository's code is erroring, you can probably guess that I don't know how to fix it.
 
+<br>
+<br>
+
+> **Timetaber for Apple Watch**\
+> **Copyright © Gill Palmer, 2025**\
+> All rights reserved.
+> Do not modify or reproduce without the creator's permission.
