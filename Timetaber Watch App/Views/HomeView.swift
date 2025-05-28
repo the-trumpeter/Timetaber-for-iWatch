@@ -7,15 +7,12 @@
 
 import SwiftUI
 
-
 struct HomeView: View {
     
-    @Environment(GlobalData.self) private var data
+    @EnvironmentObject var data: GlobalData
     
     var body: some View {
         
-        let icon = data.currentCourse.icon
-        let name = data.currentCourse.name
         let colour = data.currentCourse.colour
         let room = roomOrBlank(course: data.currentCourse)
         
@@ -25,12 +22,12 @@ struct HomeView: View {
             
             
             // CURRENT CLASS
-            Image(systemName: icon)
+            Image(systemName: data.currentCourse.icon)
                 .foregroundColor(Color(colour))//add an SF symbol element
                 .imageScale(.large)
                 .font(.system(size: 25).weight(.semibold))
             
-            Text(name)
+            Text(data.currentCourse.name)
                 .font(.system(size:23).weight(.bold))
                 .foregroundColor(Color(colour))
                 .padding(.bottom, 0.1)
@@ -54,11 +51,12 @@ struct HomeView: View {
             }
         }
         .padding()
+        .onAppear() { print("HomeView Updated")}
     }
     
 }
 
 #Preview {
     HomeView()
-        .environment(GlobalData())
+        .environmentObject(GlobalData.shared)
 }

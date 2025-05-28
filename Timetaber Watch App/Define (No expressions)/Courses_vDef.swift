@@ -74,7 +74,7 @@ let TAS = Course(name: "TAS", icon: "hammer", room: "HG7", colour: "Blueberry")
 
 let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art", listIcon: "custom1")
 
-let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "food")
+let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "foood")
 
 let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", joke: "like lunch but short")
 

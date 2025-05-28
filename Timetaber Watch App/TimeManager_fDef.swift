@@ -31,7 +31,7 @@ func weekdayFunc(inDate: Date) -> Int {
 
 
 func time24() -> Int {
-    dFormatter.dateFormat = "HHmm" // or hh:mm for 12 h
+    dFormatter.dateFormat = "HHmm" // or hh:mm for 12 hr time
     return Int(dFormatter.string(from: .now))!
 }
 
@@ -147,7 +147,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         ghostWeek: storage.shared.ghostWeekGB)
     
     
-    print("Times today:",times2Day)
+//    print("Times today:",times2Day)
     
     
     
@@ -174,7 +174,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             )
             
             
-            let nextCourseLocal: Course = if next != Int(Double.infinity) {
+            let nextCourseLocal: Course = if Double(next) != Double.infinity {
                     findClassfromTimeWeekDayNifWeekIsA(
                         sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
                     )
@@ -218,6 +218,6 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     print("> Exhausted all possible course options of day")
     
-    let failed = failCourse(feedback: "exhaust getCur.222")
+    let failed = failCourse(feedback: "exhaust getCur.221")
     return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
 }

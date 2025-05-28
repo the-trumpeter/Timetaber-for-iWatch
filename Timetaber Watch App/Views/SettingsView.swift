@@ -8,40 +8,40 @@
 
 import SwiftUI
 
-
+//MARK: Processes
 func startTermProcess(ghostWeek: Bool, globalData: GlobalData) -> Bool {
-    //process to start a term, local 'termrunning' should be changed externally dependent on error/success outcome
+    // process to start a term, local 'termrunning' should be changed externally dependent on error/success outcome
     print("SettingsView, line 17 - weekA?:", getIfWeekIsA_FromDateAndGhost(originDate: Date.now, ghostWeek: ghostWeek))
     
     // ! Need to store that a term is running!!
     storage.shared.ghostWeekGB = ghostWeek
     storage.shared.startDateGB = Date.now
     storage.shared.termRunningGB = true
-    reload(globalData: globalData)
+    reload()
     log()
     
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
     
 }
 
-func endTermProcess(globalData: GlobalData) -> Bool {
+func endTermProcess() -> Bool {
     //processes to end a term, local 'termrunning' should be changed externally
     
     storage.shared.termRunningGB = false
-    reload(globalData: globalData)
+    reload()
     log()
     
     return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
 }
 
 
-
+// MARK: Sheet
 struct NewTermSheet: View {
     @State var isGhostWeek = false
     @Environment(\.dismiss) var dismiss
     @Binding var termRunning: Bool
     
-    @Environment(GlobalData.self) private var data
+    @StateObject var data = GlobalData()
     
     var body: some View {
         ScrollView{
@@ -54,7 +54,7 @@ struct NewTermSheet: View {
                         
                         print("Started term")
                         
-                        reload(globalData: data)
+                        reload()
                         
                     } else {
                         //call an error if function returns error
@@ -80,14 +80,13 @@ struct NewTermSheet: View {
 
 
 
-
+//MARK: View
 struct SettingsView: View {
     
     @State var showingSheet = false
     @State var isTermRunning = storage.shared.termRunningGB
     @State private var showConf = false
     
-    @Environment(GlobalData.self) private var data
     
     var body: some View {
         VStack {
@@ -107,7 +106,7 @@ struct SettingsView: View {
                                 .stroke(.white, lineWidth: isTermRunning ? 1: 0))
             
                         .sheet(isPresented: $showingSheet) { NewTermSheet(termRunning: $isTermRunning
-                        ).environment(GlobalData())
+                        ).environmentObject(GlobalData.shared)
                         }
             
                         .padding(10)
@@ -116,11 +115,11 @@ struct SettingsView: View {
                             
                             Button("End Term") {
                                 //⭐️on term end
-                                if endTermProcess(globalData: data) {
+                                if endTermProcess() {
                                     isTermRunning = false
                                     print("Ended term")
                                 } else {
-                                    print("SettingsView, line 111: Error!")
+                                    print("SettingsView, line 122: Error!")
                                 }
                             }
                             
@@ -148,5 +147,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
-        .environment(GlobalData())
+        .environmentObject(GlobalData.shared)
 }
