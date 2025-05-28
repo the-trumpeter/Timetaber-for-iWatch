@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 let userDefaults = UserDefaults.standard
 
 
@@ -32,10 +31,10 @@ class storage {
 
 
 
-func reload(globalData: GlobalData) -> Void {    
+func reload() -> Void {
     
-    globalData.currentCourse = getCurrentClass(date: .now)[0]
-    globalData.nextCourse = getCurrentClass(date: .now)[1]
+    GlobalData.shared.currentCourse = getCurrentClass(date: .now)[0]
+    GlobalData.shared.nextCourse = getCurrentClass(date: .now)[1]
     
     
     print("Setup done\n")
