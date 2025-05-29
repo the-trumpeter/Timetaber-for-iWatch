@@ -10,7 +10,7 @@ import SwiftUI
 
 struct listTemplate: View {
     
-    @Environment(GlobalData.self) private var data
+    @EnvironmentObject var data: GlobalData
     
     var listedCourse: Course = failCourse(feedback: "lT.12")
     var courseTime: String = ""
@@ -57,8 +57,9 @@ struct listedDay: View {
         List {
             ForEach((0...dayKeys.count-2), id: \.self) {
                 let num = $0
-                listTemplate(course: day[dayKeys[num]] ?? failCourse(feedback: "lD.53"), courseTime: time24toNormal(time24: dayKeys[num]))
-                    .environment(GlobalData())
+                listTemplate(course: day[dayKeys[num]] ?? failCourse(feedback: "lD.60"),
+                             courseTime: time24toNormal(time24: dayKeys[num]))
+                .environmentObject(GlobalData.shared)
             }
         }
         
@@ -108,6 +109,6 @@ struct ListView: View {
 
 #Preview {
     ListView()
-        .environment(GlobalData())
+        .environmentObject(GlobalData.shared)
 }
     
