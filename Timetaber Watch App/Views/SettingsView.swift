@@ -9,8 +9,10 @@
 import SwiftUI
 
 //MARK: Processes
-func startTermProcess(ghostWeek: Bool, globalData: GlobalData) -> Bool {
+func startTermProcess(ghostWeek: Bool) -> Bool {
     // process to start a term, local 'termrunning' should be changed externally dependent on error/success outcome
+    
+    
     print("SettingsView, line 17 - weekA?:", getIfWeekIsA_FromDateAndGhost(originDate: Date.now, ghostWeek: ghostWeek))
     
     // ! Need to store that a term is running!!
@@ -41,14 +43,13 @@ struct NewTermSheet: View {
     @Environment(\.dismiss) var dismiss
     @Binding var termRunning: Bool
     
-    @StateObject var data = GlobalData()
     
     var body: some View {
         ScrollView{
             VStack{
                 
                 Button("Start") {
-                    if startTermProcess(ghostWeek: isGhostWeek, globalData: data) {
+                    if startTermProcess(ghostWeek: isGhostWeek) {
                         
                         termRunning = storage.shared.termRunningGB
                         
