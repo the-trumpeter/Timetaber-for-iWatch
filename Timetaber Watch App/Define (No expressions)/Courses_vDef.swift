@@ -96,10 +96,7 @@ let MLPeriod = Course(name: "Music Lesson", icon: "music.note", colour: "White")
 let noSchool = Course(
     name: "No school", icon: "clock",
     colour: "White",
-    joke: storage.shared.termRunningGB ?
-    (weekdayFunc(inDate: .now)==1 || weekdayFunc(inDate: .now)==7 ?
-     "Happy weekend!" :"Not yet, anyway..."):
-        "No term running."
+    joke: storage.shared.termRunningGB ? "No term running.": ((weekdayFunc(inDate: .now)==1 || weekdayFunc(inDate: .now)==7) ? "Happy weekend!" :"Not yet, anyway...")
 )
 
 
