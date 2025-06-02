@@ -24,8 +24,8 @@ var viewNo = 1
 func log() {
     print("""
     ~ Log - \(Date().description) {
-        Current class is \(GlobalData.shared.currentCourse.name).
-        Term running is \(storage.shared.termRunningGB), ghost week is \(storage.shared.ghostWeekGB).
+        Current course is '\(GlobalData.shared.currentCourse.name)'.
+        Term running is <\(storage.shared.termRunningGB)>, ghost week is <\(storage.shared.ghostWeekGB)>.
     } End Log ~
     """)
 }

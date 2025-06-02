@@ -8,26 +8,19 @@
 import SwiftUI
 
 
+//MARK: - Template
 struct listTemplate: View {
     
     @EnvironmentObject var data: GlobalData
     
-    var listedCourse: Course = failCourse(feedback: "lT.12")
-    var courseTime: String = ""
-    
-    
-    init(course: Course, courseTime: String) {
-        self.courseTime = courseTime
-        self.listedCourse = course
-    }
-    
+    var listedCourse: Course
+    var courseTime: String
     
     var body: some View {
-        let localroom = if listedCourse.room == "None" {
-            "" } else { listedCourse.room }
-        let image = if listedCourse.listIcon == "custom1" {
-            Image(.paintbrushPointedCircleFill)
-        } else { Image(systemName: listedCourse.listIcon) }
+        
+        let localroom = listedCourse.room == "None" ? "": listedCourse.room
+        let image = validateIcon(listedCourse.listIcon)
+        
         HStack{
             
             image
@@ -49,48 +42,43 @@ struct listTemplate: View {
     }
 }
 
-
+//MARK: - Day
 struct listedDay: View {
     let day: Dictionary<Int, Course>
     var body: some View {
-        let dayKeys = Array(day.keys).sorted(by: <)
+        let dayKeys = Array(day.keys).sorted(by: <).dropLast()
         List {
-            ForEach((0...dayKeys.count-2), id: \.self) {
-                let num = $0
-                listTemplate(course: day[dayKeys[num]] ?? failCourse(feedback: "lD.60"),
-                             courseTime: time24toNormal(time24: dayKeys[num]))
-                .environmentObject(GlobalData.shared)
+            ForEach(dayKeys, id: \.self) { key in
+                listTemplate(listedCourse: day[key] ?? failCourse(feedback: "LV.lD@56"), courseTime: time24toNormal(time24: key))
+                    .environmentObject(GlobalData.shared)
             }
         }
-        
     }
 }
 
 
 
-
+// MARK: - Master
 struct ListView: View {
+    @ObservedObject var storageLocal = storage.shared
     var body: some View {
         
-        if storage.shared.termRunningGB && weekdayFunc(inDate: .now) != 1
-            && weekdayFunc(inDate: .now) != 7 {
-            
-            ScrollView {
-                listedDay(
-                    day: getTimetableDay(
-                        isWeekA:
-                            getIfWeekIsA_FromDateAndGhost(
-                                originDate: .now,
-                                ghostWeek: storage.shared.ghostWeekGB
-                            ),
-                     
-                        weekDay: weekdayFunc(inDate: .now)
-                    )
+        if storageLocal.termRunningGB && weekdayNumber(ofDate: .now) > 1 && weekdayNumber(ofDate: .now) < 7 {
+
+            listedDay(
+                day: getTimetableDay(
+                    isWeekA:
+                        getIfWeekIsA_FromDateAndGhost(
+                            originDate: .now,
+                            ghostWeek: storageLocal.ghostWeekGB
+                        ),
+                 
+                    weekDay: weekdayNumber(ofDate: .now)
                 )
-            }
+            )
             
             
-        } else if !storage.shared.termRunningGB {
+        } else if !storageLocal.termRunningGB {
             Text("There's no term running.\nThe day's classes will be displayed here.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.gray)
@@ -106,7 +94,7 @@ struct ListView: View {
     }
 }
 
-
+//MARK: -
 #Preview {
     ListView()
         .environmentObject(GlobalData.shared)
