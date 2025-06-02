@@ -30,7 +30,7 @@ let tueA: Dictionary<Int, Course> = [
 let wedA: Dictionary<Int, Course> = [
     0900: TAS, 1050: yearAssembly,
     1100: RecessPeriod, 1120: ScienceCourse, 1210: MathsCourse,
-    1300: LunchPeriod, 1330: TCCourse, 1510: MSBourse, 1730: noSchool
+    1300: LunchPeriod, 1330: TCCourse, 1510: MSBCourse, 1730: noSchool
 ]
 
 let thuA: Dictionary<Int, Course> = [
@@ -62,7 +62,7 @@ let tueB: Dictionary<Int, Course> = [
 let wedB: Dictionary<Int, Course> = [
     0900: HSIE, 1000: MathsCourse, 1050: yearAssembly,
     1100: RecessPeriod, 1120: VisualArtsCourse, 1210: ScienceCourse,
-    1300: LunchPeriod, 1330: TCCourse, 1510: MSBourse, 1730: noSchool
+    1300: LunchPeriod, 1330: TCCourse, 1510: MSBCourse, 1730: noSchool
 ]
 
 let thuB: Dictionary<Int, Course> = [
