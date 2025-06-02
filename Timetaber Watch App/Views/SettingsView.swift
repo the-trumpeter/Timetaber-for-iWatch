@@ -43,6 +43,7 @@ struct NewTermSheet: View {
     @Environment(\.dismiss) var dismiss
     @Binding var termRunning: Bool
     
+    @ObservedObject var storageLink = storage.shared
     
     var body: some View {
         ScrollView{
@@ -51,7 +52,7 @@ struct NewTermSheet: View {
                 Button("Start") {
                     if startTermProcess(ghostWeek: isGhostWeek) {
                         
-                        termRunning = storage.shared.termRunningGB
+                        termRunning = storageLink.termRunningGB
                         
                         print("Started term")
                         
@@ -84,12 +85,18 @@ struct NewTermSheet: View {
 //MARK: View
 struct SettingsView: View {
     
+    @ObservedObject var storageLink = storage.shared
+    
     @State var showingSheet = false
-    @State var isTermRunning = storage.shared.termRunningGB
+    @State var isTermRunning: Bool = false
     @State private var showConf = false
     
+    init() {
+        self.isTermRunning = storageLink.termRunningGB
+    }
     
     var body: some View {
+        
         VStack {
             
             Button { withAnimation {

@@ -20,13 +20,13 @@ let startDateKey = "timetaber.userdefalts.startDate"
 
 
 
-class storage {
+class storage: ObservableObject {
     static let shared = storage()
     
-    @State @AppStorage(runningKey) var termRunningGB = false
-    @State @AppStorage(ghostWeekKey) var ghostWeekGB = false
-    @State @AppStorage(startDateKey) var startDateGB = Date.now
-    
+    @AppStorage(runningKey) var termRunningGB = false
+    @AppStorage(ghostWeekKey) var ghostWeekGB = false
+    @AppStorage(startDateKey) var startDateGB = Date.now
+    // 'GB' for 'global'
 }
 
 

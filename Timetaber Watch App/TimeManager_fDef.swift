@@ -25,8 +25,8 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 
 
-func weekdayFunc(inDate: Date) -> Int {
-    return Int(calendar.component(.weekday, from: inDate))
+func weekdayNumber(ofDate: Date) -> Int {
+    return Int(calendar.component(.weekday, from: ofDate)) // Sun=1, Sat=7
 }
 
 
@@ -116,7 +116,7 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 func getCurrentClass(date: Date) -> Array<Course> {
     
     
-    let todayWeekday = Int(weekdayFunc(inDate: date))//sunday = 1, mon = 2, etc
+    let todayWeekday = Int(weekdayNumber(ofDate: date))//sunday = 1, mon = 2, etc
     print("the weekday today is \(todayWeekday)")
     
     
