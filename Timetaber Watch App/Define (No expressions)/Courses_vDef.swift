@@ -47,8 +47,7 @@ struct Course {
 //
 //  (Will later script timetable builder thing in iOS companion app to create/edit these.)
 //
-//  (alphabetical order)
-//  
+
 
 let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "White", listIcon: "face.smiling.inverse")
 
