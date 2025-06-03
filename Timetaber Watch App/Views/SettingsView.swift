@@ -10,10 +10,7 @@ import SwiftUI
 
 //MARK: Processes
 func startTermProcess(ghostWeek: Bool) -> Bool {
-    // process to start a term, local 'termrunning' should be changed externally dependent on error/success outcome
-    
-    
-    print("SettingsView, line 17 - weekA?:", getIfWeekIsA_FromDateAndGhost(originDate: Date.now, ghostWeek: ghostWeek))
+    // process to start a term
     
     // ! Need to store that a term is running!!
     storage.shared.ghostWeekGB = ghostWeek
@@ -41,9 +38,9 @@ func endTermProcess() -> Bool {
 struct NewTermSheet: View {
     @State var isGhostWeek = false
     @Environment(\.dismiss) var dismiss
-    @Binding var termRunning: Bool
+    //@Binding var termRunning: Bool
     
-    @ObservedObject var storageLink = storage.shared
+    @ObservedObject var data = storage.shared
     
     var body: some View {
         ScrollView{
@@ -51,11 +48,7 @@ struct NewTermSheet: View {
                 
                 Button("Start") {
                     if startTermProcess(ghostWeek: isGhostWeek) {
-                        
-                        termRunning = storageLink.termRunningGB
-                        
                         print("Started term")
-                        
                         reload()
                         
                     } else {
@@ -85,36 +78,32 @@ struct NewTermSheet: View {
 //MARK: View
 struct SettingsView: View {
     
-    @ObservedObject var storageLink = storage.shared
+    @ObservedObject var data = storage.shared
     
     @State var showingSheet = false
-    @State var isTermRunning: Bool = false
+//    @State var isTermRunning: Bool = false
     @State private var showConf = false
-    
-    init() {
-        self.isTermRunning = storageLink.termRunningGB
-    }
     
     var body: some View {
         
         VStack {
             
             Button { withAnimation {
-                if !isTermRunning {
+                if !data.termRunningGB {
                     showingSheet.toggle()
                 } else {
                     showConf = true
                 }
                 
                 }} label: {
-                            Label(isTermRunning ? "End Term": "Start Term", systemImage: isTermRunning ? "stop.circle": "play.circle")}
+                    Label(data.termRunningGB ? "End Term": "Start Term", systemImage: data.termRunningGB ? "stop.circle": "play.circle")}
                         .contentTransition(.symbolEffect(.replace))
                         .background(
                             RoundedRectangle(cornerRadius: 100)
-                                .stroke(.white, lineWidth: isTermRunning ? 1: 0))
+                                .stroke(.white, lineWidth: data.termRunningGB ? 1: 0))
             
-                        .sheet(isPresented: $showingSheet) { NewTermSheet(termRunning: $isTermRunning
-                        ).environmentObject(GlobalData.shared)
+                        .sheet(isPresented: $showingSheet) {
+                            NewTermSheet().environmentObject(GlobalData.shared)
                         }
             
                         .padding(10)
@@ -124,7 +113,6 @@ struct SettingsView: View {
                             Button("End Term") {
                                 //⭐️on term end
                                 if endTermProcess() {
-                                    isTermRunning = false
                                     print("Ended term")
                                 } else {
                                     print("SettingsView, line 122: Error!")
@@ -145,7 +133,7 @@ struct SettingsView: View {
                 .font(.system(size: 13))
                 
             
-        }
+        }.onAppear { print("SettingsView Updated") }
     }
 }
 

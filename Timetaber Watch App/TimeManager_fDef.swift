@@ -92,9 +92,6 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
     
     if isWeekA {
         let timetableDay = weekA[weekDay-2]
-        print("timetableDay: ",timetableDay)
-        print("ses. start:", sessionStartTime)
-        
         let re_turn = timetableDay[sessionStartTime] ?? failCourse(feedback: "re_turn TMan.95") //needs work
         return re_turn
     } else /* if weekB */ {
@@ -147,12 +144,6 @@ func getCurrentClass(date: Date) -> Array<Course> {
         ghostWeek: storage.shared.ghostWeekGB)
     
     
-//    print("Times today:",times2Day)
-    
-    
-    
-    
-    
     
     
     //cycle through times til we find the two we are inbetween
@@ -161,7 +152,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
         let compare = times2Day[n] // time we r comparing to
         let now = time24Now // current time
-        let next = if times2Day.count >= n+1 { times2Day[n+1] } else { Int(Double.infinity) }// next comparitive time; ensure we are not at end of array already
+        let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int(Double.infinity) // next comparitive time; ensure we are not at end of array already
         
         
         
