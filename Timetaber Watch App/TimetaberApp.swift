@@ -17,7 +17,11 @@ class GlobalData: ObservableObject {
 
 var viewNo = 1
 
-
+let customSymbols = [
+    "paintbrush.pointed.circle.fill": Image(.paintbrushPointedCircleFill),
+    "music.note.circle.fill": Image(.musicNoteCircleFill),
+    "movieclapper.circle.fill": Image(.movieclapperCircleFill)
+]
 
 
 

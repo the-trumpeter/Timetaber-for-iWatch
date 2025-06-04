@@ -12,6 +12,7 @@ import SwiftUI
 struct listTemplate: View {
     
     @EnvironmentObject var data: GlobalData
+    @Environment(\.colorScheme) var colorScheme
     
     var listedCourse: Course
     var courseTime: String
@@ -19,25 +20,30 @@ struct listTemplate: View {
     var body: some View {
         
         let localroom = listedCourse.room == "None" ? "": listedCourse.room
-        let image = validateIcon(listedCourse.listIcon)
-
+        let image = customSymbols[listedCourse.listIcon] ?? Image(systemName: listedCourse.listIcon)
         HStack{
             
             image
+                .resizable()
                 .foregroundColor(Color(listedCourse.colour))
+                .frame(maxWidth: 25, maxHeight: 25)
+                .aspectRatio(contentMode: .fit)
                 .padding(.leading, 2)
-                .padding(.trailing, 2)
+                .padding(.trailing, 3)
             
             VStack {
                 HStack {
                     Text(listedCourse.listName)
                         .bold()
                     Spacer()
+                    
                 }
                 HStack {
                     Text(courseTime)
+                        .foregroundStyle(.secondary)
                     if localroom != "" {
-                        Text(localroom).bold().padding(.trailing, 5)
+                        Text(localroom).bold()
+                            .foregroundStyle(.secondary)
                     }
                     Spacer()
                 }
@@ -90,9 +96,9 @@ struct ListView: View {
             weekDay: weekdayNumber(ofDate: .now)
         )
         
-        if data.termRunningGB &&
-            weekdayNumber(ofDate: .now) > 1 && weekdayNumber(ofDate: .now) < 7 &&
-            Array(day.keys).sorted(by: <).last ?? 1510 <= time24() {
+        //MARK: IF
+        if data.termRunningGB && weekdayNumber(ofDate: .now) > 1 && weekdayNumber(ofDate: .now) < 7 &&
+            Array(day.keys).sorted(by: <).last! >= time24() {
 
             listedDay(day: day)
             .environmentObject(GlobalData.shared)
@@ -119,4 +125,3 @@ struct ListView: View {
     ListView()
         .environmentObject(GlobalData.shared)
 }
-    

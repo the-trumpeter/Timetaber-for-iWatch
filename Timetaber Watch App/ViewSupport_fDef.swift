@@ -11,6 +11,7 @@
 import Foundation
 import SwiftUI
 
+
 func getNextString(course: Course) -> String{
     if course.room=="None" || course.name == noSchool.name || course.name == "Error" {
         return ""
@@ -47,12 +48,4 @@ func time24toNormal(time24: Int) -> String {
         return stringTime
     }
     return stringTime
-}
-
-func validateIcon(_ string: String) -> Image {
-    let customSymbols = [
-        "paintbrush.pointed.circle.fill": Image(.paintbrushPointedCircleFill),
-        "music.note.circle.fill": Image(.musicNoteCircleFill)
-    ]
-    return customSymbols[string] ?? Image(systemName: string)
 }

@@ -54,7 +54,7 @@ let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", 
 let English6 = Course(name: "English", icon: "book.closed", room: "BT6", colour: "Lemon")
 let English9 = Course(name: "English", icon: "book.closed", room: "BT9", colour: "Lemon")
 
-let HSIE = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "Rees", listIcon: "clock.circle.fill")
+let HSIECourse = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "Rees")
 
 let JCBCourse = Course(name: "Junior C.B.", icon: "pencil", colour: "Cherry", listName: "Concert Band")
 let JSBCourse = Course(name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White")
@@ -63,8 +63,8 @@ let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", jok
 
 let MathsCourse = Course(name: "Maths", icon: "number", room: "FT5", colour: "Rose")
 let MLPeriod = Course(name: "Music Lesson", icon: "music.note", colour: "White")
-let MultimediaCourse = Course(name: "Multimedia", icon: "camera", room: "GG2", colour: "Blueberry")
-let MSBCourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Marching B.", listIcon: "flag.2.crossed.circle.fill")
+let MultimediaCourse = Course(name: "Multimedia", icon: "movieclapper", room: "GG2", colour: "Blueberry")
+let MSBCourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Band", listIcon: "flag.2.crossed.circle.fill")
 
 let PACourseBG = Course(name: "PA Music", icon: "music.microphone", room: "BG1", colour: "Cherry")
 let PACourseBT = Course(name: "PA Music", icon: "music.microphone", room: "BT1", colour: "Cherry")
@@ -83,7 +83,7 @@ let TCCourse = Course(name: "Theatre Crew", icon: "headset", colour: "Peach")
 
 let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art")
 
-let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White", listIcon: "person.2.circle.fill")
+let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White", listName: "Assembly", listIcon: "person.2.circle.fill")
 
 
 
