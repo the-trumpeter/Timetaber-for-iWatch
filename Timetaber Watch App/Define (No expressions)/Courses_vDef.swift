@@ -33,7 +33,7 @@ struct Course {
         self.listName = listName ?? name
         self.listIcon = listIcon ?? (icon+".circle.fill")
         
-        self.joke = joke ?? ""
+        self.joke = joke ?? "None"
     }
     
     
@@ -91,7 +91,7 @@ let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "Whit
 let noSchool = Course(
     name: "No school", icon: "clock",
     colour: "White",
-    joke: storage.shared.termRunningGB ? "No term running.": ((weekdayNumber(ofDate: .now)==1 || weekdayNumber(ofDate: .now)==7) ? "Happy weekend!" :"Not yet, anyway...")
+    joke: storage.shared.termRunningGB ? "No term running.": ((weekdayNumber(.now)==1 || weekdayNumber(.now)==7) ? "Happy weekend!" :"Not yet, anyway...")
 )
 
 

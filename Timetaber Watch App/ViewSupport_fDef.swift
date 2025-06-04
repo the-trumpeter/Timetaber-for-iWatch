@@ -12,25 +12,31 @@ import Foundation
 import SwiftUI
 
 
-func getNextString(course: Course) -> String{
-    if course.room=="None" || course.name == noSchool.name || course.name == "Error" {
-        return ""
-    } else {
-        
-        return course.name+" - "+course.room
-    }
-}
-func roomOrBlank(course: Course) -> String{
+func roomOrBlank(_ course: Course) -> String{
     if course.room=="None" {
-        if course.joke != "" {
-            return course.joke
+        if course.joke == "None" {
+            return ""
         }
-        return ""
+        return course.joke
     } else {
         return course.room
     }
 }
-func nextPrefix(course: Course) -> String{
+
+// MARK: #20
+func getNextString(_ course: Course) -> String{
+    if course.name == noSchool.name || course.name == "Error" {
+        return ""
+    } else {
+        if course.room != "None" {
+            return course.name+" - "+course.room
+        }
+        return course.name
+    }
+}
+
+
+func nextPrefix(_ course: Course) -> String{
     if course.name==noSchool.name || course.name=="Error"{
         return ""
     } else {
@@ -38,7 +44,7 @@ func nextPrefix(course: Course) -> String{
     }
 }
 
-func time24toNormal(time24: Int) -> String {
+func time24toNormal(_ time24: Int) -> String {
     var stringTime = String(time24)
     if stringTime.count == 3 {
         stringTime.insert(":", at: stringTime.index(stringTime.startIndex, offsetBy: 1))

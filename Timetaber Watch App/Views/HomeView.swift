@@ -14,7 +14,7 @@ struct HomeView: View {
     var body: some View {
         
         let colour = data.currentCourse.colour
-        let room = roomOrBlank(course: data.currentCourse)
+        let room = roomOrBlank(data.currentCourse)
         
         let next = data.nextCourse
         
@@ -42,16 +42,16 @@ struct HomeView: View {
                 Spacer()
                 
                 // NEXT CLASS
-                Text(nextPrefix(course: next))
+                Text(nextPrefix(next))
                     .font(.system(size: 15))
                 
-                Text(getNextString(course: next))
+                Text(getNextString(next))
                     .font(.system(size: 15))
                     .multilineTextAlignment(.center)
             }
         }
         .padding()
-        .onAppear() { print("HomeView Updated")}
+        .onAppear() { print("HomeView Updated") }
     }
     
 }

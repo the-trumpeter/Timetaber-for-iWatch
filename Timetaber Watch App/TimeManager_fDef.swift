@@ -25,7 +25,7 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 
 
-func weekdayNumber(ofDate: Date) -> Int {
+func weekdayNumber(_ ofDate: Date) -> Int {
     return Int(calendar.component(.weekday, from: ofDate)) // Sun=1, Sat=7
 }
 
@@ -37,7 +37,7 @@ func time24() -> Int {
 
 
 
-func odd(number: Int) -> Bool {
+func odd(_ number: Int) -> Bool {
     if number % 2 == 0 {
         return false
     } else {
@@ -54,7 +54,7 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
     
     
     
-    if odd(number: originWeek) == odd(number: currentWeek) {
+    if odd(originWeek) == odd(currentWeek) {
         //they match, so the numbers must be same
         if !ghostWeek {
             return true
@@ -113,7 +113,7 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 func getCurrentClass(date: Date) -> Array<Course> {
     
     
-    let todayWeekday = Int(weekdayNumber(ofDate: date))//sunday = 1, mon = 2, etc
+    let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
     print("the weekday today is \(todayWeekday)")
     
     

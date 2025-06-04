@@ -67,7 +67,7 @@ struct listedDay: View {
                 
                 let listedCourse = day[key] ?? failCourse(feedback: "LV.lD@56")
                 
-                listTemplate(listedCourse: listedCourse, courseTime: time24toNormal(time24: key))
+                listTemplate(listedCourse: listedCourse, courseTime: time24toNormal(key))
                     .environmentObject(GlobalData.shared)
                     .listRowBackground(data.currentCourse.name == listedCourse.name ? ( Color(listedCourse.colour)
                         .opacity(colorScheme == .dark ? 0.2 : 1.0)
@@ -93,11 +93,11 @@ struct ListView: View {
                     ghostWeek: data.ghostWeekGB
                 ),
          
-            weekDay: weekdayNumber(ofDate: .now)
+            weekDay: weekdayNumber(.now)
         )
         
         //MARK: IF
-        if data.termRunningGB && weekdayNumber(ofDate: .now) > 1 && weekdayNumber(ofDate: .now) < 7 &&
+        if data.termRunningGB && weekdayNumber(.now) > 1 && weekdayNumber(.now) < 7 &&
             Array(day.keys).sorted(by: <).last! >= time24() {
 
             listedDay(day: day)

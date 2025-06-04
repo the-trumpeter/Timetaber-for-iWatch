@@ -28,7 +28,7 @@ let customSymbols = [
 func log() {
     print("""
     ~ Log - \(Date().description) {
-        Current course is '\(GlobalData.shared.currentCourse.name)'.
+        Current course is '\(GlobalData.shared.currentCourse.name)', next course is '\(GlobalData.shared.nextCourse.name)'.
         Term running is <\(storage.shared.termRunningGB)>, ghost week is <\(storage.shared.ghostWeekGB)>.
     } End Log ~
     """)
