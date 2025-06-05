@@ -147,18 +147,19 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     
     //cycle through times til we find the two we are inbetween
-    for n in 1...times2Day.count {
+    for n in 0...times2Day.count {
         
         
         let compare = times2Day[n] // time we r comparing to
         let now = time24Now // current time
+        print("gCC: Times today count is \(times2Day.count) and n+1 is \(n+1).")
         let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int(Double.infinity) // next comparitive time; ensure we are not at end of array already
         
         
         
         if now==compare {
             
-            
+            print("gCC: now\(now)==compare\(compare)")
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: now,
             weekDay: todayWeekday, isWeekA: isweekA
@@ -182,7 +183,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
         } else if now>compare &&  now<next {
             
-            
+            print("gCC: now\(now)>compare\(compare) && now\(now)<next\(next)")
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: compare,
             weekDay: todayWeekday, isWeekA: isweekA
