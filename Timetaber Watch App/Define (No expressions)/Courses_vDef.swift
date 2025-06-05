@@ -58,7 +58,7 @@ let GreaseOrchCourse = Course(name: "Orchestra", icon: "theatermasks", colour: "
 
 let HSIECourse = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "Rees")
 
-let JCBCourse = Course(name: "Junior C.B.", icon: "pencil", colour: "Cherry", listName: "Concert Band")
+let JCBCourse = Course(name: "Junior C.B.", icon: "music.note", colour: "Cherry", listName: "Concert Band")
 let JSBCourse = Course(name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White")
 
 let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "foood")
@@ -68,9 +68,9 @@ let MLPeriod = Course(name: "Music Lesson", icon: "music.note", colour: "White")
 let MultimediaCourse = Course(name: "Multimedia", icon: "movieclapper", room: "GG2", colour: "Blueberry")
 let MSBCourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Band", listIcon: "flag.2.crossed.circle.fill")
 
-let PACourseBG = Course(name: "PA Music", icon: "music.microphone", room: "BG1", colour: "Cherry")
-let PACourseBT = Course(name: "PA Music", icon: "music.microphone", room: "BT1", colour: "Cherry")
-let PACourseC1 = Course(name: "PA Music", icon: "music.microphone", room: "CG1", colour: "Cherry")
+let PACourseBG = Course(name: "PA Music", icon: "music.note", room: "BG1", colour: "Cherry")
+let PACourseBT = Course(name: "PA Music", icon: "music.note", room: "BT1", colour: "Cherry")
+let PACourseC1 = Course(name: "PA Music", icon: "music.note", room: "CG1", colour: "Cherry")
 
 let PDHPE1 = Course(name: "PDHPE", icon: "figure.run", room: "AG1", colour: "Lime")
 let PDHPE3 = Course(name: "PDHPE", icon: "figure.run", room: "AG3", colour: "Lime")
