@@ -36,7 +36,7 @@ let wedA: Dictionary<Int, Course> = [
 let thuA: Dictionary<Int, Course> = [
     0900: CheckInCourse, 0910: ScienceCourse, 1010: MultimediaCourse,
     1110: RecessPeriod, 1130: HSIECourse, 1230: English6,
-    1330: LunchPeriod, 1410: JCBCourse, 1630: noSchool
+    1330: LunchPeriod, 1410: JCBCourse, 1530: GreaseOrchCourse, 1700: noSchool
 ]
 
 let friA: Dictionary<Int, Course> = [
@@ -68,7 +68,7 @@ let wedB: Dictionary<Int, Course> = [
 let thuB: Dictionary<Int, Course> = [
     0900: CheckInCourse, 0910: VisualArtsCourse, 1010: ScienceCourse,
     1110: RecessPeriod, 1130: English9, 1230: MathsCourse,
-    1330: LunchPeriod, 1410: JCBCourse, 1630: noSchool
+    1330: LunchPeriod, 1410: JCBCourse, 1530: GreaseOrchCourse, 1700: noSchool
 ]
 
 let friB: Dictionary<Int, Course> = [
