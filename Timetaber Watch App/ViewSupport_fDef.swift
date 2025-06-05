@@ -23,7 +23,6 @@ func roomOrBlank(_ course: Course) -> String{
     }
 }
 
-// MARK: #20
 func getNextString(_ course: Course) -> String{
     if course.name == noSchool.name || course.name == "Error" {
         return ""
