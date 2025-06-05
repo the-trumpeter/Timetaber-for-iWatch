@@ -135,7 +135,6 @@ func getCurrentClass(date: Date) -> Array<Course> {
     if time24Now<times2Day.first! || time24Now>=times2Day.last! {
         print("> There's no school at the moment.")
         return [noSchool, noSchool]
-        
     }
     
     
@@ -143,9 +142,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         originDate: storage.shared.startDateGB,
         ghostWeek: storage.shared.ghostWeekGB)
     
-    
-    
-    
+    //MARK: IF
     //cycle through times til we find the two we are inbetween
     for n in 0...times2Day.count {
         
@@ -160,6 +157,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         if now==compare {
             
             print("gCC: now\(now)==compare\(compare)")
+            
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: now,
             weekDay: todayWeekday, isWeekA: isweekA
@@ -173,12 +171,9 @@ func getCurrentClass(date: Date) -> Array<Course> {
                 } else { noSchool }
             
             
-            
             print("The current class is \(currentCourseLocal.name)")
-            
+            print("Next class due at \(time24toNormal(next))")
             return [currentCourseLocal, nextCourseLocal]
-            
-            
             
             
         } else if now>compare &&  now<next {
@@ -199,6 +194,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
             
             print("The current class is \(currentCourseLocal.name)")
+            print("Next class due at \(time24toNormal(next))")
             
             return [currentCourseLocal, nextCourseLocal]
             
