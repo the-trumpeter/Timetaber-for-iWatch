@@ -41,13 +41,15 @@ struct HomeView: View {
             if next.name != noSchool.name {
                 Spacer()
                 
-                // NEXT CLASS
-                Text(nextPrefix(next))
-                    .font(.system(size: 15))
-                
-                Text(getNextString(next))
-                    .font(.system(size: 15))
-                    .multilineTextAlignment(.center)
+                if nextPrefix(data.currentCourse) != "" {
+                    // NEXT CLASS
+                    Text(nextPrefix(next))
+                        .font(.system(size: 15))
+                }
+                if getNextString(data.currentCourse) != "" {
+                    Text(getNextString(next))
+                        .font(.system(size: 15))
+                }
             }
         }
         .padding()

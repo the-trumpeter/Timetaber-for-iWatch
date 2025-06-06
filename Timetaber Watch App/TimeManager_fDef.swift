@@ -171,8 +171,8 @@ func getCurrentClass(date: Date) -> Array<Course> {
                 } else { noSchool }
             
             
-            print("The current class is \(currentCourseLocal.name)")
-            print("Next class due at \(time24toNormal(next))")
+            print("> The current class is \(currentCourseLocal.name)")
+            print("> Next class due at \(time24toNormal(next))")
             return [currentCourseLocal, nextCourseLocal]
             
             
@@ -193,8 +193,8 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
             
             
-            print("The current class is \(currentCourseLocal.name)")
-            print("Next class due at \(time24toNormal(next))")
+            print("> The current class is \(currentCourseLocal.name)")
+            print("> Next class due at \(time24toNormal(next))")
             
             return [currentCourseLocal, nextCourseLocal]
             
@@ -203,9 +203,8 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
     } // for n
     
+    print("⚠️ Exhausted all possible course options of day")
     
-    print("> Exhausted all possible course options of day")
-    
-    let failed = failCourse(feedback: "exhaust getCur.221")
+    let failed = failCourse(feedback: "TimeManager_fDef.swift:208")
     return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
 }

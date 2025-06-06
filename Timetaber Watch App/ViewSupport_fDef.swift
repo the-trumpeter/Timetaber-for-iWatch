@@ -23,24 +23,28 @@ func roomOrBlank(_ course: Course) -> String{
     }
 }
 
-func getNextString(_ course: Course) -> String{
-    if course.name == noSchool.name || course.name == "Error" {
+func getNextString(_ course: Course) -> String {
+    if GlobalData.shared.currentCourse.name=="Error" {
+        return "bit.ly/ttberError1"
+    }
+    if course.name == noSchool.name || course.name == "Error" || GlobalData.shared.currentCourse.name=="Error" {
         return ""
-    } else {
-        if course.room != "None" {
+    } else if course.room != "None" {
             return course.name+" - "+course.room
         }
-        return course.name
-    }
+    return course.name
+
 }
 
 
 func nextPrefix(_ course: Course) -> String{
-    if course.name==noSchool.name || course.name=="Error"{
-        return ""
-    } else {
-        return "Next up:"
+    if GlobalData.shared.currentCourse.name=="Error" {
+        return "Report this:"
     }
+    if course.name == noSchool.name || course.name == "Error" {
+        return ""
+    }
+    return "Next up:"
 }
 
 func time24toNormal(_ time24: Int) -> String {
