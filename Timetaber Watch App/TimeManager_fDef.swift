@@ -24,7 +24,7 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 
 
-
+//MARK: Weekday no; time24; odd
 func weekdayNumber(_ ofDate: Date) -> Int {
     return Int(calendar.component(.weekday, from: ofDate)) // Sun=1, Sat=7
 }
@@ -45,7 +45,7 @@ func odd(_ number: Int) -> Bool {
     }
 }
 
-
+//MARK: get if Week is A
 func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
     //week A and B alternate each week. he input date is always a week a unless ghost is true.
     
@@ -71,7 +71,7 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 }
 
 
-
+//MARK: Get timetabled day
 func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
     if isWeekA {
         let timetableDay = weekA[weekDay-2]
@@ -85,7 +85,7 @@ func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
 
 
 
-
+//MARK: Class from Time & Weekday & if Week is A
 func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
 
     if !storage.shared.termRunningGB { return noSchool }
@@ -104,7 +104,9 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 
 
 
-//MARK: Timer
+
+
+//MARK: - Timer
 func dateFrom24hrInt(_ time24: Int) -> Date {
     var components = DateComponents()
     components.hour = time24/100
@@ -125,6 +127,8 @@ func dateFrom24hrInt(_ time24: Int) -> Date {
     return date
 }
     
+
+
 func setCourseChangeAlarm(for time: Int) {
     let date = Date().addingTimeInterval(20) //dateFrom24hrInt(time)
     _ = Timer(fire: date, interval: 0, repeats: false) { timer in
@@ -136,7 +140,10 @@ func setCourseChangeAlarm(for time: Int) {
 
 
 
-//MARK: getCurrentClass
+
+
+
+//MARK: - getCurrentClass
 func getCurrentClass(date: Date) -> Array<Course> {
     
     //MARK: Init and Ghost Week stuff
@@ -241,6 +248,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
     } // for n
     
+    // MARK: Catch
     print("""
         \(#file):\(#line) @ getCurrentClass 🚨🚨 Catastrophic Error:
             Exhausted all possible options for day; time: \(time24Now), times: \(times2Day) 
