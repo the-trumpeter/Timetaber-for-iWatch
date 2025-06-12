@@ -24,20 +24,30 @@ let customSymbols = [
 ]
 
 
-
 func log() {
-    print("""
-    ~ Log - \(Date().description) {
-        Current course is '\(GlobalData.shared.currentCourse.name)', next course is '\(GlobalData.shared.nextCourse.name)'.
-        Term running is <\(storage.shared.termRunningGB)>, ghost week is <\(storage.shared.ghostWeekGB)>.
-    } End Log ~
-    """)
+    NSLog("""
+        ~ Log - %@ ~
+            Current course: %@, Next course: %@
+            Term running: <%@>, Ghost week: <%@>
+        ~ End Log ~
+        """,
+        Date.now.formatted(date: .numeric, time: .complete),
+        GlobalData.shared.currentCourse.name,
+        GlobalData.shared.nextCourse.name,
+        String(describing: storage.shared.termRunningGB),
+        String(describing: storage.shared.ghostWeekGB)
+    )
+
 }
 
 
 @main
 
 struct Timetaber_Watch_AppApp: App {
+    
+    init() {
+        calendar.timeZone = TimeZone.current
+    }
     
     var body: some Scene {
         
