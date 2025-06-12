@@ -15,7 +15,7 @@
 
 import Foundation
 
-let calendar = Calendar.current
+var calendar = Calendar.current
 let dFormatter = DateFormatter()
 
 let weekdayTimes: Array<Array<Int>> = [monTimes, normTimes, wedTimes, thuTimes, normTimes] //how best to handle weekends? make it only weekdays!
@@ -24,7 +24,7 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 
 
-
+//MARK: Weekday no; time24; odd
 func weekdayNumber(_ ofDate: Date) -> Int {
     return Int(calendar.component(.weekday, from: ofDate)) // Sun=1, Sat=7
 }
@@ -45,7 +45,7 @@ func odd(_ number: Int) -> Bool {
     }
 }
 
-
+//MARK: get if Week is A
 func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
     //week A and B alternate each week. he input date is always a week a unless ghost is true.
     
@@ -71,7 +71,7 @@ func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
 }
 
 
-
+//MARK: Get timetabled day
 func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
     if isWeekA {
         let timetableDay = weekA[weekDay-2]
@@ -85,7 +85,7 @@ func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
 
 
 
-
+//MARK: Class from Time & Weekday & if Week is A
 func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
 
     if !storage.shared.termRunningGB { return noSchool }
@@ -106,34 +106,83 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 
 
 
+//MARK: - Timer
+func dateFrom24hrInt(_ time24: Int) -> Date {
+    var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+    components.timeZone = TimeZone.current
+    components.hour = time24/100
+    components.minute = time24%100
+    components.second = 0
+    print("""
+            TimeManager_fDef.swift:\(#line) @ dateFrom24hrInt
+                Composing date \(String(describing: components.hour!)):\(String(describing: components.minute!))
+          """)
+    guard let date = calendar.date(from: components) else {
+        
+        GlobalData.shared.currentCourse = failCourse(feedback: "TimeManager:\(#line)")
+        NSLog("%@:%d @ dateFrom24hrInt | %@ | 🚨🚨 Catastrophic Error:\n    Composing date %@:%@.\n    DateComponents: %@", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: components.hour), String(describing: components.minute), String(describing: components)
+              )
+        
+        return Date.now
+    }
+    return date
+}
+    
+
+
+var UpdateTimer: Timer?
+
+func setCourseChangeAlarm(for time: Int) {
+    UpdateTimer?.invalidate()
+    
+    let date = dateFrom24hrInt(time)
+    UpdateTimer = Timer(fire: date, interval: 0, repeats: false) { timer in
+        NSLog("Update timer fired; time is %@", Date.now.formatted(date: .numeric, time: .complete))
+        reload()
+    }
+    RunLoop.main.add(UpdateTimer!, forMode: .default)
+    NSLog("TimeManager_fDef.swift:%d - Succesfully set course change alarm for %@", #line, date.formatted(date: .numeric, time: .complete))
+}
 
 
 
 
+
+
+//MARK: - getCurrentClass
 func getCurrentClass(date: Date) -> Array<Course> {
     
-    
+    //MARK: Init and Ghost Week stuff
     let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
-    print("the weekday today is \(todayWeekday)")
+    print("TimeManager_fDef.swift:\(#line) - the weekday today is \(todayWeekday)")
     
     
     var times2Day: Array<Int>
 
     let time24Now = time24()
     
-    
+    let times2Morrow = weekdayTimes[todayWeekday-1]
     
     
     if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
-        print("> There's no school at the moment.")
+        NSLog("> There's no school at the moment.")
         return [noSchool, noSchool]
     }
     
     
     times2Day = weekdayTimes[todayWeekday-2]
+    
 
-    if time24Now<times2Day.first! || time24Now>=times2Day.last! {
-        print("> There's no school at the moment.")
+    if time24Now<times2Day.first! {
+        
+        NSLog("> There's no school at the moment.")
+        setCourseChangeAlarm(for: times2Day.first!)
+        return [noSchool, noSchool]
+        
+    } else if time24Now>=times2Day.last! {
+        
+        NSLog("> There's no school at the moment.")
+        setCourseChangeAlarm(for: times2Morrow.first!)
         return [noSchool, noSchool]
     }
     
@@ -142,21 +191,22 @@ func getCurrentClass(date: Date) -> Array<Course> {
         originDate: storage.shared.startDateGB,
         ghostWeek: storage.shared.ghostWeekGB)
     
-    //MARK: IF
+    //MARK: Cycle through times
     //cycle through times til we find the two we are inbetween
     for n in 0...times2Day.count {
         
         
         let compare = times2Day[n] // time we r comparing to
         let now = time24Now // current time
-        print("gCC: Times today count is \(times2Day.count) and n+1 is \(n+1).")
+        print("TimeManager_fDef.swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
+        
         let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int(Double.infinity) // next comparitive time; ensure we are not at end of array already
         
         
         
         if now==compare {
             
-            print("gCC: now\(now)==compare\(compare)")
+            print("TimeManager_fDef.swift:\(#line) - now\(now)==compare\(compare)")
             
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: now,
@@ -164,21 +214,21 @@ func getCurrentClass(date: Date) -> Array<Course> {
             )
             
             
-            let nextCourseLocal: Course = if Double(next) != Double.infinity {
+            let nextCourseLocal: Course = if next != FP_INFINITE {
                     findClassfromTimeWeekDayNifWeekIsA(
                         sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
                     )
                 } else { noSchool }
             
             
-            print("> The current class is \(currentCourseLocal.name)")
-            print("> Next class due at \(time24toNormal(next))")
+            NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
+            setCourseChangeAlarm(for: next)
             return [currentCourseLocal, nextCourseLocal]
             
             
         } else if now>compare &&  now<next {
             
-            print("gCC: now\(now)>compare\(compare) && now\(now)<next\(next)")
+            print("TimeManager_fDef.swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: compare,
             weekDay: todayWeekday, isWeekA: isweekA
@@ -193,18 +243,18 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
             
             
-            print("> The current class is \(currentCourseLocal.name)")
-            print("> Next class due at \(time24toNormal(next))")
-            
+            NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
+            setCourseChangeAlarm(for: next)
             return [currentCourseLocal, nextCourseLocal]
             
-        } // either of these if's mean its the current class
+        } // either of these `if`s mean `now` is the current class and `next` is next
         
         
     } // for n
     
-    print("⚠️ Exhausted all possible course options of day")
+    // MARK: Catch
+    NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    Exhausted all possible options for day.\n    time: %@, times: %@\n", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
     
-    let failed = failCourse(feedback: "TimeManager_fDef.swift:208")
+    let failed = failCourse(feedback: "TimeManager:\(#line)")
     return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
 }
