@@ -161,7 +161,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
 
     let time24Now = time24()
     
-    let times2Morrow = weekdayTimes[todayWeekday-1]
+    let times2Morrow: Array<Int>? = if todayWeekday<6 { weekdayTimes[todayWeekday-1] } else { nil }
     
     
     if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
@@ -182,7 +182,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     } else if time24Now>=times2Day.last! {
         
         NSLog("> There's no school at the moment.")
-        setCourseChangeAlarm(for: times2Morrow.first!)
+        try setCourseChangeAlarm(for: times2Morrow!.first!)
         return [noSchool, noSchool]
     }
     
