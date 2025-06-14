@@ -35,25 +35,23 @@ struct HomeView: View {
             // ROOM
             Text(room+"\n")
                 .multilineTextAlignment(.center)
-                .foregroundStyle(.gray)
+                .foregroundStyle(.secondary)
                 .font(.system(size: 15))
                 
             if next.name != noSchool.name {
                 Spacer()
                 
-                if nextPrefix(data.currentCourse) != "" {
+                if !(data.currentCourse.name == noSchool.name || data.currentCourse.name == "Error") {
                     // NEXT CLASS
-                    Text(nextPrefix(next))
+                    Text(GlobalData.shared.currentCourse.name=="Error" ? "Report this:": "Next up:")
                         .font(.system(size: 15))
-                }
-                if getNextString(data.currentCourse) != "" {
-                    Text(getNextString(next))
+                    Text(getNextString(data.nextCourse))
                         .font(.system(size: 15))
                 }
             }
         }
         .padding()
-        .onAppear() { print("HomeView Updated") }
+        .onAppear() { print("HomeView Updated")}
     }
     
 }

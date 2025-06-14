@@ -86,23 +86,30 @@ struct ListView: View {
     @ObservedObject var data = storage.shared
     var body: some View {
         
-        let day = getTimetableDay(
-            isWeekA:
-                getIfWeekIsA_FromDateAndGhost(
-                    originDate: .now,
-                    ghostWeek: data.ghostWeekGB
-                ),
-         
-            weekDay: weekdayNumber(.now)
-        )
+        
         
         //MARK: IF
-        if data.termRunningGB && weekdayNumber(.now) > 1 && weekdayNumber(.now) < 7 &&
-            Array(day.keys).sorted(by: <).last! >= time24() {
-
-            listedDay(day: day)
-            .environmentObject(GlobalData.shared)
+        if data.termRunningGB && weekdayNumber(.now) > 1 && weekdayNumber(.now) < 7 {
             
+            let day = getTimetableDay(
+                isWeekA:
+                    getIfWeekIsA_FromDateAndGhost(
+                        originDate: .now,
+                        ghostWeek: data.ghostWeekGB
+                    ),
+             
+                weekDay: weekdayNumber(.now)
+            )
+
+            if Array(day.keys).sorted(by: <).last! >= time24() { //if not after last class of day
+                listedDay(day: day)
+                    .environmentObject(GlobalData.shared)
+            } else {
+                Text("No school right now.\nThe day's classes will be displayed here.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.gray)
+                    .font(.system(size: 13))
+            }
             
         } else if !data.termRunningGB {
             Text("There's no term running.\nThe day's classes will be displayed here.")
