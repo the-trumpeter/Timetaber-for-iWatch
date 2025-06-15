@@ -90,11 +90,19 @@ let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "Whit
 
 
 
-let noSchool = Course(
+func noSchool() -> Course {
+    let joke = if storage.shared.termRunningGB {
+        if weekdayNumber(.now)==1 || weekdayNumber(.now)==7 {
+            "Happy weekend!"
+        } else { "Not yet, anyway..."}
+    } else { "No term running." }
+    
+    return Course(
     name: "No school", icon: "clock",
     colour: "White",
-    joke: storage.shared.termRunningGB ? ((weekdayNumber(.now)==1 || weekdayNumber(.now)==7) ? "Happy weekend!" :"Not yet, anyway..."): "No term running."
-)
+    joke: joke
+    )
+}
 
 
 let promoCourse = Course( //tempoary...?

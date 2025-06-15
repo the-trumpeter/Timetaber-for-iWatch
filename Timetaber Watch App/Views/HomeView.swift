@@ -38,10 +38,10 @@ struct HomeView: View {
                 .foregroundStyle(.secondary)
                 .font(.system(size: 15))
                 
-            if next.name != noSchool.name {
+            if next.name != noSchool().name {
                 Spacer()
                 
-                if !(data.currentCourse.name == noSchool.name || data.currentCourse.name == "Error") {
+                if !(data.currentCourse.name == noSchool().name || data.currentCourse.name == "Error") {
                     // NEXT CLASS
                     Text(GlobalData.shared.currentCourse.name=="Error" ? "Report this:": "Next up:")
                         .font(.system(size: 15))
@@ -51,7 +51,7 @@ struct HomeView: View {
             }
         }
         .padding()
-        .onAppear() { print("HomeView Updated")}
+        .onAppear() { print("HomeView Updated"); print("CurrentCourse (debug): \(data.currentCourse)")}
     }
     
 }

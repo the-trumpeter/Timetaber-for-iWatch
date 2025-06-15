@@ -88,7 +88,7 @@ func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
 //MARK: Class from Time & Weekday & if Week is A
 func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
 
-    if !storage.shared.termRunningGB { return noSchool }
+    if !storage.shared.termRunningGB { return noSchool() }
     
     if isWeekA {
         let timetableDay = weekA[weekDay-2]
@@ -166,7 +166,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
         NSLog("> There's no school at the moment.")
-        return [noSchool, noSchool]
+        return [noSchool(), noSchool()]
     }
     
     
@@ -177,13 +177,13 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
         NSLog("> There's no school at the moment.")
         setCourseChangeAlarm(for: times2Day.first!)
-        return [noSchool, noSchool]
+        return [noSchool(), noSchool()]
         
     } else if time24Now>=times2Day.last! {
         
         NSLog("> There's no school at the moment.")
         try setCourseChangeAlarm(for: times2Morrow!.first!)
-        return [noSchool, noSchool]
+        return [noSchool(), noSchool()]
     }
     
     
@@ -218,7 +218,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
                     findClassfromTimeWeekDayNifWeekIsA(
                         sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
                     )
-                } else { noSchool }
+                } else { noSchool() }
             
             
             NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
@@ -239,7 +239,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
                     findClassfromTimeWeekDayNifWeekIsA(
                         sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
                     )
-                } else { noSchool }
+                } else { noSchool() }
             
             
             
