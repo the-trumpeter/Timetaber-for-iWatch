@@ -38,10 +38,10 @@ func getNextString(_ course: Course) -> String {
 
 
 func nextPrefix(_ course: Course) -> String{
-    if GlobalData.shared.currentCourse.name=="Error" {
+    if course.name == "Error" {
         return "Report this:"
     }
-    if course.name == "No school" || course.name == "Error" {
+    if course.name == "No school" {
         return ""
     }
     return "Next up:"

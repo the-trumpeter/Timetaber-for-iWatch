@@ -42,7 +42,7 @@ struct HomeView: View {
                 Spacer()
                 
                 // NEXT CLASS
-                Text(GlobalData.shared.currentCourse.name=="Error" ? "Report this:": "Next up:")
+                Text(nextPrefix(data.currentCourse))
                     .font(.system(size: 15))
                     .bold()
                 Text(getNextString(data.nextCourse))
