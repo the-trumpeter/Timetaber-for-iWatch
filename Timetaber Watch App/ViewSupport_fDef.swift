@@ -27,11 +27,11 @@ func getNextString(_ course: Course) -> String {
     if GlobalData.shared.currentCourse.name=="Error" {
         return "bit.ly/ttberError1"
     }
-    if course.name == noSchool.name || course.name == "Error" || GlobalData.shared.currentCourse.name=="Error" {
+    if course.name == "No school" || course.name == "Error" || GlobalData.shared.currentCourse.name=="Error" {
         return ""
     } else if course.room != "None" {
-            return course.name+" - "+course.room
-        }
+        return course.name+" - "+course.room
+    }
     return course.name
 
 }
@@ -41,7 +41,7 @@ func nextPrefix(_ course: Course) -> String{
     if GlobalData.shared.currentCourse.name=="Error" {
         return "Report this:"
     }
-    if course.name == noSchool.name || course.name == "Error" {
+    if course.name == "No school" || course.name == "Error" {
         return ""
     }
     return "Next up:"

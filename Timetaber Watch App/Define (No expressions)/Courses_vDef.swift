@@ -35,20 +35,17 @@ struct Course {
         
         self.joke = joke ?? "None"
     }
-    
-    
+
 }
 
 
 
-
-//
-//  Define all courses for user's timetable
-//
-//  (Will later script timetable builder thing in iOS companion app to create/edit these.)
-//
-//  (alphabetical order)
-
+/*
+Define all courses for user's timetable
+ 
+(Will later script timetable builder thing in iOS companion app to create/edit these.)
+(alphabetical order)
+*/
 let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "White", listIcon: "face.smiling.inverse")
 
 let English6 = Course(name: "English", icon: "book.closed", room: "BT6", colour: "Lemon")
@@ -87,24 +84,50 @@ let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", r
 
 let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White", listName: "Assembly", listIcon: "person.2.circle.fill")
 
+/*
+var noSchool: Course {
+    let today = Date.now
+    let joke = storage.shared.termRunningGB
+        ? ((weekdayNumber(today) == 1 || weekdayNumber(today) == 7)
+            ? "Happy weekend!"
+            : "Not yet, anyway...")
+        : "No term running."
+
+    return Course(name: "No school", icon: "clock", colour: "White", joke: joke)
+}
+*/
+/// Various situations where there is no school.\
+/// See `noSchool`.
+enum TimeCase {
+    case weekend
+    case noTerm
+    case beforeClass(startTime: Int)
+    case afterClass
+}
+/// Returns a `Course` representing the absence of school; with a `joke` relevant to the current date/time of interaction, obtained through the `key` parameter.\
+/// If `key` is not initialised; the `joke` will default to `"Not yet, anyway..."`.
+func noSchool(_ key: TimeCase? = nil) -> Course {
+    let joke: String
+
+    switch key {
+    case .weekend:
+        joke = "It's the weekend."
+    case .noTerm:
+        joke = "No term running."
+    case .beforeClass(let startTime):
+        joke = "First class at \(time24toNormal(startTime))."
+    case .afterClass:
+        joke = "School's out for today!"
+    case nil:
+        joke = "Not yet, anyway..."
+    }
+
+    return Course(name: "No school", icon: "clock", colour: "White", joke: joke)
+}
 
 
-
-let noSchool = Course(
-    name: "No school", icon: "clock",
-    colour: "White",
-    joke: storage.shared.termRunningGB ? ((weekdayNumber(.now)==1 || weekdayNumber(.now)==7) ? "Happy weekend!" :"Not yet, anyway..."): "No term running."
-)
-
-
-let promoCourse = Course( //tempoary...?
-    name: "Timetaber",
-    icon: "applewatch",
-    room: "The Apple Watch Timetable App",
-    colour: "Promo"
-)
-
-
+///Method to handle informal errors, fails and exhaustions; so, bugs. Feedback of `"filename:\(#line)"` should be input to the `feedback` parameter.\
+///Display the error to the user for reporting by setting `GlobalData.shared.currentCourse` to an instance of `failCourse`. They will be directed to open an Issue in the GitHub repository.
 func failCourse(feedback: String? = "None") -> Course {
     return Course(name: "Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "White", listIcon: "exclamationmark.triangle")
 }

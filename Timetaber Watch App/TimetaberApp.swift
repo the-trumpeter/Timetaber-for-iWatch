@@ -29,13 +29,15 @@ func log() {
         ~ Log - %@ ~
             Current course: %@, Next course: %@
             Term running: <%@>, Ghost week: <%@>
+            Is today in week A?: <%@>
         ~ End Log ~
         """,
         Date.now.formatted(date: .numeric, time: .complete),
         GlobalData.shared.currentCourse.name,
         GlobalData.shared.nextCourse.name,
         String(describing: storage.shared.termRunningGB),
-        String(describing: storage.shared.ghostWeekGB)
+        String(describing: storage.shared.ghostWeekGB),
+        String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: storage.shared.ghostWeekGB) )
     )
 
 }

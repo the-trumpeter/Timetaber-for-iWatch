@@ -23,31 +23,32 @@ struct HomeView: View {
             
             // CURRENT CLASS
             Image(systemName: data.currentCourse.icon)
-                .foregroundColor(Color(colour))//add an SF symbol element
+                .foregroundStyle(Color(colour))//add an SF symbol element
                 .imageScale(.large)
                 .font(.system(size: 25).weight(.semibold))
             
             Text(data.currentCourse.name)
                 .font(.system(size:23).weight(.bold))
-                .foregroundColor(Color(colour))
+                .foregroundStyle(Color(colour))
                 .padding(.bottom, 0.1)
             
             // ROOM
-            Text(room+"\n")
+            Text(room)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .font(.system(size: 15))
                 
-            if next.name != noSchool.name {
+            if next.name != "No school" {
                 Spacer()
                 
-                if !(data.currentCourse.name == noSchool.name || data.currentCourse.name == "Error") {
-                    // NEXT CLASS
-                    Text(GlobalData.shared.currentCourse.name=="Error" ? "Report this:": "Next up:")
-                        .font(.system(size: 15))
-                    Text(getNextString(data.nextCourse))
-                        .font(.system(size: 15))
-                }
+                // NEXT CLASS
+                Text(GlobalData.shared.currentCourse.name=="Error" ? "Report this:": "Next up:")
+                    .font(.system(size: 15))
+                    .bold()
+                Text(getNextString(data.nextCourse))
+                    .foregroundStyle(Color(data.nextCourse.colour))
+                    .font(.system(size: 15))
+                
             }
         }
         .padding()
