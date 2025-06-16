@@ -1,0 +1,103 @@
+{
+  "fill" : {
+    "automatic-gradient" : "extended-gray:1.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "blur-material" : null,
+      "layers" : [
+        {
+          "fill" : {
+            "automatic-gradient" : "display-p3:0.00000,0.61024,0.58047,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "custom.backpack.fill.badge.clock.svg",
+          "name" : "custom.backpack.fill.badge.clock",
+          "position" : {
+            "scale" : 0.71,
+            "translation-in-points" : [
+              -47.796875,
+              -33.90625
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "automatic-gradient" : "extended-srgb:1.00000,0.80000,0.00000,1.00000"
+          },
+          "glass" : true,
+          "hidden" : true,
+          "image-name" : "Exported image.svg",
+          "name" : "graduationcap",
+          "position-specializations" : [
+            {
+              "value" : {
+                "scale" : 1,
+                "translation-in-points" : [
+                  55.2734375,
+                  113.03125
+                ]
+              }
+            },
+            {
+              "idiom" : "square",
+              "value" : {
+                "scale" : 0.62,
+                "translation-in-points" : [
+                  5.3359375,
+                  11.109375
+                ]
+              }
+            },
+            {
+              "idiom" : "watchOS",
+              "value" : {
+                "scale" : 0.58,
+                "translation-in-points" : [
+                  4.796875,
+                  3.0078125
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "lighting" : "combined",
+      "shadow-specializations" : [
+        {
+          "value" : {
+            "kind" : "none",
+            "opacity" : 0.5
+          }
+        },
+        {
+          "appearance" : "dark",
+          "value" : {
+            "kind" : "layer-color",
+            "opacity" : 0.5
+          }
+        }
+      ],
+      "specular-specializations" : [
+        {
+          "value" : false
+        },
+        {
+          "idiom" : "watchOS",
+          "value" : false
+        }
+      ],
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
