@@ -9,8 +9,8 @@ So far; I've successfully created a basic app that is installed on my Apple Watc
 <br>
 
 #### Public release?
-<b>Maybe.</b>
-Hopefully I will be able to create a version that I can release to friends and throughout my school.
+<b>Maybe.</b>\
+Hopefully I will be able to create a version that I can release to friends and throughout my school.\
 Keep an eye on the 'Controlled Release' milestone!
 
 
