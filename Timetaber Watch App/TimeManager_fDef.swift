@@ -123,7 +123,7 @@ func dateFrom24hrInt(_ time24: Int) -> Date {
         GlobalData.shared.currentCourse = failCourse(feedback: "TimeManager:\(#line)")
         NSLog("%@:%d @ dateFrom24hrInt | %@ | 🚨🚨 Catastrophic Error:\n    Composing date %@:%@.\n    DateComponents: %@", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: components.hour), String(describing: components.minute), String(describing: components)
               )
-        
+        log()
         return Date.now
     }
     return date
@@ -260,6 +260,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     // MARK: Catch
     NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    Exhausted all possible options for day.\n    time: %@, times: %@\n", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
+    log()
     
     let failed = failCourse(feedback: "TimeManager:\(#line)")
     return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
