@@ -4,8 +4,16 @@
 
 ### <i>Is it a typo? Is it a spelling error? NO! It's an Apple Watch Timetable App!</i>
 Developed by me, Gill Palmer, the-trumpeter, this app is made to solve one of my biggest educational issues:
-<b>forgetting my timetable.</b> If only I'm finished... Ah well, may be useless but there's still more to come!
+<b>forgetting my timetable.</b>  
+So far; I've successfully created a basic app that is installed on my Apple Watch for everyday use. My personal timetable is hardcoded into it.
 <br>
+
+#### Public release?
+<b>Maybe.</b>
+Hopefully I will be able to create a version that I can release to friends and throughout my school.
+Keep an eye on the 'Controlled Release' milestone!
+
+
 
 
 #### Note on errors in repository
