@@ -18,9 +18,6 @@ import Foundation
 var calendar = Calendar.current
 let dFormatter = DateFormatter()
 
-func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
-
-let weekdayTimes: Array<Array<Int>> = [ sK(monA), sK(tueA), sK(wedA), sK(thuA), sK(friA) ] //how best to handle weekends? make it only weekdays!
 let weekA = [monA, tueA, wedA, thuA, friA]
 let weekB = [monB, tueB, wedB, thuB, friB]
 
@@ -157,18 +154,24 @@ func getCurrentClass(date: Date) -> Array<Course> {
     let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
     print("TimeManager_fDef.swift:\(#line) - the weekday today is \(todayWeekday)")
     
-    
+    //func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
+    ///returns `d.keys.sorted()`
+    func sK(_ d: [Int: Course]) -> [Int] { d.keys.sorted() }
+    let weekdayTimes: Array<Array<Int>> = [ sK(monA), sK(tueA), sK(wedA), sK(thuA), sK(friA) ]
+
     var times2Day: Array<Int>
 
     let time24Now = time24()
-    
-    let times2Morrow: Array<Int>? = if todayWeekday<6 { weekdayTimes[todayWeekday-1] } else { nil }
+
+    //let times2Morrow: Array<Int>? = if todayWeekday<6 { weekdayTimes[todayWeekday-1] } else { nil }
     
     
     if !storage.shared.termRunningGB { //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
         NSLog("> There's no school at the moment. [noTerm]")
         return [noSchool(.noTerm), noSchool(.noTerm)]
     }
+    
+    
     if todayWeekday==1 || todayWeekday==7 {
         NSLog("> There's no school at the moment. [weekend]")
         return [noSchool(.weekend), noSchool(.weekend)]
@@ -177,13 +180,19 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     times2Day = weekdayTimes[todayWeekday-2]
     
-
+    let isweekA = getIfWeekIsA_FromDateAndGhost(
+        originDate: storage.shared.startDateGB,
+        ghostWeek: storage.shared.ghostWeekGB)
+    
     if time24Now<times2Day.first! { // before first course/period/time
         
         NSLog("> There's no school at the moment. [beforeClass]")
         setCourseChangeAlarm(for: times2Day.first!)
-        let nosc = noSchool(.beforeClass(startTime: times2Day.first!))
-        return [nosc, nosc]
+        return [noSchool(.beforeClass(startTime: times2Day.first!)),
+                findClassfromTimeWeekDayNifWeekIsA(
+                    sessionStartTime: times2Day.first!,
+                    weekDay: todayWeekday,
+                    isWeekA: isweekA)]
         
     } else if time24Now>=times2Day.last! { // after last course/period/time
         
@@ -191,11 +200,6 @@ func getCurrentClass(date: Date) -> Array<Course> {
         //try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
         return [noSchool(.afterClass), noSchool(.afterClass)]
     }
-    
-    
-    let isweekA = getIfWeekIsA_FromDateAndGhost(
-        originDate: storage.shared.startDateGB,
-        ghostWeek: storage.shared.ghostWeekGB)
     
     //MARK: Cycle through times
     //cycle through times til we find the two we are inbetween

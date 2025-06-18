@@ -55,8 +55,8 @@ let GreaseOrchCourse = Course(name: "Orchestra", icon: "theatermasks", colour: "
 
 let HSIECourse = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "Rees")
 
-let JCBCourse = Course(name: "Junior C.B.", icon: "music.note", colour: "Cherry", listName: "Junior C.B.")
-let JSBCourse = Course(name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White")
+let JCBCourse = Course(name: "Junior C.B.", icon: "music.note", colour: "Cherry")
+let JSBCourse = Course(name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White", listName: "Junior S.B.")
 
 let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "foood")
 
@@ -75,8 +75,9 @@ let PDHPEPrac = Course(name: "PDHPE", icon: "figure.run", room: "HALL", colour: 
 
 let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", joke: "like lunch but short")
 
+let SCBCourse = Course(name: "Senior C.B.", icon: "music.note", colour: "Cherry")
 let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour: "Ice", listIcon: "flame.circle.fill")
-let SCBCourse = Course(name: "Senior C.B.", icon: "music.note", colour: "Cherry", listName: "Senior C.B.")
+let SSBCourse = Course(name: "Stage Band", icon: "music.note", colour: "cherry", listName: "Senior S.B.")
 
 let TAS = Course(name: "TAS", icon: "hammer", room: "HG7", colour: "Blueberry")
 let TCCourse = Course(name: "Theatre Crew", icon: "headset", colour: "Peach")

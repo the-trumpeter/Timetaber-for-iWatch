@@ -42,9 +42,10 @@ struct HomeView: View {
                 Spacer()
                 
                 // NEXT CLASS
-                Text(nextPrefix(data.currentCourse))
+                Text(nextPrefix(data.nextCourse))
                     .font(.system(size: 15))
                     .bold()
+                
                 Text(getNextString(data.nextCourse))
                     .foregroundStyle(Color(data.nextCourse.colour))
                     .font(.system(size: 15))
