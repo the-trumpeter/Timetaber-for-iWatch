@@ -1,13 +1,12 @@
 //
-//  Timetable.swift
+//  Timetable_vDef.swift
 //  Timetaber for iWatch
 //  Variable definition script
 //
 //  Created by Gill Palmer on 5/11/2024
+//
 
-
-let wkA = [monA, tueA, wedA, thuA, friA]
-let wkB = [monB, tueB, wedB, thuB, friB]
+//  Hardcoded school timetable
 
 let monA: Dictionary<Int, Course> = [
     0900: CheckInCourse, 0910: English9, 1000: MLPeriod, 1030: PACourseBG,
@@ -56,7 +55,7 @@ let tueB: Dictionary<Int, Course> = [
 let wedB: Dictionary<Int, Course> = [
     0900: HSIECourse, 1000: MathsCourse, 1050: yearAssembly,
     1100: RecessPeriod, 1120: VisualArtsCourse, 1210: ScienceCourse,
-    1300: LunchPeriod, 1330: TCCourse, 1510: MSBCourse, 1730: noSchool(.afterClass)
+    1300: LunchPeriod, 1330: SCBCourse, 1510: MSBCourse, 1730: noSchool(.afterClass)
 ]
 
 let thuB: Dictionary<Int, Course> = [

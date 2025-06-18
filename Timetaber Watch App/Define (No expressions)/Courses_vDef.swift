@@ -6,11 +6,10 @@
 //  Created by Gill Palmer on 3/11/2024.
 //
 
-//  Define Course (subject, class etc) structure
-
 import SwiftUI
 import Foundation
 
+/// Representing a class/course in a timetable.
 struct Course {
     let name: String
     let icon: String
@@ -46,6 +45,7 @@ Define all courses for user's timetable
 (Will later script timetable builder thing in iOS companion app to create/edit these.)
 (alphabetical order)
 */
+
 let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "White", listIcon: "face.smiling.inverse")
 
 let English6 = Course(name: "English", icon: "book.closed", room: "BT6", colour: "Lemon")
@@ -55,7 +55,7 @@ let GreaseOrchCourse = Course(name: "Orchestra", icon: "theatermasks", colour: "
 
 let HSIECourse = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "Rees")
 
-let JCBCourse = Course(name: "Junior C.B.", icon: "music.note", colour: "Cherry", listName: "Concert Band")
+let JCBCourse = Course(name: "Junior C.B.", icon: "music.note", colour: "Cherry", listName: "Junior C.B.")
 let JSBCourse = Course(name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White")
 
 let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "foood")
@@ -63,7 +63,7 @@ let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", jok
 let MathsCourse = Course(name: "Maths", icon: "number", room: "FT5", colour: "Rose")
 let MLPeriod = Course(name: "Music Lesson", icon: "music.note", colour: "White")
 let MultimediaCourse = Course(name: "Multimedia", icon: "movieclapper", room: "GG2", colour: "Blueberry")
-let MSBCourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Band", listIcon: "flag.2.crossed.circle.fill")
+let MSBCourse = Course(name: "Marching Band", icon: "flag.filled.and.flag.crossed", colour: "Cherry", listName: "Marching Bd.", listIcon: "flag.2.crossed.circle.fill")
 
 let PACourseBG = Course(name: "PA Music", icon: "music.note", room: "BG1", colour: "Cherry")
 let PACourseBT = Course(name: "PA Music", icon: "music.note", room: "BT1", colour: "Cherry")
@@ -76,6 +76,7 @@ let PDHPEPrac = Course(name: "PDHPE", icon: "figure.run", room: "HALL", colour: 
 let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", joke: "like lunch but short")
 
 let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour: "Ice", listIcon: "flame.circle.fill")
+let SCBCourse = Course(name: "Senior C.B.", icon: "music.note", colour: "Cherry", listName: "Senior C.B.")
 
 let TAS = Course(name: "TAS", icon: "hammer", room: "HG7", colour: "Blueberry")
 let TCCourse = Course(name: "Theatre Crew", icon: "headset", colour: "Peach")
@@ -96,7 +97,8 @@ var noSchool: Course {
     return Course(name: "No school", icon: "clock", colour: "White", joke: joke)
 }
 */
-/// Various situations where there is no school.\
+
+/// Various situations in which there is no school.\
 /// See `noSchool`.
 enum TimeCase {
     case weekend
