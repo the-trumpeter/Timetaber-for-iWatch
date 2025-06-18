@@ -165,26 +165,31 @@ func getCurrentClass(date: Date) -> Array<Course> {
     let times2Morrow: Array<Int>? = if todayWeekday<6 { weekdayTimes[todayWeekday-1] } else { nil }
     
     
-    if !storage.shared.termRunningGB || todayWeekday==1 || todayWeekday==7 { //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
-        NSLog("> There's no school at the moment.")
-        return [noSchool(), noSchool()]
+    if !storage.shared.termRunningGB { //if it is either holidays, sunday, monday or before school starts then noSchool - `||` means [OR]
+        NSLog("> There's no school at the moment. [noTerm]")
+        return [noSchool(.noTerm), noSchool(.noTerm)]
+    }
+    if todayWeekday==1 || todayWeekday==7 {
+        NSLog("> There's no school at the moment. [weekend]")
+        return [noSchool(.weekend), noSchool(.weekend)]
     }
     
     
     times2Day = weekdayTimes[todayWeekday-2]
     
 
-    if time24Now<times2Day.first! {
+    if time24Now<times2Day.first! { // before first course/period/time
         
-        NSLog("> There's no school at the moment.")
+        NSLog("> There's no school at the moment. [beforeClass]")
         setCourseChangeAlarm(for: times2Day.first!)
-        return [noSchool(), noSchool()]
+        let nosc = noSchool(.beforeClass(startTime: times2Day.first!))
+        return [nosc, nosc]
         
-    } else if time24Now>=times2Day.last! {
+    } else if time24Now>=times2Day.last! { // after last course/period/time
         
-        NSLog("> There's no school at the moment.")
-        try setCourseChangeAlarm(for: times2Morrow!.first!)
-        return [noSchool(), noSchool()]
+        NSLog("> There's no school at the moment. [afterClass]")
+        //try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
+        return [noSchool(.afterClass), noSchool(.afterClass)]
     }
     
     
@@ -201,7 +206,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         let now = time24Now // current time
         print("TimeManager_fDef.swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
         
-        let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int(Double.infinity) // next comparitive time; ensure we are not at end of array already
+        let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int.max // next comparitive time; ensure we are not at end of array already
         
         
         
@@ -215,11 +220,11 @@ func getCurrentClass(date: Date) -> Array<Course> {
             )
             
             
-            let nextCourseLocal: Course = if next != FP_INFINITE {
+            let nextCourseLocal: Course = if next != Int.max {
                     findClassfromTimeWeekDayNifWeekIsA(
                         sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
                     )
-                } else { noSchool() }
+            } else { noSchool(.afterClass) }
             
             
             NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
@@ -236,11 +241,11 @@ func getCurrentClass(date: Date) -> Array<Course> {
             )
             
             
-            let nextCourseLocal: Course = if next != FP_INFINITE {
+            let nextCourseLocal: Course = if next != Int.max {
                     findClassfromTimeWeekDayNifWeekIsA(
                         sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
                     )
-                } else { noSchool() }
+            } else { noSchool(.afterClass) }
             
             
             
