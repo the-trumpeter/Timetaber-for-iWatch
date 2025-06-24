@@ -1,0 +1,37 @@
+{
+  "courses": {
+    "ci": {
+      "name": "Check In",
+      "icon": "face.smiling",
+      "room": "HG1",
+      "colour": "White",
+      "listName": "Check In",
+      "listIcon": "face.smiling.inverse",
+      "joke": "None"
+    },
+    "en": {
+      "name": "English",
+      "icon": "book.closed",
+      "room": "BT9",
+      "colour": "Lemon",
+      "listName": "English",
+      "listIcon": "book.closed.circle.fill",
+      "joke": "None"
+    }
+  },
+  "defaultTimes": [900,910,1010,1110,1130,1230,1330,1410,1510],
+  "timetable": {
+    "monA": {
+      900: "ci",
+      910: "en",
+      1000: "ml",
+      1030: "paBG",
+      1110: "rc",
+      1130: "pd3",
+      1230: "sc",
+      1330: "js",
+      1410: "va",
+      1510: "ns"
+    }
+  }
+}
