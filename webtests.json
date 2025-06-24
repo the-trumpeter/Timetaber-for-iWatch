@@ -1,37 +1,260 @@
 {
-  "courses": {
-    "ci": {
-      "name": "Check In",
-      "icon": "face.smiling",
-      "room": "HG1",
-      "colour": "White",
-      "listName": "Check In",
-      "listIcon": "face.smiling.inverse",
-      "joke": "None"
+    "courses": {
+        "ci": {
+            "name": "Check In",
+            "icon": "face.smiling",
+            "room": "HG1",
+            "colour": "White",
+            "listName": "Check In",
+            "listIcon": "face.smiling.inverse",
+            "joke": "None"
+        },
+        "en6": {
+            "name": "English",
+            "icon": "book.closed",
+            "room": "BT6",
+            "colour": "Lemon",
+            "listName": "English",
+            "listIcon": "book.closed.circle.fill",
+            "joke": "None"
+        },
+        "en9": {
+            "name": "English",
+            "icon": "book.closed",
+            "room": "BT9",
+            "colour": "Lemon",
+            "listName": "English",
+            "listIcon": "book.closed.circle.fill",
+            "joke": "None"
+        },
+        "go": {
+            "name": "Orchestra",
+            "icon": "theatermasks",
+            "room": "None",
+            "colour": "Cherry",
+            "listName": "Orchestra",
+            "listIcon": "theatermasks.circle.fill",
+            "joke": "None"
+        },
+        "hs": {
+            "name": "HSIE",
+            "icon": "archivebox",
+            "room": "BG8",
+            "colour": "Rees",
+            "listName": "HSIE",
+            "listIcon": "archivebox.circle.fill",
+            "joke": "None"
+        },
+        "jc": {
+            "name": "Junior C.B.",
+            "icon": "music.note",
+            "room": "None",
+            "colour": "Cherry",
+            "listName": "Junior C.B.",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        },
+        "js": {
+            "name": "Jr Stage",
+            "icon": "music.note",
+            "room": "BT1",
+            "colour": "White",
+            "listName": "Junior S.B.",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        },
+        "lu": {
+            "name": "Lunch",
+            "icon": "fork.knife",
+            "room": "None",
+            "colour": "White",
+            "listName": "Lunch",
+            "listIcon": "fork.knife.circle.fill",
+            "joke": "foood"
+        },
+        "ma": {
+            "name": "Maths",
+            "icon": "number",
+            "room": "FT5",
+            "colour": "Rose",
+            "listName": "Maths",
+            "listIcon": "number.circle.fill",
+            "joke": "None"
+        },
+        "ml": {
+            "name": "Music Lesson",
+            "icon": "music.note",
+            "room": "None",
+            "colour": "White",
+            "listName": "Music Lesson",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        },
+        "mm": {
+            "name": "Multimedia",
+            "icon": "movieclapper",
+            "room": "GG2",
+            "colour": "Blueberry",
+            "listName": "Multimedia",
+            "listIcon": "movieclapper.circle.fill",
+            "joke": "None"
+        },
+        "mb": {
+            "name": "Marching Band",
+            "icon": "flag.filled.and.flag.crossed",
+            "room": "None",
+            "colour": "Cherry",
+            "listName": "Marching Bd.",
+            "listIcon": "flag.2.crossed.circle.fill",
+            "joke": "None"
+        },
+        "paBG": {
+            "name": "PA Music",
+            "icon": "music.note",
+            "room": "BG1",
+            "colour": "Cherry",
+            "listName": "PA Music",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        },
+        "paBT": {
+            "name": "PA Music",
+            "icon": "music.note",
+            "room": "BT1",
+            "colour": "Cherry",
+            "listName": "PA Music",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        },
+        "paC1": {
+            "name": "PA Music",
+            "icon": "music.note",
+            "room": "CG1",
+            "colour": "Cherry",
+            "listName": "PA Music",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        },
+        "pd1": {
+            "name": "PDHPE",
+            "icon": "figure.run",
+            "room": "AG1",
+            "colour": "Lime",
+            "listName": "PDHPE",
+            "listIcon": "figure.run.circle.fill",
+            "joke": "None"
+        },
+        "pd3": {
+            "name": "PDHPE",
+            "icon": "figure.run",
+            "room": "AG3",
+            "colour": "Lime",
+            "listName": "PDHPE",
+            "listIcon": "figure.run.circle.fill",
+            "joke": "None"
+        },
+        "pdH": {
+            "name": "PDHPE",
+            "icon": "figure.run",
+            "room": "HALL",
+            "colour": "Lime",
+            "listName": "PDHPE",
+            "listIcon": "figure.run.circle.fill",
+            "joke": "None"
+        },
+        "rc": {
+            "name": "Recess",
+            "icon": "fork.knife",
+            "room": "None",
+            "colour": "White",
+            "listName": "Recess",
+            "listIcon": "fork.knife.circle.fill",
+            "joke": "like lunch but short"
+        },
+        "sc": {
+            "name": "Science",
+            "icon": "flask",
+            "room": "FT10",
+            "colour": "Ice",
+            "listName": "Science",
+            "listIcon": "flame.circle.fill",
+            "joke": "None"
+        },
+        "ss": {
+            "name": "Stage Band",
+            "icon": "music.note",
+            "room": "None",
+            "colour": "cherry",
+            "listName": "Senior S.B.",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        },
+        "ta": {
+            "name": "TAS",
+            "icon": "hammer",
+            "room": "HG7",
+            "colour": "Blueberry",
+            "listName": "TAS",
+            "listIcon": "hammer.circle.fill",
+            "joke": "None"
+        },
+        "tc": {
+            "name": "Theatre Crew",
+            "icon": "headset",
+            "room": "None",
+            "colour": "Peach",
+            "listName": "Theatre Crew",
+            "listIcon": "headset.circle.fill",
+            "joke": "None"
+        },
+        "va": {
+            "name": "Visual Arts",
+            "icon": "paintbrush.pointed",
+            "room": "HG5",
+            "colour": "Apricot",
+            "listName": "Art",
+            "listIcon": "paintbrush.pointed.circle.fill",
+            "joke": "None"
+        },
+        "ya": {
+            "name": "Year Assembly",
+            "icon": "person.3",
+            "room": "None",
+            "colour": "White",
+            "listName": "Assembly",
+            "listIcon": "person.2.circle.fill",
+            "joke": "None"
+        },
+        "ns": {
+            "name": "No School",
+            "icon": "xmark",
+            "room": "None",
+            "colour": "Gray",
+            "listName": "No School",
+            "listIcon": "xmark.circle",
+            "joke": "None"
+        },
+        "scb": {
+            "name": "Senior C.B.",
+            "icon": "music.note",
+            "room": "None",
+            "colour": "Cherry",
+            "listName": "Senior C.B.",
+            "listIcon": "music.note.circle.fill",
+            "joke": "None"
+        }
     },
-    "en": {
-      "name": "English",
-      "icon": "book.closed",
-      "room": "BT9",
-      "colour": "Lemon",
-      "listName": "English",
-      "listIcon": "book.closed.circle.fill",
-      "joke": "None"
-    }
-  },
-  "defaultTimes": [900,910,1010,1110,1130,1230,1330,1410,1510],
-  "timetable": {
-    "monA": {
-      900: "ci",
-      910: "en",
-      1000: "ml",
-      1030: "paBG",
-      1110: "rc",
-      1130: "pd3",
-      1230: "sc",
-      1330: "js",
-      1410: "va",
-      1510: "ns"
-    }
-  }
+    
+    "normtimes": [900, 910, 1010, 1110, 1130, 1230, 1330, 1410, 1510],
+    
+    "monA": {900: "ci", 910: "en9", 1000: "ml", 1030: "paBG", 1110: "rc", 1130: "pd3", 1230: "sc", 1330: "js", 1410: "va", 1510: "ns"},
+    "tueA": {900: "ci", 910: "va", 1010: "paC1", 1110: "rc", 1130: "pd1", 1230: "en9", 1330: "lu", 1410: "ma", 1510: "ss", 1700: "ns"},
+    "wedA": {900: "ta", 1050: "ya", 1100: "rc", 1120: "sc", 1210: "ma", 1300: "lu", 1330: "tc", 1510: "mb", 1730: "ns"},
+    "thuA": {900: "ci", 910: "sc", 1010: "mm", 1110: "rc", 1130: "hs", 1230: "en6", 1330: "lu", 1410: "jc", 1530: "go", 1700: "ns"},
+    "friA": {900: "ci", 910: "ta", 1010: "pd1", 1110: "rc", 1130: "sc", 1230: "en9", 1330: "lu", 1410: "mm", 1510: "ns"},
+    "monB": {900: "ci", 910: "en9", 1000: "ml", 1030: "va", 1110: "rc", 1130: "hs", 1230: "ma", 1330: "js", 1410: "pd3", 1510: "ns"},
+    "tueB": {900: "ci", 910: "mm", 1010: "ma", 1110: "rc", 1130: "paBT", 1230: "en9", 1330: "lu", 1410: "ta", 1510: "ss", 1700: "ns"},
+    "wedB": {900: "hs", 1000: "ma", 1050: "ya", 1100: "rc", 1120: "va", 1210: "sc", 1300: "lu", 1330: "scb", 1510: "mb", 1730: "ns"},
+    "thuB": {900: "ci", 910: "va", 1010: "sc", 1110: "rc", 1130: "en9", 1230: "ma", 1330: "lu", 1410: "jc", 1530: "go", 1700: "ns"},
+    "friB": {900: "ci", 910: "ma", 1010: "hs", 1110: "rc", 1130: "ta", 1230: "sc", 1330: "lu", 1410: "paC1", 1510: "ns"}
 }
