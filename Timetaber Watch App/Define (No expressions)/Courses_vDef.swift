@@ -77,9 +77,9 @@ let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", j
 
 let SCBCourse = Course(name: "Senior C.B.", icon: "music.note", colour: "Cherry")
 let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour: "Ice", listIcon: "flame.circle.fill")
-let SSBCourse = Course(name: "Stage Band", icon: "music.note", colour: "cherry", listName: "Senior S.B.")
+let SSBCourse = Course(name: "Stage Band", icon: "music.note", colour: "Cherry", listName: "Senior S.B.")
 
-let TAS = Course(name: "TAS", icon: "hammer", room: "HG7", colour: "Blueberry")
+let TAS = Course(name: "TAS", icon: "hammer", room: "FT4", colour: "Blueberry")
 let TCCourse = Course(name: "Theatre Crew", icon: "headset", colour: "Peach")
 
 let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art")
@@ -108,7 +108,7 @@ enum TimeCase {
     case afterClass
 }
 /// Returns a `Course` representing the absence of school; with a `joke` relevant to the current date/time of interaction, obtained through the `key` parameter.\
-/// If `key` is not initialised; the `joke` will default to `"Not yet, anyway..."`.
+/// If `key` is not initialised, the `joke` will default to `"Not yet, anyway..."`.
 func noSchool(_ key: TimeCase? = nil) -> Course {
     let joke: String
 

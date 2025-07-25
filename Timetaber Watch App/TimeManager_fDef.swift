@@ -125,22 +125,6 @@ func dateFrom24hrInt(_ time24: Int) -> Date {
     }
     return date
 }
-    
-
-
-var UpdateTimer: Timer?
-
-func setCourseChangeAlarm(for time: Int) {
-    UpdateTimer?.invalidate()
-    
-    let date = dateFrom24hrInt(time)
-    UpdateTimer = Timer(fire: date, interval: 0, repeats: false) { timer in
-        NSLog("Update timer fired; time is %@", Date.now.formatted(date: .numeric, time: .complete))
-        reload()
-    }
-    RunLoop.main.add(UpdateTimer!, forMode: .default)
-    NSLog("TimeManager_fDef.swift:%d - Succesfully set course change alarm for %@", #line, date.formatted(date: .numeric, time: .complete))
-}
 
 
 
@@ -187,12 +171,15 @@ func getCurrentClass(date: Date) -> Array<Course> {
     if time24Now<times2Day.first! { // before first course/period/time
         
         NSLog("> There's no school at the moment. [beforeClass]")
-        setCourseChangeAlarm(for: times2Day.first!)
-        return [noSchool(.beforeClass(startTime: times2Day.first!)),
-                findClassfromTimeWeekDayNifWeekIsA(
-                    sessionStartTime: times2Day.first!,
-                    weekDay: todayWeekday,
-                    isWeekA: isweekA)]
+        GlobalData.shared.nextTime = dateFrom24hrInt(times2Day.first!) //TODO: Test
+        return [
+            noSchool(.beforeClass(startTime: times2Day.first!)),
+            findClassfromTimeWeekDayNifWeekIsA(
+                sessionStartTime: times2Day.first!,
+                weekDay: todayWeekday,
+                isWeekA: isweekA
+            )
+        ]
         
     } else if time24Now>=times2Day.last! { // after last course/period/time
         
@@ -232,9 +219,9 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
             
             NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
-            setCourseChangeAlarm(for: next)
+            GlobalData.shared.nextTime = dateFrom24hrInt(next) //TODO: Test
             return [currentCourseLocal, nextCourseLocal]
-            
+        
             
         } else if now>compare &&  now<next {
             
@@ -254,7 +241,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
             
             NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
-            setCourseChangeAlarm(for: next)
+            GlobalData.shared.nextTime = dateFrom24hrInt(next)
             return [currentCourseLocal, nextCourseLocal]
             
         } // either of these `if`s mean `now` is the current class and `next` is next
@@ -265,7 +252,6 @@ func getCurrentClass(date: Date) -> Array<Course> {
     // MARK: Catch
     NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    Exhausted all possible options for day.\n    time: %@, times: %@\n", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
     log()
-    
     let failed = failCourse(feedback: "TimeManager:\(#line)")
     return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
 }
