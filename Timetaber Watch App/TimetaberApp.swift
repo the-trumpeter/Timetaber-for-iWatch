@@ -8,7 +8,6 @@
 import SwiftUI
 
 
-
 class GlobalData: ObservableObject {
     static let shared = GlobalData()
     @Published var currentCourse: Course = getCurrentClass(date: .now)[0]  //  the current timetabled class in session.
