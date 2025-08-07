@@ -69,8 +69,8 @@ let PACourseBG = Course(name: "PA Music", icon: "music.note", room: "BG1", colou
 let PACourseBT = Course(name: "PA Music", icon: "music.note", room: "BT1", colour: "Cherry")
 let PACourseC1 = Course(name: "PA Music", icon: "music.note", room: "CG1", colour: "Cherry")
 
-let PDHPE1 = Course(name: "PDHPE", icon: "figure.run", room: "PRAC", colour: "Lime")
-let PDHPE3 = Course(name: "PDHPE", icon: "figure.run", room: "THEORY", colour: "Lime")
+let PDHPE1 = Course(name: "PDHPE", icon: "figure.run", room: "AG1", colour: "Lime")
+let PDHPE3 = Course(name: "PDHPE", icon: "figure.run", room: "AG3", colour: "Lime")
 let PDHPEPrac = Course(name: "PDHPE", icon: "figure.run", room: "HALL", colour: "Lime")
 
 let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", joke: "like lunch but short")
