@@ -9,7 +9,33 @@
 import SwiftUI
 import Foundation
 
+/// Representing a class/course in a timetable.
+struct Course {
+    let name: String
+    let icon: String
+    let room: String
+    let colour: String
+    
+    let listName: String
+    let listIcon: String
+    let joke: String
+    
+    init(name: String, icon: String, room: String? = nil, colour: String,
+         listName: String? = nil, listIcon: String? = nil, joke: String? = nil)
+    {
+        
+        self.name = name
+        self.icon = icon
+        self.room = room ?? "None"
+        self.colour = colour
+        
+        self.listName = listName ?? name
+        self.listIcon = listIcon ?? (icon+".circle.fill")
+        
+        self.joke = joke ?? "None"
+    }
 
+}
 
 
 
@@ -18,7 +44,7 @@ Define all courses for user's timetable
  
 (Will later script timetable builder thing in iOS companion app to create/edit these.)
 (alphabetical order)
-
+*/
 
 let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "White", listIcon: "face.smiling.inverse")
 
@@ -59,8 +85,19 @@ let TCCourse = Course(name: "Theatre Crew", icon: "headset", colour: "Peach")
 let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art")
 
 let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White", listName: "Assembly", listIcon: "person.2.circle.fill")
-*/
 
+/*
+var noSchool: Course {
+    let today = Date.now
+    let joke = storage.shared.termRunningGB
+        ? ((weekdayNumber(today) == 1 || weekdayNumber(today) == 7)
+            ? "Happy weekend!"
+            : "Not yet, anyway...")
+        : "No term running."
+
+    return Course(name: "No school", icon: "clock", colour: "White", joke: joke)
+}
+*/
 
 /// Various situations in which there is no school.\
 /// See `noSchool`.
@@ -88,12 +125,12 @@ func noSchool(_ key: TimeCase? = nil) -> Course {
         joke = "Not yet, anyway..."
     }
 
-    return Course(name: "No school", icon: "clock", room: nil, colour: "White", listName: nil, listIcon: nil, joke: joke)
+    return Course(name: "No school", icon: "clock", colour: "White", joke: joke)
 }
 
 
 ///Method to handle informal errors, fails and exhaustions; so, bugs. Feedback of `"filename:\(#line)"` should be input to the `feedback` parameter.\
 ///Display the error to the user for reporting by setting `GlobalData.shared.currentCourse` to an instance of `failCourse`. They will be directed to open an Issue in the GitHub repository.
 func failCourse(feedback: String? = "None") -> Course {
-    return Course(name: "Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "White", listName: nil, listIcon: "exclamationmark.triangle", joke: nil)
+    return Course(name: "Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "White", listIcon: "exclamationmark.triangle")
 }

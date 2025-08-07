@@ -19,8 +19,8 @@ struct listTemplate: View {
     
     var body: some View {
         
-        let localroom = listedCourse.displayedRoom == "None" ? "": listedCourse.displayedRoom
-        let image = customSymbols[listedCourse.displayedListIcon] ?? Image(systemName: listedCourse.displayedListIcon)
+        let localroom = listedCourse.room == "None" ? "": listedCourse.room
+        let image = customSymbols[listedCourse.listIcon] ?? Image(systemName: listedCourse.listIcon)
         HStack{
             
             image
@@ -33,7 +33,7 @@ struct listTemplate: View {
             
             VStack {
                 HStack {
-                    Text(listedCourse.displayedListName)
+                    Text(listedCourse.listName)
                         .bold()
                     Spacer()
                     

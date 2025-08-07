@@ -14,12 +14,12 @@ import SwiftUI
 
 func roomOrBlank(_ course: Course) -> String{
     if course.room=="None" {
-        if course.displayedJoke == "None" {
+        if course.joke == "None" {
             return ""
         }
-        return course.displayedJoke
+        return course.joke
     } else {
-        return course.displayedRoom
+        return course.room
     }
 }
 
@@ -29,8 +29,8 @@ func getNextString(_ course: Course) -> String {
     }
     if course.name == "No school" || course.name == "Error" || GlobalData.shared.currentCourse.name=="Error" {
         return ""
-    } else if course.displayedRoom != "None" {
-        return course.name+" - "+course.displayedRoom
+    } else if course.room != "None" {
+        return course.name+" - "+course.room
     }
     return course.name
 
