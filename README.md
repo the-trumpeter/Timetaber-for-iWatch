@@ -24,7 +24,8 @@ Sorry if the repository's code is erroring, you can probably guess that I don't 
 ## `stable` branch
 
 This branch contains the latest stable, working version of Timetaber, regardless of tags and releases.
-If something's in here, it definetly works; and if it doesn't, then do something about it!!
+If something's in here, it probably works; and if it doesn't, then do something about it!!
+Consider it as a live beta version. Tags and releases are official functional releases (unless marked otherwise).
 
 <br>
 <br>
