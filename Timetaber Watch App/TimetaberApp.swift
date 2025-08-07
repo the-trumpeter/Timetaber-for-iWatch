@@ -46,7 +46,7 @@ func log() {
 @main
 
 struct Timetaber_Watch_AppApp: App {
-    
+    @Environment(\.scenePhase) private var scenePhase
     init() {
         calendar.timeZone = TimeZone.current
     }
@@ -70,7 +70,11 @@ struct Timetaber_Watch_AppApp: App {
             .onAppear() {
                 log()
             }
-            
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active {
+                    reload()
+                }
+            }
         }
         
     }

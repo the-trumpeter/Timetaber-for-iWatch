@@ -111,10 +111,7 @@ func dateFrom24hrInt(_ time24: Int) -> Date {
     components.hour = time24/100
     components.minute = time24%100
     components.second = 0
-    print("""
-            TimeManager_fDef.swift:\(#line) @ dateFrom24hrInt
-                Composing date \(String(describing: components.hour!)):\(String(describing: components.minute!))
-          """)
+    print("TimeManager_fDef.swift:\(#line) @ dateFrom24hrInt\n\tComposing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
     guard let date = calendar.date(from: components) else {
         
         GlobalData.shared.currentCourse = failCourse(feedback: "TimeManager:\(#line)")
