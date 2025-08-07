@@ -21,6 +21,11 @@ Since I'm not actively collaborating with anybody I often commit all my changes 
 I have been trying to keep it a bit cleaner lately through the use of branches; I hope it helps.
 Sorry if the repository's code is erroring, you can probably guess that I don't know how to fix it.
 
+## `stable` branch
+
+This branch contains the latest stable, working version of Timetaber, regardless of tags and releases.
+If something's in here, it definetly works; and if it doesn't, then do something about it!!
+
 <br>
 <br>
 
