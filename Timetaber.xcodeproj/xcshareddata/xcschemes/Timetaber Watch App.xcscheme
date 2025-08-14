@@ -29,7 +29,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AE5BB4BA2D12962C009928BD"
+               BlueprintIdentifier = "AE09C37D2E4D8A680032E777"
                BuildableName = "Timetaber.app"
                BlueprintName = "Timetaber"
                ReferencedContainer = "container:Timetaber.xcodeproj">

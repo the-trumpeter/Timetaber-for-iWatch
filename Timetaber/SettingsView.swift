@@ -1,5 +1,12 @@
 //
 //  SettingsView.swift
+//  Timetaber
+//
+//  Created by Gill Palmer on 14/8/2025.
+//
+
+//
+//  SettingsView.swift
 //  Timetaber Watch App
 //
 //  Created by Gill Palmer on 6/11/2024.
@@ -13,7 +20,6 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
     // process to start a term
     
     // ! Need to store that a term is running!!
-    //TODO: These values should sync across iOS and watchOS
     storage.shared.ghostWeekGB = ghostWeek
     storage.shared.startDateGB = Date.now
     storage.shared.termRunningGB = true
@@ -128,10 +134,10 @@ struct SettingsView: View {
             Spacer()
         
             
-            Text("Timetaber for iWatch\nGill Palmer, 2024")
+            Text("Timetaber\nGill Palmer, 2024")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.gray)
-                .font(.system(size: 13))
+                .font(.system(size: 20))
                 
             
         }.onAppear { print("SettingsView Updated") }

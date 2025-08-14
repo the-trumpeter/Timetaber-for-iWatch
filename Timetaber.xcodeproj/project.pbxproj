@@ -6,8 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AE09C38A2E4D8A820032E777 /* Timetaber Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
-		AE5BB4C32D12962C009928BD /* PBXContainerItemProxy */ = {
+		AE09C38B2E4D8A820032E777 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AE5BB4B52D12962C009928BD /* Project object */;
 			proxyType = 1;
@@ -17,12 +21,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		AE5BB4D42D12962D009928BD /* Embed Watch Content */ = {
+		AE09C38D2E4D8A820032E777 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
+				AE09C38A2E4D8A820032E777 /* Timetaber Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -30,11 +35,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AEEC74B52D290163003BC9DF /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE09C37E2E4D8A680032E777 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timetaber Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AE09C37F2E4D8A680032E777 /* Timetaber */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Timetaber;
+			sourceTree = "<group>";
+		};
+		AE09C38E2E4D8B120032E777 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		AE5BB4C52D12962C009928BD /* Timetaber Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Timetaber Watch App";
@@ -43,6 +58,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AE09C37B2E4D8A680032E777 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE5BB4BE2D12962C009928BD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -53,36 +75,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE09C3892E4D8A820032E777 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AE5BB4B42D12962C009928BD = {
 			isa = PBXGroup;
 			children = (
+				AE09C38E2E4D8B120032E777 /* Shared */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
-				AEEC74B52D290163003BC9DF /* Timetaber.app */,
 				AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */,
+				AE09C37E2E4D8A680032E777 /* Timetaber.app */,
+				AE09C37F2E4D8A680032E777 /* Timetaber */,
+				AE09C3892E4D8A820032E777 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AE5BB4BA2D12962C009928BD /* Timetaber */ = {
+		AE09C37D2E4D8A680032E777 /* Timetaber */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE5BB4D52D12962D009928BD /* Build configuration list for PBXNativeTarget "Timetaber" */;
+			buildConfigurationList = AE09C3862E4D8A6C0032E777 /* Build configuration list for PBXNativeTarget "Timetaber" */;
 			buildPhases = (
-				AE5BB4B92D12962C009928BD /* Resources */,
-				AE5BB4D42D12962D009928BD /* Embed Watch Content */,
+				AE09C37A2E4D8A680032E777 /* Sources */,
+				AE09C37B2E4D8A680032E777 /* Frameworks */,
+				AE09C37C2E4D8A680032E777 /* Resources */,
+				AE09C38D2E4D8A820032E777 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				AE5BB4C42D12962C009928BD /* PBXTargetDependency */,
+				AE09C38C2E4D8A820032E777 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AE09C37F2E4D8A680032E777 /* Timetaber */,
+				AE09C38E2E4D8B120032E777 /* Shared */,
 			);
 			name = Timetaber;
 			packageProductDependencies = (
 			);
 			productName = Timetaber;
-			productReference = AEEC74B52D290163003BC9DF /* Timetaber.app */;
-			productType = "com.apple.product-type.application.watchapp2-container";
+			productReference = AE09C37E2E4D8A680032E777 /* Timetaber.app */;
+			productType = "com.apple.product-type.application";
 		};
 		AE5BB4C02D12962C009928BD /* Timetaber Watch App */ = {
 			isa = PBXNativeTarget;
@@ -97,6 +135,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				AE09C38E2E4D8B120032E777 /* Shared */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
 			);
 			name = "Timetaber Watch App";
@@ -113,11 +152,11 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
-					AE5BB4BA2D12962C009928BD = {
-						CreatedOnToolsVersion = 16.2;
+					AE09C37D2E4D8A680032E777 = {
+						CreatedOnToolsVersion = 16.4;
 					};
 					AE5BB4C02D12962C009928BD = {
 						CreatedOnToolsVersion = 16.2;
@@ -138,14 +177,14 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AE5BB4BA2D12962C009928BD /* Timetaber */,
 				AE5BB4C02D12962C009928BD /* Timetaber Watch App */,
+				AE09C37D2E4D8A680032E777 /* Timetaber */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		AE5BB4B92D12962C009928BD /* Resources */ = {
+		AE09C37C2E4D8A680032E777 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -162,6 +201,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AE09C37A2E4D8A680032E777 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE5BB4BD2D12962C009928BD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -172,14 +218,85 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		AE5BB4C42D12962C009928BD /* PBXTargetDependency */ = {
+		AE09C38C2E4D8A820032E777 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
-			targetProxy = AE5BB4C32D12962C009928BD /* PBXContainerItemProxy */;
+			targetProxy = AE09C38B2E4D8A820032E777 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		AE09C3872E4D8A6C0032E777 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SZ9B9P3279;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Gill-Palmer.Timetaber.watchkitapp";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gill-Palmer.Timetaber";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AE09C3882E4D8A6C0032E777 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SZ9B9P3279;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Gill-Palmer.Timetaber.watchkitapp";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gill-Palmer.Timetaber";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		AE5BB4CF2D12962D009928BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -307,7 +424,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Timetaber;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKWatchOnly = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Gill-Palmer.Timetaber";
+				INFOPLIST_KEY_WKWatchOnly = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -337,7 +455,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Timetaber;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKWatchOnly = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Gill-Palmer.Timetaber";
+				INFOPLIST_KEY_WKWatchOnly = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -355,40 +474,18 @@
 			};
 			name = Release;
 		};
-		AE5BB4D62D12962D009928BD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SZ9B9P3279;
-				INFOPLIST_KEY_CFBundleDisplayName = Timetaber;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Gill-Palmer.Timetaber";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		AE5BB4D72D12962D009928BD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SZ9B9P3279;
-				INFOPLIST_KEY_CFBundleDisplayName = Timetaber;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Gill-Palmer.Timetaber";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AE09C3862E4D8A6C0032E777 /* Build configuration list for PBXNativeTarget "Timetaber" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE09C3872E4D8A6C0032E777 /* Debug */,
+				AE09C3882E4D8A6C0032E777 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AE5BB4B82D12962C009928BD /* Build configuration list for PBXProject "Timetaber" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -403,15 +500,6 @@
 			buildConfigurations = (
 				AE5BB4D22D12962D009928BD /* Debug */,
 				AE5BB4D32D12962D009928BD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AE5BB4D52D12962D009928BD /* Build configuration list for PBXNativeTarget "Timetaber" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AE5BB4D62D12962D009928BD /* Debug */,
-				AE5BB4D72D12962D009928BD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

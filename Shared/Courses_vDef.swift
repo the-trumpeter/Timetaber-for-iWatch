@@ -45,8 +45,11 @@ Define all courses for user's timetable
 (Will later script timetable builder thing in iOS companion app to create/edit these.)
 (alphabetical order)
 */
-
+#if os(watchOS)
 let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "White", listIcon: "face.smiling.inverse")
+#else
+let CheckInCourse = Course(name: "Check In", icon: "face.smiling", room: "HG1", colour: "Black", listIcon: "face.smiling.inverse")
+#endif
 
 let English6 = Course(name: "English", icon: "book.closed", room: "BT6", colour: "Lemon")
 let English9 = Course(name: "English", icon: "book.closed", room: "BT9", colour: "Lemon")
@@ -58,7 +61,12 @@ let HSIECourse = Course(name: "HSIE", icon: "archivebox", room: "BG8", colour: "
 let JCBCourse = Course(name: "Junior C.B.", icon: "music.note", colour: "Cherry")
 let JSBCourse = Course(name: "Jr Stage", icon: "music.note", room: "BT1", colour: "White", listName: "Junior S.B.")
 
+
+#if os(watchOS)
 let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "foood")
+#else
+let LunchPeriod = Course(name: "Lunch", icon: "fork.knife", colour: "White", joke: "foood")
+#endif
 
 let MathsCourse = Course(name: "Maths", icon: "number", room: "FT5", colour: "Rose")
 let MLPeriod = Course(name: "Music Lesson", icon: "music.note", colour: "White")
@@ -73,7 +81,11 @@ let PDHPE1 = Course(name: "PDHPE", icon: "figure.run", room: "AG1", colour: "Lim
 let PDHPE3 = Course(name: "PDHPE", icon: "figure.run", room: "AG3", colour: "Lime")
 let PDHPEPrac = Course(name: "PDHPE", icon: "figure.run", room: "HALL", colour: "Lime")
 
+#if os(watchOS)
 let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "White", joke: "like lunch but short")
+#else
+let RecessPeriod = Course(name: "Recess", icon: "fork.knife", colour: "Black", joke: "like lunch but short")
+#endif
 
 let SCBCourse = Course(name: "Senior C.B.", icon: "music.note", colour: "Cherry")
 let ScienceCourse = Course(name: "Science", icon: "flask", room: "FT10", colour: "Ice", listIcon: "flame.circle.fill")
@@ -84,8 +96,11 @@ let TCCourse = Course(name: "Theatre Crew", icon: "headset", colour: "Peach")
 
 let VisualArtsCourse = Course(name: "Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art")
 
+#if os(watchOS)
 let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "White", listName: "Assembly", listIcon: "person.2.circle.fill")
-
+#else
+let yearAssembly = Course(name: "Year Assembly", icon: "person.3", colour: "Black", listName: "Assembly", listIcon: "person.2.circle.fill")
+#endif
 /*
 var noSchool: Course {
     let today = Date.now
@@ -124,8 +139,12 @@ func noSchool(_ key: TimeCase? = nil) -> Course {
     case nil:
         joke = "Not yet, anyway..."
     }
-
+    
+    #if os(watchOS)
     return Course(name: "No school", icon: "clock", colour: "White", joke: joke)
+    #else
+    return Course(name: "No school", icon: "clock", colour: "Black", joke: joke)
+    #endif
 }
 
 
