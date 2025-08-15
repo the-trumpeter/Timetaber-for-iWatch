@@ -12,6 +12,8 @@ import Foundation
 import SwiftUI
 
 
+typealias Colour = Color
+
 func roomOrBlank(_ course: Course) -> String{
     if course.room=="None" {
         if course.joke == "None" {

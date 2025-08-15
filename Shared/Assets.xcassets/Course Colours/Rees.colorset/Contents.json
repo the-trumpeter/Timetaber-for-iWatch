@@ -19,15 +19,6 @@
           "value" : "dark"
         }
       ],
-      "color" : {
-        "color-space" : "display-p3",
-        "components" : {
-          "alpha" : "1.000",
-          "blue" : "0.132",
-          "green" : "0.187",
-          "red" : "0.187"
-        }
-      },
       "idiom" : "universal"
     }
   ],

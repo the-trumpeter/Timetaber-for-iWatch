@@ -70,7 +70,7 @@ struct listedDay: View {
                 listTemplate(listedCourse: listedCourse, courseTime: time24toNormal(key))
                     .environmentObject(GlobalData.shared)
                     .listRowBackground(data.currentCourse.name == listedCourse.name ? ( Color(listedCourse.colour)
-                        .opacity(colorScheme == .dark ? 0.2 : 1.0)
+                        .opacity(0.2)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     ): nil
                     )

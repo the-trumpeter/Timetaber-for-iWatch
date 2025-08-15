@@ -90,47 +90,14 @@ struct SettingsView: View {
     @State var showingSheet = false
 //    @State var isTermRunning: Bool = false
     @State private var showConf = false
+    @State var timesClicked = 0
     
     var body: some View {
         
         VStack {
-            
-            Button { withAnimation {
-                if !data.termRunningGB {
-                    showingSheet.toggle()
-                } else {
-                    showConf = true
-                }
-                
-                }} label: {
-                    Label(data.termRunningGB ? "End Term": "Start Term", systemImage: data.termRunningGB ? "stop.circle": "play.circle")}
-                        .contentTransition(.symbolEffect(.replace))
-                        .background(
-                            RoundedRectangle(cornerRadius: 100)
-                                .stroke(.white, lineWidth: data.termRunningGB ? 1: 0))
-            
-                        .sheet(isPresented: $showingSheet) {
-                            NewTermSheet().environmentObject(GlobalData.shared)
-                        }
-            
-                        .padding(10)
-            
-                        .confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
-                            
-                            Button("End Term") {
-                                //⭐️on term end
-                                if endTermProcess() {
-                                    print("Ended term")
-                                } else {
-                                    print("SettingsView, line 122: Error!")
-                                }
-                            }
-                            
-                            Button("Cancel", role: .cancel) { }
-                        } message: {
-                            Text("This will reset weeks and move into holiday mode.")
-                        }
-            
+            Spacer()
+            Button("Hi") { timesClicked += 1
+                print("All hail King Charlie ×"+String(timesClicked)) }
             Spacer()
         
             
