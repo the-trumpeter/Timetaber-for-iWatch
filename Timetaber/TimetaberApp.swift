@@ -13,7 +13,9 @@ struct TimetaberApp: App {
         WindowGroup {
             TabView{
                 Tab("Home", systemImage: "clock") { HomeView().environmentObject(GlobalData.shared) }
+				Tab("Timetable", systemImage: "list.bullet") { TimetableView(day: monA) }
+				Tab("Settings", systemImage: "gear") { SettingsView() }
             }
         }
-    }
+	}
 }

@@ -14,8 +14,6 @@ struct HomeView: View {
     var body: some View {
         
         let colour = data.currentCourse.colour
-        let room = roomOrBlank(data.currentCourse)
-        
         let next = data.nextCourse
         
         VStack {
@@ -23,7 +21,7 @@ struct HomeView: View {
             
             // CURRENT CLASS
             Image(systemName: data.currentCourse.icon)
-                .foregroundStyle(Color(colour))//add an SF symbol element
+                .foregroundStyle(Color(colour))
                 .imageScale(.large)
                 .font(.system(size: 25).weight(.semibold))
             
@@ -33,7 +31,7 @@ struct HomeView: View {
                 .padding(.bottom, 0.1)
             
             // ROOM
-            Text(room)
+            Text(roomOrBlank(data.currentCourse) ?? "")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .font(.system(size: 15))

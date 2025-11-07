@@ -14,15 +14,14 @@ import SwiftUI
 
 typealias Colour = Color
 
-func roomOrBlank(_ course: Course) -> String{
-    if course.room=="None" {
-        if course.joke == "None" {
-            return ""
-        }
-        return course.joke
-    } else {
-        return course.room
-    }
+func roomOrBlank(_ course: Course) -> String? {
+	guard let room = course.room else {
+		guard let joke = course.joke else {
+			return nil
+		}
+		return joke
+	}
+	return room
 }
 
 func getNextString(_ course: Course) -> String {
@@ -31,8 +30,8 @@ func getNextString(_ course: Course) -> String {
     }
     if course.name == "No school" || course.name == "Error" || GlobalData.shared.currentCourse.name=="Error" {
         return ""
-    } else if course.room != "None" {
-        return course.name+" - "+course.room
+	} else if let room = course.room {
+        return course.name+" - "+course.room!
     }
     return course.name
 

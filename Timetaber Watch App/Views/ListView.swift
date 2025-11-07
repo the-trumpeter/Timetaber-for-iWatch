@@ -18,8 +18,7 @@ struct listTemplate: View {
     var courseTime: String
     
     var body: some View {
-        
-        let localroom = listedCourse.room == "None" ? "": listedCourse.room
+
         let image = customSymbols[listedCourse.listIcon] ?? Image(systemName: listedCourse.listIcon)
         HStack{
             
@@ -41,8 +40,8 @@ struct listTemplate: View {
                 HStack {
                     Text(courseTime)
                         .foregroundStyle(.secondary)
-                    if localroom != "" {
-                        Text(localroom).bold()
+                    if let room = listedCourse.room {
+                        Text(room).bold()
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
@@ -66,10 +65,16 @@ struct listedDay: View {
             ForEach(dayKeys, id: \.self) { key in
                 
                 let listedCourse = day[key] ?? failCourse(feedback: "LV.lD@56")
-                
+				let isCurrent = {
+					guard data.currentCourse.identifier != nil && listedCourse.identifier != nil else {
+						return (data.currentCourse.name == listedCourse.name)
+					}
+					return (data.currentCourse.identifier == listedCourse.identifier)
+				}()
+
                 listTemplate(listedCourse: listedCourse, courseTime: time24toNormal(key))
                     .environmentObject(GlobalData.shared)
-                    .listRowBackground(data.currentCourse.name == listedCourse.name ? ( Color(listedCourse.colour)
+                    .listRowBackground(isCurrent ? ( Color(listedCourse.colour)
                         .opacity(0.2)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     ): nil
@@ -83,7 +88,7 @@ struct listedDay: View {
 
 // MARK: - Master
 struct ListView: View {
-    @ObservedObject var data = storage.shared
+    @ObservedObject var data = Storage.shared
     var body: some View {
         
         

@@ -8,14 +8,12 @@
 import Foundation
 import SwiftUI
 
-let userDefaults = UserDefaults.standard
 
+let runningKey = "timetaber.userdefaults.termRunning"
 
-let runningKey = "timetaber.userdefalts.termRunning"
+let ghostWeekKey = "timetaber.userdefaults.ghostWeek"
 
-let ghostWeekKey = "timetaber.userdefalts.ghostWeek"
-
-let startDateKey = "timetaber.userdefalts.startDate"
+let startDateKey = "timetaber.userdefaults.startDate"
 
 
 class GlobalData: ObservableObject {
@@ -43,26 +41,25 @@ func log() {
         Date.now.formatted(date: .numeric, time: .complete),
         GlobalData.shared.currentCourse.name,
         GlobalData.shared.nextCourse.name,
-        String(describing: storage.shared.termRunningGB),
-        String(describing: storage.shared.ghostWeekGB),
-        String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: storage.shared.ghostWeekGB) )
+        String(describing: Storage.shared.termRunningGB),
+        String(describing: Storage.shared.ghostWeekGB),
+        String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: Storage.shared.ghostWeekGB) )
     )
 
 }
 
-class storage: ObservableObject {
-    static let shared = storage()
-    
+class Storage: ObservableObject {
+
+    static let shared = Storage()
+
     @AppStorage(runningKey) var termRunningGB = false
     @AppStorage(ghostWeekKey) var ghostWeekGB = false
     @AppStorage(startDateKey) var startDateGB = Date.now
     // 'GB' for 'global'
 }
 
-
-
 func reload() -> Void {
-    
+
     GlobalData.shared.currentCourse = getCurrentClass(date: .now)[0]
     GlobalData.shared.nextCourse = getCurrentClass(date: .now)[1]
     

@@ -34,20 +34,21 @@ extension Color {
 
 struct currentCard: View {
     @EnvironmentObject var data: GlobalData; @Environment(\.colorScheme) var colourScheme
-    let course = ScienceCourse //TODO: Tempoary, refactor to data.currentcourse
-    var body: some View { HStack {
-            Image(systemName: course.icon)
-                .font(.system(size: 60).weight(.semibold))
-                .foregroundStyle(Colour(course.colour))
-            Spacer()
-            VStack(alignment: .trailing) {
-                Text(course.name)
-                    .font(.system(size: 35).weight(.semibold))
-                    .foregroundStyle(Colour(course.colour))
-                Text(roomOrBlank(course))
-                    .font(.system(size: 25).weight(.regular))
-                    .foregroundStyle(Colour(course.colour))
-            }}.brightness((colourScheme == .dark) ? 0: brightnessModifier)
+    var body: some View {
+		HStack {
+			Image(systemName: data.currentCourse.icon)
+				.font(.system(size: 60).weight(.semibold))
+				.foregroundStyle(Colour(data.currentCourse.colour))
+			Spacer()
+			VStack(alignment: .trailing) {
+				Text(data.currentCourse.name)
+					.font(.system(size: 35).weight(.semibold))
+					.foregroundStyle(Colour(data.currentCourse.colour))
+				Text(roomOrBlank(data.currentCourse) ?? "")
+					.font(.system(size: 25).weight(.regular))
+					.foregroundStyle(Colour(data.currentCourse.colour))
+			}
+		}.brightness((colourScheme == .dark) ? 0: brightnessModifier)
     }
 }
 
@@ -62,7 +63,14 @@ struct nextCard: View {
                     Colour("Black") }
         
             VStack(alignment: .leading) {
-                Text(course.name != "No school" ? "Next up • "+roomOrBlank(course): "Next up:")
+				Text({
+						guard course.identifier != .noSchool,
+							  let room = roomOrBlank(course) else {
+							return "Next up:"
+						}
+						return "Next up • \(room)"
+					}()
+				)
                     .font(.system(size: 25).weight(.regular))
                     .foregroundStyle(colour)
                 Text(course.name)
@@ -82,15 +90,14 @@ struct HomeView: View {
     
     @EnvironmentObject var data: GlobalData
     @Environment(\.colorScheme) var colourScheme
-    let course = ScienceCourse //TODO: Tempoary, refactor to data.currentCourse
-    
+
     var body: some View {
         
         List {
             currentCard().environmentObject(GlobalData.shared)
                 .listRowBackground(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Colour(course.colour).adjustBrightness(colourScheme == .dark ? brightnessModifier: 0))
+						.fill(Colour(data.currentCourse.colour).adjustBrightness(colourScheme == .dark ? brightnessModifier: 0))
                 )
             nextCard().environmentObject(GlobalData.shared)
                 .listRowBackground(Colour("NoCol"))

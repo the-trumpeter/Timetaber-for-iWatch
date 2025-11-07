@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>top-level-items</key>
+	<array>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>26</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>25</string>
+					<key>Timestamp</key>
+					<string>784168525.950117</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Courses_vDef.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>struct Course {
+</string>
+				<key>leading</key>
+				<string>
+/// Representing a class/course in a timetable.
+</string>
+				<key>trailing</key>
+				<string>    let name: String
+    let icon: String
+    let room: String?
+</string>
+			</dict>
+			<key>title</key>
+			<string>Each instance of Course (in the timetable) needs a unique ID (based on its location in the timetable) to differ it from other instances of the same course in the one day</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/TimetableCreatorView.swift</string>
+					</dict>
+				</dict>
+				<key>type</key>
+				<string>DVTDocumentLocation</string>
+			</dict>
+			<key>title</key>
+			<string>build Timetable creating interface</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>53</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>52</string>
+					<key>Timestamp</key>
+					<string>784158442.585421</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/StorageManager.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    static let shared = Storage()
+</string>
+				<key>leading</key>
+				<string>class Storage: ObservableObject {
+
+</string>
+				<key>trailing</key>
+				<string>
+    @AppStorage(runningKey) var termRunningGB = false
+    @AppStorage(ghostWeekKey) var ghostWeekGB = false
+</string>
+			</dict>
+			<key>title</key>
+			<string>Remove static shared value as source of truth; move to an instance inside LocalData(s)</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>12</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>11</string>
+					<key>Timestamp</key>
+					<string>784158070.416074</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/LocalData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>class LocalStorage: ObservableObject {
+</string>
+				<key>leading</key>
+				<string>
+///The local equivalent of `GlobalData`. NOTE: iOS DATA IS THE ROOT SOURCE OF TRUTH FOR TIMETABER'S STORAGE.
+</string>
+				<key>trailing</key>
+				<string>	static let shared = GlobalData()
+	@Published var currentCourse: Course// = getCurrentClass(date: .now)[0]  //  the current timetabled class in session.
+	@Published var nextCourse: Course// = getCurrentClass(date: .now)[1]     //  the next timetabled class in session
+</string>
+			</dict>
+			<key>title</key>
+			<string>Create local storage containers for each device; watch pings phone (SoT) to update timetable.</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>59</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>58</string>
+					<key>Timestamp</key>
+					<string>784168525.950092</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Courses_vDef.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>//MARK: - Old Courses
+</string>
+				<key>leading</key>
+				<string>
+
+</string>
+				<key>trailing</key>
+				<string>/*
+Define all courses for user's timetable
+ 
+</string>
+			</dict>
+			<key>title</key>
+			<string>To be discarded</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>children</key>
+			<array>
+				<dict>
+					<key>destination</key>
+					<dict>
+						<key>location-parameters</key>
+						<dict>
+							<key>EndingColumnNumber</key>
+							<string>0</string>
+							<key>EndingLineNumber</key>
+							<string>61</string>
+							<key>StartingColumnNumber</key>
+							<string>0</string>
+							<key>StartingLineNumber</key>
+							<string>60</string>
+							<key>Timestamp</key>
+							<string>784158420.892599</string>
+						</dict>
+						<key>rebasable-url</key>
+						<dict>
+							<key>base</key>
+							<string>workspace</string>
+							<key>payload</key>
+							<dict>
+								<key>relative-path</key>
+								<string>Shared/StorageManager.swift</string>
+							</dict>
+						</dict>
+					</dict>
+					<key>text-context</key>
+					<dict>
+						<key>focused</key>
+						<string>func reload() -&gt; Void {
+</string>
+						<key>leading</key>
+						<string>}
+
+</string>
+						<key>trailing</key>
+						<string>
+    GlobalData.shared.currentCourse = getCurrentClass(date: .now)[0]
+    GlobalData.shared.nextCourse = getCurrentClass(date: .now)[1]
+</string>
+					</dict>
+					<key>title</key>
+					<string>Is a Void return really neccecary here?</string>
+					<key>type</key>
+					<string>bookmark</string>
+				</dict>
+			</array>
+			<key>title</key>
+			<string>Later</string>
+			<key>type</key>
+			<string>group</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>106</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>105</string>
+					<key>Timestamp</key>
+					<string>784171333.617545</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Timetable_sharing.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>is-complete</key>
+			<true/>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>		21: Course2("No school", 	icon: "clock", 														colour: "Graphite")
+</string>
+				<key>leading</key>
+				<string>		19: Course2("Visual Arts", 	icon: "paintbrush.pointed",			rooms: ["HG5"], 				colour: "Apricot", 	listName: "Art"),
+		20: Course2("Year Assembly",icon: "person.3", 													colour: "Graphite",	listName: "Assembly",		listIcon: "person.2.circle.fill"),
+</string>
+				<key>trailing</key>
+				<string>	],
+	timetable: [
+		// Week A (key 1): Mon..Fri (from previous 1..5)
+</string>
+			</dict>
+			<key>title</key>
+			<string>Rewrite Timetable to allow finish times</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -14,9 +14,9 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
     
     // ! Need to store that a term is running!!
     //TODO: These values should sync across iOS and watchOS
-    storage.shared.ghostWeekGB = ghostWeek
-    storage.shared.startDateGB = Date.now
-    storage.shared.termRunningGB = true
+    Storage.shared.ghostWeekGB = ghostWeek
+    Storage.shared.startDateGB = Date.now
+    Storage.shared.termRunningGB = true
     reload()
     log()
     
@@ -27,7 +27,7 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
 func endTermProcess() -> Bool {
     //processes to end a term, local 'termrunning' should be changed externally
     
-    storage.shared.termRunningGB = false
+    Storage.shared.termRunningGB = false
     reload()
     log()
     
@@ -41,8 +41,8 @@ struct NewTermSheet: View {
     @Environment(\.dismiss) var dismiss
     //@Binding var termRunning: Bool
     
-    @ObservedObject var data = storage.shared
-    
+    @ObservedObject var data = Storage.shared
+
     var body: some View {
         ScrollView{
             VStack{
@@ -79,8 +79,8 @@ struct NewTermSheet: View {
 //MARK: View
 struct SettingsView: View {
     
-    @ObservedObject var data = storage.shared
-    
+    @ObservedObject var data = Storage.shared
+
     @State var showingSheet = false
 //    @State var isTermRunning: Bool = false
     @State private var showConf = false

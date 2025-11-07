@@ -1,0 +1,8 @@
+Watch app opening sequence:
+- Ping phone for timetable changes
+	- timetable file format / storage
+		- how to store/edit room variations?
+	> Can't connect to phone? (Out of range / GPS only Watch)
+	Error handling? If timetable(s) async?:
+		- Display errors / no function?
+		- Use last  saved timetable

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AE09C38A2E4D8A820032E777 /* Timetaber Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AE110F2F2EA1AFDA00E01897 /* Plotting.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE110F2E2EA1AFD400E01897 /* Plotting.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,8 +37,19 @@
 
 /* Begin PBXFileReference section */
 		AE09C37E2E4D8A680032E777 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE110F2E2EA1AFD400E01897 /* Plotting.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Plotting.txt; sourceTree = "<group>"; };
 		AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timetaber Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AE110F3B2EA1B17400E01897 /* Exceptions for "Shared" folder in "Timetaber Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Timetable_sharing.swift,
+			);
+			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AE09C37F2E4D8A680032E777 /* Timetaber */ = {
@@ -47,6 +59,9 @@
 		};
 		AE09C38E2E4D8B120032E777 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AE110F3B2EA1B17400E01897 /* Exceptions for "Shared" folder in "Timetaber Watch App" target */,
+			);
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -75,22 +90,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AE09C3892E4D8A820032E777 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		AE5BB4B42D12962C009928BD = {
 			isa = PBXGroup;
 			children = (
+				AE110F2E2EA1AFD400E01897 /* Plotting.txt */,
 				AE09C38E2E4D8B120032E777 /* Shared */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
 				AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */,
 				AE09C37E2E4D8A680032E777 /* Timetaber.app */,
 				AE09C37F2E4D8A680032E777 /* Timetaber */,
-				AE09C3892E4D8A820032E777 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -188,6 +196,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE110F2F2EA1AFDA00E01897 /* Plotting.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
