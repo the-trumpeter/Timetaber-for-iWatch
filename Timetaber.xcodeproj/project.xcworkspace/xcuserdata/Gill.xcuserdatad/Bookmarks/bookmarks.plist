@@ -7,53 +7,6 @@
 		<dict>
 			<key>destination</key>
 			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>26</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>25</string>
-					<key>Timestamp</key>
-					<string>784168525.950117</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Courses_vDef.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>struct Course {
-</string>
-				<key>leading</key>
-				<string>
-/// Representing a class/course in a timetable.
-</string>
-				<key>trailing</key>
-				<string>    let name: String
-    let icon: String
-    let room: String?
-</string>
-			</dict>
-			<key>title</key>
-			<string>Each instance of Course (in the timetable) needs a unique ID (based on its location in the timetable) to differ it from other instances of the same course in the one day</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
 				<key>rebasable-url</key>
 				<dict>
 					<key>base</key>
@@ -80,13 +33,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>53</string>
+					<string>54</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>52</string>
+					<string>53</string>
 					<key>Timestamp</key>
-					<string>784158442.585421</string>
+					<string>784795227.520224</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -149,16 +102,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>class LocalStorage: ObservableObject {
+				<string>class LocalData: ObservableObject {
 </string>
 				<key>leading</key>
 				<string>
 ///The local equivalent of `GlobalData`. NOTE: iOS DATA IS THE ROOT SOURCE OF TRUTH FOR TIMETABER'S STORAGE.
 </string>
 				<key>trailing</key>
-				<string>	static let shared = GlobalData()
-	@Published var currentCourse: Course// = getCurrentClass(date: .now)[0]  //  the current timetabled class in session.
-	@Published var nextCourse: Course// = getCurrentClass(date: .now)[1]     //  the next timetabled class in session
+				<string>	static let shared = LocalData()
+	@Published var currentCourse: Course  //  the current timetabled class in session.
+	@Published var nextCourse: Course     //  the next timetabled class in session
 </string>
 			</dict>
 			<key>title</key>
@@ -196,16 +149,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>//MARK: - Old Courses
+				<string>        self.listName = listName ?? name
 </string>
 				<key>leading</key>
-				<string>
-
+				<string>        self.colour = colour
+        
 </string>
 				<key>trailing</key>
-				<string>/*
-Define all courses for user's timetable
- 
+				<string>        self.listIcon = listIcon ?? (icon+".circle.fill")
+        
+        self.joke = joke
 </string>
 			</dict>
 			<key>title</key>
@@ -224,13 +177,13 @@ Define all courses for user's timetable
 							<key>EndingColumnNumber</key>
 							<string>0</string>
 							<key>EndingLineNumber</key>
-							<string>61</string>
+							<string>77</string>
 							<key>StartingColumnNumber</key>
 							<string>0</string>
 							<key>StartingLineNumber</key>
-							<string>60</string>
+							<string>76</string>
 							<key>Timestamp</key>
-							<string>784158420.892599</string>
+							<string>784795227.5202481</string>
 						</dict>
 						<key>rebasable-url</key>
 						<dict>
@@ -277,13 +230,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>106</string>
+					<string>26</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>105</string>
+					<string>25</string>
 					<key>Timestamp</key>
-					<string>784171333.617545</string>
+					<string>784168525.950117</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -292,7 +245,7 @@ Define all courses for user's timetable
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>Shared/Timetable_sharing.swift</string>
+						<string>Shared/Courses_vDef.swift</string>
 					</dict>
 				</dict>
 			</dict>
@@ -301,20 +254,258 @@ Define all courses for user's timetable
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>		21: Course2("No school", 	icon: "clock", 														colour: "Graphite")
+				<string>/// See `noSchool`.
 </string>
 				<key>leading</key>
-				<string>		19: Course2("Visual Arts", 	icon: "paintbrush.pointed",			rooms: ["HG5"], 				colour: "Apricot", 	listName: "Art"),
-		20: Course2("Year Assembly",icon: "person.3", 													colour: "Graphite",	listName: "Assembly",		listIcon: "person.2.circle.fill"),
+				<string>
+/// Various situations in which there is no school.\
 </string>
 				<key>trailing</key>
-				<string>	],
-	timetable: [
-		// Week A (key 1): Mon..Fri (from previous 1..5)
+				<string>enum TimeCase: Encodable, Equatable {
+	case weekend
+	case noTerm
 </string>
 			</dict>
 			<key>title</key>
-			<string>Rewrite Timetable to allow finish times</string>
+			<string>Each instance of Course (in the timetable) needs a unique ID (based on its location in the timetable) to differ it from other instances of the same course in the one day</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>59</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>58</string>
+					<key>Timestamp</key>
+					<string>784795227.520255</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/StorageManager.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>    // Backwards-compatible storage for Date using Double (timeIntervalSince1970)
+</string>
+				<key>leading</key>
+				<string>    @AppStorage(ghostWeekKey) var ghostWeekGB = false
+
+</string>
+				<key>trailing</key>
+				<string>    var startDateGB: Date {
+        get {
+            let seconds = UserDefaults.standard.double(forKey: startDateKey)
+</string>
+			</dict>
+			<key>title</key>
+			<string>init(wrappedValue:_:store:) not available??</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>30</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>29</string>
+					<key>Timestamp</key>
+					<string>784875330.026159</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/LocalData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>		self.timetable = chaos //[_][self.ActiveTimetable]
+</string>
+				<key>leading</key>
+				<string>		self.timetables = [chaos]
+		self.storage = Storage()
+</string>
+				<key>trailing</key>
+				<string>	}
+}
+</string>
+			</dict>
+			<key>title</key>
+			<string>Can't do this (Index out of range)</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>28</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>27</string>
+					<key>Timestamp</key>
+					<string>784875330.02619</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/LocalData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>is-complete</key>
+			<true/>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>		self.timetables = [chaos]
+</string>
+				<key>leading</key>
+				<string>		self.currentCourse = now[0]
+		self.nextCourse = now[1]
+</string>
+				<key>trailing</key>
+				<string>		self.storage = Storage()
+		self.timetable = chaos //[_][self.ActiveTimetable]
+	}
+</string>
+			</dict>
+			<key>title</key>
+			<string>Use empty Timetable instead</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>25</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>24</string>
+					<key>Timestamp</key>
+					<string>784875568.529566</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/LocalData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>is-complete</key>
+			<true/>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>		let now = getCurrentClass/*2*/(date: .now)//, timetable: chaos)
+</string>
+				<key>leading</key>
+				<string>
+	init() {
+</string>
+				<key>trailing</key>
+				<string>		self.currentCourse = now[0]
+		self.nextCourse = now[1]
+		self.timetables = [chaos]
+</string>
+			</dict>
+			<key>title</key>
+			<string>Need to convert to 2nd protocol</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>25</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>24</string>
+					<key>Timestamp</key>
+					<string>784875568.529639</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/LocalData.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>		let now = getCurrentClass/*2*/(date: .now)//, timetable: chaos)
+</string>
+				<key>leading</key>
+				<string>
+	init() {
+</string>
+				<key>trailing</key>
+				<string>		self.currentCourse = now[0]
+		self.nextCourse = now[1]
+		self.timetables = [chaos]
+</string>
+			</dict>
+			<key>title</key>
+			<string>Got to put together a noSchool for lack of timetables.</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

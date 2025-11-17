@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AE09C38A2E4D8A820032E777 /* Timetaber Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		AE110F2F2EA1AFDA00E01897 /* Plotting.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE110F2E2EA1AFD400E01897 /* Plotting.txt */; };
+		AE1438DC2EC8393900075576 /* TimetaberIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AE1438DB2EC8393900075576 /* TimetaberIcon.icon */; };
+		AE1438DD2EC8393900075576 /* TimetaberIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AE1438DB2EC8393900075576 /* TimetaberIcon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,19 +38,9 @@
 
 /* Begin PBXFileReference section */
 		AE09C37E2E4D8A680032E777 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE110F2E2EA1AFD400E01897 /* Plotting.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Plotting.txt; sourceTree = "<group>"; };
+		AE1438DB2EC8393900075576 /* TimetaberIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = TimetaberIcon.icon; sourceTree = "<group>"; };
 		AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timetaber Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		AE110F3B2EA1B17400E01897 /* Exceptions for "Shared" folder in "Timetaber Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Timetable_sharing.swift,
-			);
-			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AE09C37F2E4D8A680032E777 /* Timetaber */ = {
@@ -59,9 +50,6 @@
 		};
 		AE09C38E2E4D8B120032E777 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				AE110F3B2EA1B17400E01897 /* Exceptions for "Shared" folder in "Timetaber Watch App" target */,
-			);
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -93,12 +81,12 @@
 		AE5BB4B42D12962C009928BD = {
 			isa = PBXGroup;
 			children = (
-				AE110F2E2EA1AFD400E01897 /* Plotting.txt */,
 				AE09C38E2E4D8B120032E777 /* Shared */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
 				AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */,
 				AE09C37E2E4D8A680032E777 /* Timetaber.app */,
 				AE09C37F2E4D8A680032E777 /* Timetaber */,
+				AE1438DB2EC8393900075576 /* TimetaberIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -196,7 +184,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE110F2F2EA1AFDA00E01897 /* Plotting.txt in Resources */,
+				AE1438DC2EC8393900075576 /* TimetaberIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +192,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE1438DD2EC8393900075576 /* TimetaberIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,7 +227,7 @@
 		AE09C3872E4D8A6C0032E777 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TimetaberIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -251,7 +240,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Gill-Palmer.Timetaber.watchkitapp";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -273,7 +262,7 @@
 		AE09C3882E4D8A6C0032E777 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TimetaberIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -286,7 +275,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Gill-Palmer.Timetaber.watchkitapp";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -423,7 +412,7 @@
 		AE5BB4D22D12962D009928BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TimetaberIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -447,14 +436,14 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Debug;
 		};
 		AE5BB4D32D12962D009928BD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TimetaberIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -479,7 +468,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Release;
 		};

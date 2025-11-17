@@ -23,10 +23,11 @@ class GlobalData: ObservableObject {
 }
 
 
+// Use SF Symbols directly to avoid missing-asset crashes at runtime
 let customSymbols = [
-    "paintbrush.pointed.circle.fill": Image(.paintbrushPointedCircleFill),
-    "music.note.circle.fill": Image(.musicNoteCircleFill),
-    "movieclapper.circle.fill": Image(.movieclapperCircleFill)
+    "paintbrush.pointed.circle.fill": Image(systemName: "paintbrush.pointed.circle.fill"),
+    "music.note.circle.fill": Image(systemName: "music.note.circle.fill"),
+    "movieclapper.circle.fill": Image(systemName: "movieclapper.circle.fill")
 ]
 
 
@@ -54,8 +55,23 @@ class Storage: ObservableObject {
 
     @AppStorage(runningKey) var termRunningGB = false
     @AppStorage(ghostWeekKey) var ghostWeekGB = false
-    @AppStorage(startDateKey) var startDateGB = Date.now
-    // 'GB' for 'global'
+
+    // Backwards-compatible storage for Date using Double (timeIntervalSince1970)
+    var startDateGB: Date {
+        get {
+            let seconds = UserDefaults.standard.double(forKey: startDateKey)
+            if seconds == 0 {
+                // If not set, default to now and persist once for consistency
+                let now = Date()
+                UserDefaults.standard.set(now.timeIntervalSince1970, forKey: startDateKey)
+                return now
+            }
+            return Date(timeIntervalSince1970: seconds)
+        }
+        set {
+            UserDefaults.standard.set(newValue.timeIntervalSince1970, forKey: startDateKey)
+        }
+    }
 }
 
 func reload() -> Void {

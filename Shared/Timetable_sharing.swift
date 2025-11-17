@@ -18,8 +18,9 @@ struct Course2: Encodable {
 	var listIcon:	String
 	var joke:		String?
 
+	let identifier:	Identifier?
 	init(_ name: String, icon: String, rooms: [String] = [], colour: String,
-		 listName: String? = nil, listIcon: String? = nil, joke: String? = nil)
+		 listName: String? = nil, listIcon: String? = nil, joke: String? = nil, identifier: Identifier? = nil)
 	{
 
 		self.name = name
@@ -32,6 +33,8 @@ struct Course2: Encodable {
 
 		self.joke = joke
 
+		self.identifier = identifier
+
 	}
 
 	/// Returns a copy of this course with an explicit room selected for a timetable slot.
@@ -42,17 +45,9 @@ struct Course2: Encodable {
 	}
 }
 
-enum TimesType: Encodable { case standard, variant(name: String) }
-struct Times: Encodable {
-	var type: TimesType
-}
+//MARK: Timetable setup
 
 struct TimetabledWeek: Encodable {
-	var standardTimes:		   [[Int]]
-	var timeVariations:	[ Int: [[Int]] ] //[ weekday: standardtimes ]
-
-	var times: Times
-
 	var monday:			[ Int: [Int] ]
 	var tuesday:		[ Int: [Int] ]
 	var wednesday:		[ Int: [Int] ]
@@ -60,25 +55,37 @@ struct TimetabledWeek: Encodable {
 	var friday:			[ Int: [Int] ]
 }
 
-//MARK: class Timetale
+struct TimeSet: Encodable {
+	var startTime: Int;
+	// in minutes
+	var duration: Int
+}
+struct Times: Encodable {
+	var standard: [ TimeSet ]
+	var variants: [String: [TimeSet]]
+	var variantDays: [Int: String]
+}
+//MARK: - class Timetale
 ///Contains all data of a user's timetable.
 class Timetable: Encodable {
 	var name: String
-	var formatProtocol: String = "0.0.1"
-	/// All courses used in the timetable are stored in an array, with their index being a unique identifier for that course.
+	private let formatProtocol: String = "0.0.3"
+
+	/// All courses used in the timetable are stored in an array, with their index being a unique identifier (for use *within the timetable*, not on the frontend) for that course.
 	var courses: [Int : Course2]
 
-	///Instead of seperate weekA etc. arrays, all week variations are condensed into one array. Use indexes from `courses` for the second `Int` value in the dictionary. For example, `1: [900: courses[0], 1000: courses[5]]` etc. The `[Int]` array (in `[Dictionary<Int, [Int]>`) should contain two values, one for the index of the `Course2` within `courses`, and the other the index of the desired room within `Course2.rooms`. The array enclosing the lower-level Dictionary is for each day of the week, so `[0]` would be Monday and so on.
+	var times: Times //I don't like this...
 	var timetable: [TimetabledWeek]
 
-	init(_ name: String, courses: [Int: Course2], timetable: [TimetabledWeek] ) {
+	init(_ name: String, courses: [Int: Course2], times: Times, timetable: [TimetabledWeek] ) {
 		self.name = name
 		self.courses = courses
+		self.times = times
 		self.timetable = timetable
 	}
 }
 
-//MARK: Definition test
+//MARK: - Definition test
 let chaos = Timetable(
 	"Gill's Timetable",
 	courses: [
@@ -103,16 +110,82 @@ let chaos = Timetable(
 		18: Course2("Theatre Crew",	icon: "headset", 													colour: "Peach"),
 		19: Course2("Visual Arts", 	icon: "paintbrush.pointed",			rooms: ["HG5"], 				colour: "Apricot", 	listName: "Art"),
 		20: Course2("Year Assembly",icon: "person.3", 													colour: "Graphite",	listName: "Assembly",		listIcon: "person.2.circle.fill"),
-		21: Course2("No school", 	icon: "clock", 														colour: "Graphite")
 	],
+
+	times: Times(
+		standard: [
+			TimeSet(startTime: 0900, duration: 10),
+			TimeSet(startTime: 0910, duration: 60),
+			TimeSet(startTime: 1010, duration: 60),
+			TimeSet(startTime: 1110, duration: 20),
+			TimeSet(startTime: 1130, duration: 60),
+			TimeSet(startTime: 1230, duration: 60),
+			TimeSet(startTime: 1330, duration: 40),
+			TimeSet(startTime: 1410, duration: 60)
+		],
+		variants: [
+			"9:30 Music lesson": [
+				TimeSet(startTime: 0900, duration: 10),
+				TimeSet(startTime: 0910, duration: 20),
+				TimeSet(startTime: 0930, duration: 30),
+				TimeSet(startTime: 1000, duration: 10),
+				TimeSet(startTime: 1010, duration: 60),
+				TimeSet(startTime: 1110, duration: 20),
+				TimeSet(startTime: 1130, duration: 60),
+				TimeSet(startTime: 1230, duration: 60),
+				TimeSet(startTime: 1330, duration: 40),
+				TimeSet(startTime: 1410, duration: 60)
+			],
+			"Band til 5pm": [
+				TimeSet(startTime: 0900, duration: 10),
+				TimeSet(startTime: 0910, duration: 60),
+				TimeSet(startTime: 1010, duration: 60),
+				TimeSet(startTime: 1110, duration: 20),
+				TimeSet(startTime: 1130, duration: 60),
+				TimeSet(startTime: 1230, duration: 60),
+				TimeSet(startTime: 1330, duration: 40),
+				TimeSet(startTime: 1410, duration: 60),
+				TimeSet(startTime: 1510, duration: 110)
+			],
+			"Band til 5:30": [
+				TimeSet(startTime: 0900, duration: 10),
+				TimeSet(startTime: 0910, duration: 60),
+				TimeSet(startTime: 1010, duration: 60),
+				TimeSet(startTime: 1110, duration: 60),
+				TimeSet(startTime: 1130, duration: 60),
+				TimeSet(startTime: 1230, duration: 60),
+				TimeSet(startTime: 1330, duration: 60),
+				TimeSet(startTime: 1410, duration: 60),
+				TimeSet(startTime: 1510, duration: 140)
+			],
+			"Band til 4:30": [
+				TimeSet(startTime: 0900, duration: 10),
+				TimeSet(startTime: 0910, duration: 60),
+				TimeSet(startTime: 1010, duration: 60),
+				TimeSet(startTime: 1110, duration: 20),
+				TimeSet(startTime: 1130, duration: 60),
+				TimeSet(startTime: 1230, duration: 60),
+				TimeSet(startTime: 1330, duration: 40),
+				TimeSet(startTime: 1410, duration: 60),
+				TimeSet(startTime: 1510, duration: 80)
+			],
+		],
+		variantDays: [
+			2: "9:30 Music lesson", //mon
+			3: "Band til 5pm",		//tue
+			4: "Band til 5:30",		//wed
+			5: "Band til 4:30"		//thu
+		]
+	),
 	timetable: [
 		// Week A (key 1): Mon..Fri (from previous 1..5)
 		TimetabledWeek(
 			monday: [
 				0900: [0,  0],
 				0910: [1,  1],
-				1000: [8,  0],
-				1030: [11, 0],
+				0930: [8,  0],
+				1000: [1,  1],
+				1010: [11, 0],
 				1110: [13, 0],
 				1130: [12, 1],
 				1230: [15, 0],
@@ -152,8 +225,7 @@ let chaos = Timetable(
 				1230: [1,  0],
 				1330: [6,  0],
 				1410: [4,  0],
-				1530: [2,  0],
-				1700: [21, 0]
+				1630: [2,  0],
 			],
 			friday: [
 				0900: [0,  0],

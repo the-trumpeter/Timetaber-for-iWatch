@@ -31,8 +31,8 @@ func getNextString(_ course: Course) -> String {
     if course.name == "No school" || course.name == "Error" || GlobalData.shared.currentCourse.name=="Error" {
         return ""
 	} else if let room = course.room {
-        return course.name+" - "+course.room!
-    }
+        return course.name+" - "+room
+	}
     return course.name
 
 }

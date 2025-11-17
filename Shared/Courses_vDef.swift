@@ -9,17 +9,27 @@
 import SwiftUI
 import Foundation
 
-enum WeekAB { case a; case b}
-enum Identifier: Equatable {
+enum WeekAB: Encodable { case a; case b}
+enum Identifier: Equatable, Encodable {
 	case standard(Timeslot)
-	case noSchool
+	case noSchool(TimeCase)
 	case fail
 }
-struct Timeslot: Equatable {
+struct Timeslot: Equatable, Encodable {
 	let time: Int
 	let day: Int //1=Sun, 2=Mon, ...7=Sat
 	let week: WeekAB
 	//let Timetable: Timetable
+}
+
+/// Various situations in which there is no school.\
+/// See `noSchool`.
+enum TimeCase: Encodable, Equatable {
+	case weekend
+	case noTerm
+	case noTimetable
+	case beforeClass(startTime: Int)
+	case afterClass
 }
 
 /// Representing a class/course in a timetable.
@@ -105,33 +115,19 @@ let VisualArtsCourse = Course("Visual Arts", icon: "paintbrush.pointed", room: "
 let yearAssembly = Course("Year Assembly", icon: "person.3", colour: "Graphite", listName: "Assembly", listIcon: "person.2.circle.fill")
 
 
-/// Various situations in which there is no school.\
-/// See `noSchool`.
-enum TimeCase {
-    case weekend
-    case noTerm
-    case beforeClass(startTime: Int)
-    case afterClass
-}
 /// Returns a `Course` representing the absence of school; with a `joke` relevant to the current date/time of interaction, obtained through the `key` parameter.\
 /// If `key` is not initialised; the `joke` will default to `"Not yet, anyway..."`.
 func noSchool(_ key: TimeCase? = nil) -> Course {
-    let joke: String
-
-    switch key {
-    case .weekend:
-        joke = "It's the weekend."
-    case .noTerm:
-        joke = "No term running."
-    case .beforeClass(let startTime):
-        joke = "First class at \(time24toNormal(startTime))."
-    case .afterClass:
-        joke = "School's out for today!"
-    case nil:
-        joke = "Not yet, anyway..."
-    }
-    
-    return Course("No school", icon: "clock", colour: "Graphite", joke: joke)
+    let joke: String = switch key {
+		case .weekend: "It's the weekend."
+		case .noTerm: "No term running."
+		case .noTimetable: "No timetable available."
+		case .beforeClass(let startTime): "First class at \(time24toNormal(startTime))."
+		case .afterClass: "School's out for today!"
+		case nil: "Not yet, anyway..."
+	}
+	let id: Identifier? = if key != nil { Identifier.noSchool(key!) } else { nil }
+	return Course("No school", icon: "clock", colour: "Graphite", joke: joke, identifier: id)
 }
 
 

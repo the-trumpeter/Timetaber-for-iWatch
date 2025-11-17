@@ -274,28 +274,49 @@ func getCurrentClass(date: Date) -> Array<Course> {
 
 //MARK: - New
 
+
+//MARK: View Support
+func getTimetableDay2(isWeekA: Bool, weekDay: Int, timetable: Timetable) -> Dictionary< Int, [Int] > {
+	let weeks = timetable.timetable
+	if isWeekA {
+		switch weekDay {
+			case 2: return weeks[0].monday
+			case 3: return weeks[0].tuesday
+			case 4: return weeks[0].wednesday
+			case 5: return weeks[0].thursday
+			case 6: return weeks[0].friday
+			default: return [:]
+		}
+	} else {
+		switch weekDay {
+			case 2: return weeks[1].monday
+			case 3: return weeks[1].tuesday
+			case 4: return weeks[1].wednesday
+			case 5: return weeks[1].thursday
+			case 6: return weeks[1].friday
+			default: return [:]
+		}
+	}
+}
+
+
 //MARK: Fail, Noschool
 func failCourse2(feedback: String? = "None") -> Course2 {
 	let rooms: [String] = if feedback != nil { [feedback!] } else { [] }
-	return Course2(name: "Error", icon: "exclamationmark.triangle", rooms: rooms, colour: "Graphite", listIcon: "exclamationmark.triangle")
+	return Course2("Error", icon: "exclamationmark.triangle", rooms: rooms, colour: "Graphite", listIcon: "exclamationmark.triangle", identifier: .fail)
 }
-func noSchool2(_ key: TimeCase? = nil) -> Course2 {
-	let joke: String
+func noSchool2(_ timecase: TimeCase? = nil) -> Course2 {
+	guard let key = timecase else { return failCourse2(feedback: "TimeManager:\(#line)")}
 
-	switch key {
-	case .weekend:
-		joke = "It's the weekend."
-	case .noTerm:
-		joke = "No term running."
-	case .beforeClass(let startTime):
-		joke = "First class at \(time24toNormal(startTime))."
-	case .afterClass:
-		joke = "School's out for today!"
-	case nil:
-		joke = "Not yet, anyway..."
+	let joke: String = switch key {
+		case .weekend: "It's the weekend."
+		case .noTerm: "No term running."
+		case .noTimetable: "No timetable available."
+		case .beforeClass(let startTime): "First class at \(time24toNormal(startTime))."
+		case .afterClass: "School's out for today!"
 	}
 
-	return Course2(name: "No school", icon: "clock", colour: "Graphite", joke: joke)
+	return Course2("No school", icon: "clock", colour: "Graphite", joke: joke, identifier: .noSchool(key) )
 }
 
 //MARK: Temp storage ping
@@ -310,14 +331,14 @@ enum ConversionError: Error {
 	case unexpectedNil
 	case identifierNotProvided
 }
-func convertCourse(course: Course?, course2: Course2?, room: String?, identifier: TimeslotIdentifier?) throws -> Any {
+func convertCourse(course: Course? = nil, course2: Course2? = nil, room: String? = nil, identifier: Identifier? = nil) throws -> Any {
 	guard (course != nil) != (course2 != nil) else { // only one input provided
 		throw ConversionError.bothInputs
 	}
 
 	if course2 != nil {
 		// Course2 to Course
-		guard let id: TimeslotIdentifier = identifier else {throw ConversionError.identifierNotProvided}
+		//guard let id: Identifier = identifier else {throw ConversionError.identifierNotProvided}
 		return Course(
 			course2!.name,
 			icon: course2!.icon,
@@ -326,18 +347,19 @@ func convertCourse(course: Course?, course2: Course2?, room: String?, identifier
 			listName: course2!.listName,
 			listIcon: course2!.listIcon,
 			joke: course2!.joke,
-			identifier: id
+			identifier: { if course2!.identifier != nil { return course2!.identifier! } else { return identifier } }()
 		)
 	}
 	if course != nil {
 		return Course2(
-			name: course!.colour,
+			course!.name,
 			icon: course!.icon,
 			rooms: { if let rm = course?.room { return [rm] } else { return [] } }(),
 			colour: course!.colour,
 			listName: course!.listName,
 			listIcon: course!.listIcon,
-			joke: course!.joke
+			joke: course!.joke,
+			identifier: { if course!.identifier != nil { return course!.identifier! } else { return identifier } }()
 		)
 	}
 	throw {
@@ -346,9 +368,9 @@ func convertCourse(course: Course?, course2: Course2?, room: String?, identifier
 }
 
 //MARK: Class from Time & Weekday & if Week is A
-func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course2 {
+func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
 
-	if !Storage.shared.termRunningGB { return noSchool2(.noTerm) } //catch if term not running
+	if !Storage.shared.termRunningGB { return noSchool(.noTerm) } //catch if term not running
 
 	let week = timetable.timetable[isWeekA ? 0 : 1]
 	let timetableDay: [ Int: [Int] ] = {
@@ -361,15 +383,22 @@ func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime:
 			default: return [:]
 		}
 	}()
-	guard let now = timetableDay[sessionStartTime] else { return failCourse2(feedback: "TimeManager:\(#line)") }
-	let course = timetable.courses[now[0]]!
-	let re_turn = course.with(room: course.rooms[now[1]])
-	return re_turn
+	guard let now = timetableDay[sessionStartTime] else { return failCourse(feedback: "TimeManager:\(#line)") }
+
+	let course2: Course2 = timetable.courses[now[0]]!
+	let roomIndex = now[1]
+	let room: String = course2.rooms[roomIndex]
+	// convertCourse throws; use try? and fall back to a failure Course if conversion fails
+	if let converted = try? convertCourse(course2: course2, room: room) as? Course {
+	    return converted
+	} else {
+	    return failCourse(feedback: "TimeManager:\(#line)")
+	}
 }
 
-//MARK: getCurrentClass
-func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course2> {
-
+//MARK: getCurrentClass2
+func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course> {
+	print("getCurrentClass2 running")
 	//MARK: Init and Ghost Week stuff
 	let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
 	print("TimeManager_fDef.swift:\(#line) - the weekday today is \(todayWeekday)")
@@ -389,13 +418,15 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course2> {
 
 	guard Storage.termRunningGB else { // if holidays then return
 		NSLog("> There's no school at the moment. [noTerm]")
-		return [noSchool2(.noTerm), noSchool2(.noTerm)]
+		print(#file+String(#line))
+		return [noSchool(.noTerm), noSchool(.noTerm)]
 	}
 
 
 	guard (2...6).contains(todayWeekday) else {
 		NSLog("> There's no school at the moment. [weekend]")
-		return [noSchool2(.weekend), noSchool2(.weekend)]
+		print(#file+String(#line))
+		return [noSchool(.weekend), noSchool(.weekend)]
 	}
 
 
@@ -406,6 +437,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course2> {
 
 	let weekdayTimes: Array<[Int]> = {
 		let wk=timetable.timetable[isweekA ? 0 : 1]
+		print(#file+String(#line))
 		return [ sK(wk.monday), sK(wk.tuesday), sK(wk.wednesday), sK(wk.thursday), sK(wk.friday) ]
 
 	}()
@@ -416,7 +448,8 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course2> {
 
 		NSLog("> There's no school at the moment. [beforeClass]")
 		setCourseChangeAlarm(for: times2Day.first!)
-		return [noSchool2(.beforeClass(startTime: times2Day.first!)),
+		print(#file+String(#line))
+		return [noSchool(.beforeClass(startTime: times2Day.first!)),
 				findClassfromTimeWeekDayNifWeekIsA2(
 					timetable: timetable,
 					sessionStartTime: times2Day.first!,
@@ -429,7 +462,8 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course2> {
 
 		NSLog("> There's no school at the moment. [afterClass]")
 		//try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
-		return [noSchool2(.afterClass), noSchool2(.afterClass)]
+		print(#file+String(#line))
+		return [noSchool(.afterClass), noSchool(.afterClass)]
 	}
 
 	//MARK: Cycle through times
@@ -459,11 +493,12 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course2> {
 					findClassfromTimeWeekDayNifWeekIsA2(
 						timetable: timetable, sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
 					)
-			} else { noSchool2(.afterClass) }
+			} else { noSchool(.afterClass) }
 
 
 			NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
 			setCourseChangeAlarm(for: next)
+			print(#file+String(#line))
 			return [currentCourseLocal, nextCourseLocal]
 
 
@@ -482,23 +517,26 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course2> {
 						timetable: timetable,
 						sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
 					)
-			} else { noSchool2(.afterClass) }
+			} else { noSchool(.afterClass) }
 
 
 
 			NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
 			setCourseChangeAlarm(for: next)
+			print(#file+String(#line))
 			return [currentCourseLocal, nextCourseLocal]
 
 		} // either of these `if`s mean `now` is the current class and `next` is next
-
-
 	} // for n
 
-	// MARK: Fall through
-	NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    getCurrentClass fell through: Exhausted all possible options for day.\n    time: %@, times: %@\n", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
+	// MARK: Fatal Error: Fell Through
+	//NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    getCurrentClass fell through: Exhausted all possible options for day.\n    time: %@, times: %@\n", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
 	log()
-
+	print(#file+String(#line))
+	fatalError("\(Date.now.formatted(date: .numeric, time: .complete)) | \(#file):\(#line)\n\tgetCurrentClass fell through: Exhausted all possible options for day.\n\tDate: \(date)\n\tTimetable: \(timetable)")
+	/*
 	let failed = failCourse2(feedback: "TimeManager:\(#line)")
 	return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
+	 */
 }
+

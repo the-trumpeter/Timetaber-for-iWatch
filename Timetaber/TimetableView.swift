@@ -16,7 +16,7 @@ struct ListEntry: View {
 			Spacer()
 			Text(course.listName)
 		}
-		.font(.largeTitle)
+		.font(.title)
 		.bold()
 		.foregroundStyle(Colour(course.colour))
 		.brightness((colourScheme == .dark) ? 0: brightnessModifier)
@@ -25,24 +25,33 @@ struct ListEntry: View {
 
 struct TimetableView: View {
 	let day: Dictionary<Int, Course>
-	@EnvironmentObject var data: GlobalData
+	@EnvironmentObject var data: LocalData
     var body: some View {
-		let dayKeys = Array(day.keys).sorted(by: <).dropLast()
-		List {
-			ForEach(dayKeys, id: \.self) { key in
+		NavigationStack {
+			let dayKeys = Array(day.keys).sorted(by: <).dropLast()
+			List {
+				ForEach(dayKeys, id: \.self) { key in
 
-				let listedCourse = day[key] ?? failCourse(feedback: "LV.lD@56")
+					let listedCourse = day[key] ?? failCourse(feedback: "TtView@\(#line)")
 
-				ListEntry(course: listedCourse)
-					.listRowBackground(/*data.currentCourse.name*/English9.name == listedCourse.name ? ( Color(listedCourse.colour)
-						.opacity(0.2)
-					): nil
-									   )
+					ListEntry(course: listedCourse)
+						.listRowBackground(/*data.currentCourse.name*/English9.name == listedCourse.name ? ( Color(listedCourse.colour)
+							.opacity(0.2)
+						): nil
+						)
+				}
+			}
+			.toolbar {
+				NavigationLink {
+					EditDayView(timetable: data.timetable).environmentObject(LocalData.shared)
+				} label: {
+					Label("Edit", systemImage: "pencil")
+				}
 			}
 		}
     }
 }
 
 #Preview {
-	TimetableView(day: monA)
+	TimetableView(day: monA).environmentObject(LocalData.shared)
 }

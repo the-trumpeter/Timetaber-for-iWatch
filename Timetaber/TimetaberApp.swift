@@ -12,8 +12,8 @@ struct TimetaberApp: App {
     var body: some Scene {
         WindowGroup {
             TabView{
-                Tab("Home", systemImage: "clock") { HomeView().environmentObject(GlobalData.shared) }
-				Tab("Timetable", systemImage: "list.bullet") { TimetableView(day: monA) }
+                Tab("Home", systemImage: "clock") { HomeView().environmentObject(LocalData.shared) }
+				Tab("Timetable", systemImage: "list.bullet") { TimetableView(day: monA).environmentObject(LocalData.shared) }
 				Tab("Settings", systemImage: "gear") { SettingsView() }
             }
         }

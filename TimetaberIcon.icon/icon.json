@@ -2,13 +2,12 @@
   "fill" : "automatic",
   "groups" : [
     {
-      "blur-material" : null,
       "layers" : [
         {
           "fill" : {
-            "automatic-gradient" : "display-p3:0.00000,0.61024,0.58047,1.00000"
+            "automatic-gradient" : "extended-srgb:0.00000,0.78431,0.70196,1.00000"
           },
-          "glass" : false,
+          "glass" : true,
           "hidden" : false,
           "image-name" : "custom.backpack.fill.badge.clock.svg",
           "name" : "custom.backpack.fill.badge.clock",
@@ -19,7 +18,22 @@
               -33.90625
             ]
           }
-        },
+        }
+      ],
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
+      }
+    },
+    {
+      "blur-material" : null,
+      "hidden" : true,
+      "layers" : [
         {
           "fill" : {
             "automatic-gradient" : "extended-srgb:1.00000,0.80000,0.00000,1.00000"
@@ -61,7 +75,7 @@
           ]
         }
       ],
-      "lighting" : "individual",
+      "lighting" : "combined",
       "shadow-specializations" : [
         {
           "value" : {
@@ -77,9 +91,17 @@
           }
         }
       ],
-      "specular" : true,
+      "specular-specializations" : [
+        {
+          "value" : true
+        },
+        {
+          "idiom" : "watchOS",
+          "value" : false
+        }
+      ],
       "translucency" : {
-        "enabled" : false,
+        "enabled" : true,
         "value" : 0.5
       }
     }
