@@ -2,7 +2,7 @@
 name: Application-sourced issue
 about: 'Select this if you saw "Failed '
 title: fileName:123
-labels: failCourse
+labels: branch [iOS], failCourse
 assignees: ''
 
 ---
