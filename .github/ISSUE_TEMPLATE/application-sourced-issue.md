@@ -9,6 +9,7 @@ assignees: ''
 
 **Error Identifiers**
 What does it say on the screen?
+<img width="222" height="240" alt="Fail" src="https://github.com/user-attachments/assets/f2aee236-abd7-402f-8934-b8c9a3a3aa95" />
 
 **When?**
 What time did you see this?
