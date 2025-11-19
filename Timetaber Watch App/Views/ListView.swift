@@ -11,7 +11,7 @@ import SwiftUI
 //MARK: - Template
 struct listTemplate: View {
     
-    @EnvironmentObject var data: GlobalData
+    @EnvironmentObject var data: LocalData
     @Environment(\.colorScheme) var colorScheme
     
     var listedCourse: Course
@@ -55,7 +55,7 @@ struct listTemplate: View {
 
 //MARK: - Day
 struct listedDay: View {
-    @EnvironmentObject var data: GlobalData
+    @EnvironmentObject var data: LocalData
     @Environment(\.colorScheme) var colorScheme
     let day: Dictionary<Int, Course>
     
@@ -73,7 +73,7 @@ struct listedDay: View {
 				}()
 
                 listTemplate(listedCourse: listedCourse, courseTime: time24toNormal(key))
-                    .environmentObject(GlobalData.shared)
+                    .environmentObject(LocalData.shared)
                     .listRowBackground(isCurrent ? ( Color(listedCourse.colour)
                         .opacity(0.2)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -108,7 +108,7 @@ struct ListView: View {
 
             if Array(day.keys).sorted(by: <).last! >= time24() { //if not after last class of day
                 listedDay(day: day)
-                    .environmentObject(GlobalData.shared)
+                    .environmentObject(LocalData.shared)
             } else {
                 Text("No school right now.\nThe day's classes will be displayed here.")
                     .multilineTextAlignment(.center)
@@ -135,5 +135,5 @@ struct ListView: View {
 //MARK: -
 #Preview {
     ListView()
-        .environmentObject(GlobalData.shared)
+        .environmentObject(LocalData.shared)
 }

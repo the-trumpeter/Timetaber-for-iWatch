@@ -24,14 +24,12 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
     
 }
 
-func endTermProcess() -> Bool {
+func endTermProcess() {
     //processes to end a term, local 'termrunning' should be changed externally
     
     Storage.shared.termRunningGB = false
     reload()
     log()
-    
-    return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
 }
 
 
@@ -104,7 +102,7 @@ struct SettingsView: View {
                                 .stroke(.white, lineWidth: data.termRunningGB ? 1: 0))
             
                         .sheet(isPresented: $showingSheet) {
-                            NewTermSheet().environmentObject(GlobalData.shared)
+                            NewTermSheet().environmentObject(LocalData.shared)
                         }
             
                         .padding(10)
@@ -113,11 +111,8 @@ struct SettingsView: View {
                             
                             Button("End Term") {
                                 //⭐️on term end
-                                if endTermProcess() {
-                                    print("Ended term")
-                                } else {
-                                    print("SettingsView, line 122: Error!")
-                                }
+                                endTermProcess()
+								NSLog("Ended Term")
                             }
                             
                             Button("Cancel", role: .cancel) { }
@@ -144,5 +139,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
-        .environmentObject(GlobalData.shared)
+        .environmentObject(LocalData.shared)
 }

@@ -33,53 +33,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>54</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>53</string>
-					<key>Timestamp</key>
-					<string>784795227.520224</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/StorageManager.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    static let shared = Storage()
-</string>
-				<key>leading</key>
-				<string>class Storage: ObservableObject {
-
-</string>
-				<key>trailing</key>
-				<string>
-    @AppStorage(runningKey) var termRunningGB = false
-    @AppStorage(ghostWeekKey) var ghostWeekGB = false
-</string>
-			</dict>
-			<key>title</key>
-			<string>Remove static shared value as source of truth; move to an instance inside LocalData(s)</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>12</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -177,13 +130,13 @@
 							<key>EndingColumnNumber</key>
 							<string>0</string>
 							<key>EndingLineNumber</key>
-							<string>77</string>
+							<string>71</string>
 							<key>StartingColumnNumber</key>
 							<string>0</string>
 							<key>StartingLineNumber</key>
-							<string>76</string>
+							<string>70</string>
 							<key>Timestamp</key>
-							<string>784795227.5202481</string>
+							<string>785193314.503866</string>
 						</dict>
 						<key>rebasable-url</key>
 						<dict>
@@ -207,8 +160,8 @@
 </string>
 						<key>trailing</key>
 						<string>
-    GlobalData.shared.currentCourse = getCurrentClass(date: .now)[0]
-    GlobalData.shared.nextCourse = getCurrentClass(date: .now)[1]
+    LocalData.shared.currentCourse = getCurrentClass(date: .now)[0]
+    LocalData.shared.nextCourse = getCurrentClass(date: .now)[1]
 </string>
 					</dict>
 					<key>title</key>
@@ -279,53 +232,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>59</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>58</string>
-					<key>Timestamp</key>
-					<string>784795227.520255</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/StorageManager.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    // Backwards-compatible storage for Date using Double (timeIntervalSince1970)
-</string>
-				<key>leading</key>
-				<string>    @AppStorage(ghostWeekKey) var ghostWeekGB = false
-
-</string>
-				<key>trailing</key>
-				<string>    var startDateGB: Date {
-        get {
-            let seconds = UserDefaults.standard.double(forKey: startDateKey)
-</string>
-			</dict>
-			<key>title</key>
-			<string>init(wrappedValue:_:store:) not available??</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>30</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -348,14 +254,15 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>		self.timetable = chaos //[_][self.ActiveTimetable]
+				<string>		self.storage = Storage()
 </string>
 				<key>leading</key>
-				<string>		self.timetables = [chaos]
-		self.storage = Storage()
+				<string>		self.nextCourse = now[1]
+		self.timetables = [chaos]
 </string>
 				<key>trailing</key>
-				<string>	}
+				<string>		self.timetable = chaos //[_][self.ActiveTimetable]
+	}
 }
 </string>
 			</dict>
@@ -396,16 +303,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>		self.timetables = [chaos]
+				<string>		self.nextCourse = now[1]
 </string>
 				<key>leading</key>
-				<string>		self.currentCourse = now[0]
-		self.nextCourse = now[1]
+				<string>		let now = getCurrentClass2(date: .now, timetable: chaos)
+		self.currentCourse = now[0]
 </string>
 				<key>trailing</key>
-				<string>		self.storage = Storage()
+				<string>		self.timetables = [chaos]
+		self.storage = Storage()
 		self.timetable = chaos //[_][self.ActiveTimetable]
-	}
 </string>
 			</dict>
 			<key>title</key>
@@ -427,7 +334,7 @@
 					<key>StartingLineNumber</key>
 					<string>24</string>
 					<key>Timestamp</key>
-					<string>784875568.529566</string>
+					<string>785113020.796378</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -445,16 +352,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>		let now = getCurrentClass/*2*/(date: .now)//, timetable: chaos)
+				<string>		print("LocalData init")
 </string>
 				<key>leading</key>
 				<string>
 	init() {
 </string>
 				<key>trailing</key>
-				<string>		self.currentCourse = now[0]
+				<string>		let now = getCurrentClass2(date: .now, timetable: chaos)
+		self.currentCourse = now[0]
 		self.nextCourse = now[1]
-		self.timetables = [chaos]
 </string>
 			</dict>
 			<key>title</key>
@@ -476,7 +383,7 @@
 					<key>StartingLineNumber</key>
 					<string>24</string>
 					<key>Timestamp</key>
-					<string>784875568.529639</string>
+					<string>785113020.796414</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -492,16 +399,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>		let now = getCurrentClass/*2*/(date: .now)//, timetable: chaos)
+				<string>		print("LocalData init")
 </string>
 				<key>leading</key>
 				<string>
 	init() {
 </string>
 				<key>trailing</key>
-				<string>		self.currentCourse = now[0]
+				<string>		let now = getCurrentClass2(date: .now, timetable: chaos)
+		self.currentCourse = now[0]
 		self.nextCourse = now[1]
-		self.timetables = [chaos]
 </string>
 			</dict>
 			<key>title</key>

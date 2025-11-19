@@ -13,6 +13,7 @@ struct Timetaber_Watch_AppApp: App {
     @Environment(\.scenePhase) private var scenePhase
     init() {
         calendar.timeZone = TimeZone.current
+		//TODO: update from phone here
     }
     
     var body: some Scene {
@@ -21,13 +22,13 @@ struct Timetaber_Watch_AppApp: App {
             
             TabView{
                 HomeView()
-                    .environmentObject(GlobalData.shared)
+                    .environmentObject(LocalData.shared)
                 
                 ListView()
-                    .environmentObject(GlobalData.shared)
+                    .environmentObject(LocalData.shared)
                 
                 SettingsView()
-                    .environmentObject(GlobalData.shared)
+                    .environmentObject(LocalData.shared)
                 
             }
             .tabViewStyle(.carousel)

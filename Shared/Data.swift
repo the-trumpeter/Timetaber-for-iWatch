@@ -30,4 +30,9 @@ class LocalData: ObservableObject {
 		self.storage = Storage()
 		self.timetable = chaos //[_][self.ActiveTimetable]
 	}
+	#if os(watchOS)
+	func pingPhone() {
+
+	}
+	#endif
 }

@@ -114,7 +114,7 @@ func dateFrom24hrInt(_ time24: Int) -> Date {
     print("TimeManager_fDef.swift:\(#line) @ dateFrom24hrInt\n\tComposing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
     guard let date = calendar.date(from: components) else {
         
-        GlobalData.shared.currentCourse = failCourse(feedback: "TimeManager:\(#line)")
+        LocalData.shared.currentCourse = failCourse(feedback: "TimeManager:\(#line)")
         NSLog("%@:%d @ dateFrom24hrInt | %@ | 🚨🚨 Catastrophic Error:\n    Composing date %@:%@.\n    DateComponents: %@", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: components.hour), String(describing: components.minute), String(describing: components)
               )
         log()

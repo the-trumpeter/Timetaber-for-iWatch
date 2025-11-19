@@ -9,43 +9,42 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @EnvironmentObject var data: GlobalData
+    @EnvironmentObject var data: LocalData
     
     var body: some View {
-        
-        let colour = data.currentCourse.colour
-        let next = data.nextCourse
-        
+
+		let current = data.currentCourse
+		let next = if current.name != "Error" { data.nextCourse } else { current }
+
         VStack {
             
             
             // CURRENT CLASS
-            Image(systemName: data.currentCourse.icon)
-                .foregroundStyle(Color(colour))
+			Image(systemName: current.icon)//data.currentCourse.icon)
+				.foregroundStyle(Color(current.colour))
                 .imageScale(.large)
                 .font(.system(size: 25).weight(.semibold))
             
-            Text(data.currentCourse.name)
+				  Text(current.name)//data.currentCourse.name)
                 .font(.system(size:23).weight(.bold))
-                .foregroundStyle(Color(colour))
+				.foregroundStyle(Color(current.colour))
                 .padding(.bottom, 0.1)
             
             // ROOM
-            Text(roomOrBlank(data.currentCourse) ?? "")
+            Text(roomOrBlank(current) ?? "")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .font(.system(size: 15))
                 
-            if next.name != "No school" {
+			if next.name != "No school" {
                 Spacer()
-                
                 // NEXT CLASS
-                Text(nextPrefix(data.nextCourse))
+                Text(nextPrefix(next))
                     .font(.system(size: 15))
                     .bold()
                 
-                Text(getNextString(data.nextCourse))
-                    .foregroundStyle(Color(data.nextCourse.colour))
+                Text(getNextString(next))
+                    .foregroundStyle(Color(next.colour))
                     .font(.system(size: 15))
                 
             }
@@ -58,5 +57,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .environmentObject(GlobalData.shared)
+        .environmentObject(LocalData.shared)
 }

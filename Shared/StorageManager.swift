@@ -16,14 +16,8 @@ let ghostWeekKey = "timetaber.userdefaults.ghostWeek"
 let startDateKey = "timetaber.userdefaults.startDate"
 
 
-class GlobalData: ObservableObject {
-    static let shared = GlobalData()
-    @Published var currentCourse: Course = getCurrentClass(date: .now)[0]  //  the current timetabled class in session.
-    @Published var nextCourse: Course = getCurrentClass(date: .now)[1]     //  the next timetabled class in session
-}
 
-
-// Use SF Symbols directly to avoid missing-asset crashes at runtime
+// Use SF Symbols directly to avoid missing-asset crashes at runtime //TODO: Will this work?
 let customSymbols = [
     "paintbrush.pointed.circle.fill": Image(systemName: "paintbrush.pointed.circle.fill"),
     "music.note.circle.fill": Image(systemName: "music.note.circle.fill"),
@@ -40,8 +34,8 @@ func log() {
         ~ End Log ~
         """,
         Date.now.formatted(date: .numeric, time: .complete),
-        GlobalData.shared.currentCourse.name,
-        GlobalData.shared.nextCourse.name,
+        LocalData.shared.currentCourse.name,
+        LocalData.shared.nextCourse.name,
         String(describing: Storage.shared.termRunningGB),
         String(describing: Storage.shared.ghostWeekGB),
         String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: Storage.shared.ghostWeekGB) )
@@ -51,7 +45,7 @@ func log() {
 
 class Storage: ObservableObject {
 
-    static let shared = Storage()
+    static let shared = Storage() //there is LocalData.storage, but it points here
 
     @AppStorage(runningKey) var termRunningGB = false
     @AppStorage(ghostWeekKey) var ghostWeekGB = false
@@ -76,8 +70,8 @@ class Storage: ObservableObject {
 
 func reload() -> Void {
 
-    GlobalData.shared.currentCourse = getCurrentClass(date: .now)[0]
-    GlobalData.shared.nextCourse = getCurrentClass(date: .now)[1]
+    LocalData.shared.currentCourse = getCurrentClass(date: .now)[0]
+    LocalData.shared.nextCourse = getCurrentClass(date: .now)[1]
     
     
     print("Setup done\n")

@@ -25,10 +25,10 @@ func roomOrBlank(_ course: Course) -> String? {
 }
 
 func getNextString(_ course: Course) -> String {
-    if GlobalData.shared.currentCourse.name=="Error" {
+    if course.name == "Error" || LocalData.shared.currentCourse.name=="Error" {
         return "bit.ly/ttberError1"
     }
-    if course.name == "No school" || course.name == "Error" || GlobalData.shared.currentCourse.name=="Error" {
+    if course.name == "No school" {
         return ""
 	} else if let room = course.room {
         return course.name+" - "+room
@@ -39,7 +39,7 @@ func getNextString(_ course: Course) -> String {
 
 
 func nextPrefix(_ course: Course) -> String{
-    if GlobalData.shared.currentCourse.name == "Error" {
+    if course.name == "Error" {
         return "Report this:"
     }
     if course.name == "No school" {

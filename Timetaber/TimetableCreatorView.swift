@@ -45,8 +45,9 @@ struct EditDayEntryView: View {
 
 
 struct EntryEditorView: View {
+	//@State var course: Binding<Course2>
     var body: some View {
-        Text("Hello, World!")
+
     }
 }
 
@@ -54,8 +55,10 @@ struct EntryEditorView: View {
 struct EditDayView: View {
 	//@EnvironmentObject var data: LocalData
 	let timetable: Timetable
-    @State var showingSheet = true
-    
+    @State var showingSheet = false
+	@State var pendingChanges = false
+	//@State var editingCourse: Course2
+
 	var body: some View {
         
 		let day = timetable.timetable[0].monday //getTimetableDay2(isWeekA: <#T##Bool#>, weekDay: <#T##Int#>, timetable: <#T##Timetable#>)
@@ -69,21 +72,30 @@ struct EditDayView: View {
 					let listedCourse = courses[(day[key]![0])] ?? failCourse2(feedback: "TtView@\(#line)")
 					EditDayEntryView(course: listedCourse, room: day[key]![1], time: key).swipeActions(allowsFullSwipe: false){
                         Button("Clear", systemImage: "trash") {  }.tint(.red)
-						Button("Edit", systemImage: "pencil") { showingSheet.toggle(); print(showingSheet) }.tint(.orange)
+						Button("Edit", systemImage: "pencil") {
+							showingSheet.toggle()
+						}.tint(.orange)
 					}
                     
 				}
 			}.toolbar {
 				Button("All") { }
+				if pendingChanges {
+					Button(action: { /* TODO: implement save */ }) {
+						Image(systemName: "checkmark")
+					}
+					.accessibilityLabel("Save")
+				}
             }
         }.sheet(isPresented: $showingSheet) {
-             EntryEditorView()
+			EntryEditorView()
             Button("Dismiss") { showingSheet.toggle() }
-         }
-        
+				.presentationDetents([.medium])
+			}
+
 	}
 }
 
 #Preview {
-	EditDayView(timetable: chaos).environmentObject(GlobalData.shared)
+	EditDayView(timetable: chaos).environmentObject(LocalData.shared)
 }
