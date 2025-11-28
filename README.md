@@ -1,5 +1,5 @@
 # Timetaber for iWatch
-![Static Badge](https://img.shields.io/badge/Swift-%23F05138?logo=swift&logoColor=white) ![Static Badge](https://img.shields.io/badge/platforms-watchOS_10.6%2B_%7C_iOS_13%2B-blue) ![Static Badge](https://img.shields.io/badge/work_in_progress-147EFB?logo=xcode&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Swift-%23F05138?logo=swift&logoColor=white) ![Static Badge](https://img.shields.io/badge/platforms-watchOS_10.6%2B_%7C_iOS_18.6%2B-blue) ![Static Badge](https://img.shields.io/badge/work_in_progress-147EFB?logo=xcode&logoColor=white)
 
 
 ## <i>Is it a typo? Is it a spelling error? NO! It's an Apple Watch Timetable App!</i>
