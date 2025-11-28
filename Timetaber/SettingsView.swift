@@ -74,7 +74,7 @@ struct NewTermSheet: View {
 					.foregroundStyle(.gray)
 					.font(.system(size: 13))
 				
-			}.background(Color("NoCol"))
+			}.background(Colour("NoCol"))
 		}
 	}
 	
@@ -103,24 +103,20 @@ struct SettingsView: View {
 				Label("Bug Report", systemImage: "exclamationmark.bubble")
 			}).padding(.bottom)
 
-			Button("Phone Gill", systemImage: "phone") {
-				alerting = true
-			}
-			.alert("0481 177 077", isPresented: $alerting) {
-				Button("Cancel") { alerting = false }
-				Button("Call") { UIApplication.shared.open(URL(string: "tel://0481177077")!) }
-			}
+            Link(destination: URL(string: "tel://0481177077")!, label: {
+                Label("Phone Gill", systemImage: "phone")
+            })
 
 			Spacer()
 
 			Label("Certified 100% Digitech Didn't Help", systemImage: "checkmark.seal")
 				.font(.system(size: 15))
-				.padding(5)
+				.padding(1)
 
-			Text("Timetaber • Gill Palmer, 2024")
+			Text("Timetaber • Gill Palmer, 2024-25")
 
 				.foregroundStyle(.gray)
-				.font(.system(size: 18))
+				.font(.system(size: 15))
 				
 			
 		}

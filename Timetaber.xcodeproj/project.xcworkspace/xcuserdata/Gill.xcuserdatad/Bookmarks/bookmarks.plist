@@ -80,13 +80,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>59</string>
+					<string>13</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>58</string>
+					<string>12</string>
 					<key>Timestamp</key>
-					<string>784168525.950092</string>
+					<string>785295313.148743</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -102,16 +102,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        self.listName = listName ?? name
+				<string>//MARK: - Old Courses
 </string>
 				<key>leading</key>
-				<string>        self.colour = colour
-        
+				<string>
+
 </string>
 				<key>trailing</key>
-				<string>        self.listIcon = listIcon ?? (icon+".circle.fill")
-        
-        self.joke = joke
+				<string>/*
+Define all courses for user's timetable
+ 
 </string>
 			</dict>
 			<key>title</key>
@@ -174,55 +174,6 @@
 			<string>Later</string>
 			<key>type</key>
 			<string>group</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>26</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>25</string>
-					<key>Timestamp</key>
-					<string>784168525.950117</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Courses_vDef.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>is-complete</key>
-			<true/>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>/// See `noSchool`.
-</string>
-				<key>leading</key>
-				<string>
-/// Various situations in which there is no school.\
-</string>
-				<key>trailing</key>
-				<string>enum TimeCase: Encodable, Equatable {
-	case weekend
-	case noTerm
-</string>
-			</dict>
-			<key>title</key>
-			<string>Each instance of Course (in the timetable) needs a unique ID (based on its location in the timetable) to differ it from other instances of the same course in the one day</string>
-			<key>type</key>
-			<string>bookmark</string>
 		</dict>
 		<dict>
 			<key>destination</key>
@@ -413,6 +364,102 @@
 			</dict>
 			<key>title</key>
 			<string>Got to put together a noSchool for lack of timetables.</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>38</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>37</string>
+					<key>Timestamp</key>
+					<string>786006231.199154</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/FunctionsEnumsDataTypes.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>is-complete</key>
+			<true/>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>	let identifier: Identifier?
+</string>
+				<key>leading</key>
+				<string>	let listIcon: String
+	let joke: String?
+</string>
+				<key>trailing</key>
+				<string>
+	init(_ name: String, icon: String, room: String? = nil, colour: String,
+		 listName: String? = nil, listIcon: String? = nil,
+</string>
+			</dict>
+			<key>title</key>
+			<string>Each instance of Course (in the timetable) needs a unique ID (based on its location in the timetable) to differ it from other instances of the same course in the one day</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>99</string>
+					<key>StartingColumnNumber</key>
+					<string>38</string>
+					<key>StartingLineNumber</key>
+					<string>98</string>
+					<key>Timestamp</key>
+					<string>785298051.244526</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber Watch App/Views/ListView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>        if data.termRunningGB &amp;&amp; weekdayNumber(.now) &gt; 1 &amp;&amp; weekdayNumber(.now) &lt; 7 {
+            
+            let day = getTimetableDay(</string>
+				<key>trailing</key>
+				<string>                isWeekA:
+                    getIfWeekIsA_FromDateAndGhost(
+                        originDate: .now,
+</string>
+			</dict>
+			<key>title</key>
+			<string>Migrate to new protocols</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

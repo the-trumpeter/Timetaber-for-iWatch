@@ -11,7 +11,7 @@ import UIKit
 let brightnessModifier = -0.6
 
 
-extension Color {
+extension Colour {
     func adjustBrightness(_ amount: Double) -> Colour {
         let uiColor = UIColor(self)
         

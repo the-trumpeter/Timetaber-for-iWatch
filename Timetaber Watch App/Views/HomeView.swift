@@ -13,7 +13,7 @@ struct HomeView: View {
     
     var body: some View {
 
-		let current = data.currentCourse
+		let current = ScienceCourse//data.currentCourse
 		let next = if current.name != "Error" { data.nextCourse } else { current }
 
         VStack {
@@ -21,13 +21,13 @@ struct HomeView: View {
             
             // CURRENT CLASS
 			Image(systemName: current.icon)//data.currentCourse.icon)
-				.foregroundStyle(Color(current.colour))
+				.foregroundStyle(Colour(current.colour))
                 .imageScale(.large)
                 .font(.system(size: 25).weight(.semibold))
             
 				  Text(current.name)//data.currentCourse.name)
                 .font(.system(size:23).weight(.bold))
-				.foregroundStyle(Color(current.colour))
+				.foregroundStyle(Colour(current.colour))
                 .padding(.bottom, 0.1)
             
             // ROOM
@@ -44,7 +44,7 @@ struct HomeView: View {
                     .bold()
                 
                 Text(getNextString(next))
-                    .foregroundStyle(Color(next.colour))
+                    .foregroundStyle(Colour(next.colour))
                     .font(.system(size: 15))
                 
             }

@@ -24,7 +24,7 @@ struct listTemplate: View {
             
             image
                 .resizable()
-                .foregroundColor(Color(listedCourse.colour))
+                .foregroundStyle(Colour(listedCourse.colour))
                 .frame(maxWidth: 25, maxHeight: 25)
                 .aspectRatio(contentMode: .fit)
                 .padding(.leading, 2)
@@ -74,7 +74,7 @@ struct listedDay: View {
 
                 listTemplate(listedCourse: listedCourse, courseTime: time24toNormal(key))
                     .environmentObject(LocalData.shared)
-                    .listRowBackground(isCurrent ? ( Color(listedCourse.colour)
+                    .listRowBackground(isCurrent ? ( Colour(listedCourse.colour)
                         .opacity(0.2)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     ): nil

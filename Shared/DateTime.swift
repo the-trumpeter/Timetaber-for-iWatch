@@ -22,67 +22,10 @@ let weekA = [monA, tueA, wedA, thuA, friA]
 let weekB = [monB, tueB, wedB, thuB, friB]
 
 
-//MARK: Weekday no; time24; odd
-func weekdayNumber(_ ofDate: Date) -> Int {
-    return Int(calendar.component(.weekday, from: ofDate)) // Sun=1, Sat=7
-}
-
-
-func time24() -> Int {
-    dFormatter.dateFormat = "HHmm" // or hh:mm for 12 hr time
-    return Int(dFormatter.string(from: .now))!
-}
 
 
 
-func odd(_ number: Int) -> Bool {
-    if number % 2 == 0 {
-        return false
-    } else {
-        return true
-    }
-}
-
-//MARK: get if Week is A
-func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
-    //week A and B alternate each week. he input date is always a week a unless ghost is true.
-    
-    let originWeek = calendar.component(.weekOfYear, from: originDate)
-    let currentWeek = calendar.component(.weekOfYear, from: Date())
-    
-    
-    
-    if odd(originWeek) == odd(currentWeek) {
-        //they match, so the numbers must be same
-        if !ghostWeek {
-            return true
-        } else {
-            return false
-        }
-    } else { if !ghostWeek {
-            return false
-        } else {
-            return true
-        }
-    }
-
-}
-
-
-//MARK: Get timetabled day
-func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
-    if isWeekA {
-        let timetableDay = weekA[weekDay-2]
-        return timetableDay
-    } else {
-        let timetableDay = weekB[weekDay-2]
-        return timetableDay
-    }
-    
-}
-
-
-
+/*
 //MARK: Class from Time & Weekday & if Week is A
 func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
 
@@ -98,33 +41,9 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
         return re_turn
     }
 }
-
-
-
-
-
+ */
 
 //MARK: - Timer
-func dateFrom24hrInt(_ time24: Int) -> Date {
-    var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-    components.timeZone = TimeZone.current
-    components.hour = time24/100
-    components.minute = time24%100
-    components.second = 0
-    print("TimeManager_fDef.swift:\(#line) @ dateFrom24hrInt\n\tComposing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
-    guard let date = calendar.date(from: components) else {
-        
-        LocalData.shared.currentCourse = failCourse(feedback: "TimeManager:\(#line)")
-        NSLog("%@:%d @ dateFrom24hrInt | %@ | 🚨🚨 Catastrophic Error:\n    Composing date %@:%@.\n    DateComponents: %@", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: components.hour), String(describing: components.minute), String(describing: components)
-              )
-        log()
-        return Date.now
-    }
-    return date
-}
-    
-
-
 var UpdateTimer: Timer?
 
 func setCourseChangeAlarm(for time: Int) {
@@ -145,6 +64,7 @@ func setCourseChangeAlarm(for time: Int) {
 
 
 //MARK: - getCurrentClass
+/*
 func getCurrentClass(date: Date) -> Array<Course> {
     
     //MARK: Init and Ghost Week stuff
@@ -267,7 +187,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
 }
 
-
+*/
 
 
 
@@ -275,97 +195,12 @@ func getCurrentClass(date: Date) -> Array<Course> {
 //MARK: - New
 
 
-//MARK: View Support
-func getTimetableDay2(isWeekA: Bool, weekDay: Int, timetable: Timetable) -> Dictionary< Int, [Int] > {
-	let weeks = timetable.timetable
-	if isWeekA {
-		switch weekDay {
-			case 2: return weeks[0].monday
-			case 3: return weeks[0].tuesday
-			case 4: return weeks[0].wednesday
-			case 5: return weeks[0].thursday
-			case 6: return weeks[0].friday
-			default: return [:]
-		}
-	} else {
-		switch weekDay {
-			case 2: return weeks[1].monday
-			case 3: return weeks[1].tuesday
-			case 4: return weeks[1].wednesday
-			case 5: return weeks[1].thursday
-			case 6: return weeks[1].friday
-			default: return [:]
-		}
-	}
-}
-
-
-//MARK: Fail, Noschool
-func failCourse2(feedback: String? = "None") -> Course2 {
-	let rooms: [String] = if feedback != nil { [feedback!] } else { [] }
-	return Course2("Error", icon: "exclamationmark.triangle", rooms: rooms, colour: "Graphite", listIcon: "exclamationmark.triangle", identifier: .fail)
-}
-func noSchool2(_ timecase: TimeCase? = nil) -> Course2 {
-	guard let key = timecase else { return failCourse2(feedback: "TimeManager:\(#line)")}
-
-	let joke: String = switch key {
-		case .weekend: "It's the weekend."
-		case .noTerm: "No term running."
-		case .noTimetable: "No timetable available."
-		case .beforeClass(let startTime): "First class at \(time24toNormal(startTime))."
-		case .afterClass: "School's out for today!"
-	}
-
-	return Course2("No school", icon: "clock", colour: "Graphite", joke: joke, identifier: .noSchool(key) )
-}
-
 //MARK: Temp storage ping
 func storagePing() -> Storage {
 	//if need to update values across watch/phone, do so here
 	return Storage.shared
 }
 
-enum ConversionError: Error {
-	case noParameters
-	case bothInputs
-	case unexpectedNil
-	case identifierNotProvided
-}
-func convertCourse(course: Course? = nil, course2: Course2? = nil, room: String? = nil, identifier: Identifier? = nil) throws -> Any {
-	guard (course != nil) != (course2 != nil) else { // only one input provided
-		throw ConversionError.bothInputs
-	}
-
-	if course2 != nil {
-		// Course2 to Course
-		//guard let id: Identifier = identifier else {throw ConversionError.identifierNotProvided}
-		return Course(
-			course2!.name,
-			icon: course2!.icon,
-			room: room,
-			colour: course2!.colour,
-			listName: course2!.listName,
-			listIcon: course2!.listIcon,
-			joke: course2!.joke,
-			identifier: { if course2!.identifier != nil { return course2!.identifier! } else { return identifier } }()
-		)
-	}
-	if course != nil {
-		return Course2(
-			course!.name,
-			icon: course!.icon,
-			rooms: { if let rm = course?.room { return [rm] } else { return [] } }(),
-			colour: course!.colour,
-			listName: course!.listName,
-			listIcon: course!.listIcon,
-			joke: course!.joke,
-			identifier: { if course!.identifier != nil { return course!.identifier! } else { return identifier } }()
-		)
-	}
-	throw {
-		return ConversionError.noParameters
-	}()
-}
 
 //MARK: Class from Time & Weekday & if Week is A
 func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
@@ -395,6 +230,9 @@ func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime:
 	    return failCourse(feedback: "TimeManager:\(#line)")
 	}
 }
+
+
+
 
 //MARK: getCurrentClass2
 func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Course> {

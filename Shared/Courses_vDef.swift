@@ -9,62 +9,6 @@
 import SwiftUI
 import Foundation
 
-enum WeekAB: Encodable { case a; case b}
-enum Identifier: Equatable, Encodable {
-	case standard(Timeslot)
-	case noSchool(TimeCase)
-	case fail
-}
-struct Timeslot: Equatable, Encodable {
-	let time: Int
-	let day: Int //1=Sun, 2=Mon, ...7=Sat
-	let week: WeekAB
-	//let Timetable: Timetable
-}
-
-/// Various situations in which there is no school.\
-/// See `noSchool`.
-enum TimeCase: Encodable, Equatable {
-	case weekend
-	case noTerm
-	case noTimetable
-	case beforeClass(startTime: Int)
-	case afterClass
-}
-
-/// Representing a class/course in a timetable.
-struct Course {
-    let name: String
-    let icon: String
-    let room: String?
-    let colour: String
-    
-    let listName: String
-    let listIcon: String
-    let joke: String?
-	let identifier: Identifier?
-
-    init(_ name: String, icon: String, room: String? = nil, colour: String,
-         listName: String? = nil, listIcon: String? = nil,
-		 joke: String? = nil,
-		 identifier: Identifier? = nil
-	)
-    {
-        
-        self.name = name
-        self.icon = icon
-        self.room = room
-        self.colour = colour
-        
-        self.listName = listName ?? name
-        self.listIcon = listIcon ?? (icon+".circle.fill")
-        
-        self.joke = joke
-		self.identifier = identifier
-    }
-
-}
-
 
 //MARK: - Old Courses
 /*
@@ -113,26 +57,3 @@ let TCCourse = Course("Theatre Crew", icon: "headset", colour: "Peach")
 let VisualArtsCourse = Course("Visual Arts", icon: "paintbrush.pointed", room: "HG5", colour: "Apricot", listName: "Art")
 
 let yearAssembly = Course("Year Assembly", icon: "person.3", colour: "Graphite", listName: "Assembly", listIcon: "person.2.circle.fill")
-
-
-/// Returns a `Course` representing the absence of school; with a `joke` relevant to the current date/time of interaction, obtained through the `key` parameter.\
-/// If `key` is not initialised; the `joke` will default to `"Not yet, anyway..."`.
-func noSchool(_ key: TimeCase? = nil) -> Course {
-    let joke: String = switch key {
-		case .weekend: "It's the weekend."
-		case .noTerm: "No term running."
-		case .noTimetable: "No timetable available."
-		case .beforeClass(let startTime): "First class at \(time24toNormal(startTime))."
-		case .afterClass: "School's out for today!"
-		case nil: "Not yet, anyway..."
-	}
-	let id: Identifier? = if key != nil { Identifier.noSchool(key!) } else { nil }
-	return Course("No school", icon: "clock", colour: "Graphite", joke: joke, identifier: id)
-}
-
-
-///Method to handle informal errors, fails and exhaustions; so, bugs. Feedback of `"filename:\(#line)"` should be input to the `feedback` parameter.\
-///Display the error to the user for reporting by setting `LocalData.shared.currentCourse` to an instance of `failCourse`. They will be directed to open an Issue in the GitHub repository.
-func failCourse(feedback: String? = "None") -> Course {
-    return Course("Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "Graphite", listIcon: "exclamationmark.triangle")
-}
