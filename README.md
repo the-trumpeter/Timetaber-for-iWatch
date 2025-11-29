@@ -27,4 +27,3 @@ Sorry if the repository's code is erroring, you can probably guess that I don't 
 > **Timetaber for Apple Watch**\
 > **Copyright © Gill Palmer, 2025**\
 > All rights reserved.
-> Do not modify or reproduce without the creator's permission.
