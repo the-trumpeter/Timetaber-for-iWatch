@@ -35,12 +35,12 @@ struct Course {
 	let listName: String
 	let listIcon: String
 	let joke: String?
-	let identifier: Identifier?
+	let type: CourseType?
 
 	init(_ name: String, icon: String, room: String? = nil, colour: String,
 		 listName: String? = nil, listIcon: String? = nil,
 		 joke: String? = nil,
-		 identifier: Identifier? = nil
+		 identifier: CourseType? = nil
 	)
 	{
 
@@ -53,7 +53,7 @@ struct Course {
 		self.listIcon = listIcon ?? (icon+".circle.fill")
 
 		self.joke = joke
-		self.identifier = identifier
+		self.type = identifier
 	}
 
 }
@@ -74,9 +74,10 @@ struct Course2: Codable {
 	var listIcon:	String
 	var joke:		String?
 
-	let identifier:	Identifier?
+	let type:	CourseType?
+    
 	init(_ name: String, icon: String, rooms: [String] = [], colour: String,
-		 listName: String? = nil, listIcon: String? = nil, joke: String? = nil, identifier: Identifier? = nil)
+		 listName: String? = nil, listIcon: String? = nil, joke: String? = nil, identifier: CourseType? = nil)
 	{
 
 		self.name = name
@@ -89,7 +90,7 @@ struct Course2: Codable {
 
 		self.joke = joke
 
-		self.identifier = identifier
+		self.type = identifier
 
 	}
 
@@ -114,7 +115,7 @@ func noSchool(_ key: TimeCase? = nil) -> Course {
 		case .afterClass: "School's out for today!"
 		case nil: "Not yet, anyway..."
 	}
-	let id: Identifier? = if key != nil { Identifier.noSchool(key!) } else { nil }
+	let id: CourseType? = if key != nil { CourseType.noSchool(key!) } else { nil }
 	return Course("No school", icon: "clock", colour: "Graphite", joke: joke, identifier: id)
 }
 
@@ -166,7 +167,7 @@ enum ConversionError: Error {
 func convertCourse(
 	course: Course? = nil,
 	course2: Course2? = nil, room: String? = nil,
-	identifier: Identifier? = nil
+	identifier: CourseType? = nil
 ) throws -> Any {
 
 	guard (course != nil) != (course2 != nil) else { // only one input provided
@@ -184,7 +185,7 @@ func convertCourse(
 			listName: course2!.listName,
 			listIcon: course2!.listIcon,
 			joke: course2!.joke,
-			identifier: { if course2!.identifier != nil { return course2!.identifier! } else { return identifier } }()
+			identifier: { if course2!.type != nil { return course2!.type! } else { return identifier } }()
 		)
 	}
 	if course != nil {
@@ -196,7 +197,7 @@ func convertCourse(
 			listName: course!.listName,
 			listIcon: course!.listIcon,
 			joke: course!.joke,
-			identifier: { if course!.identifier != nil { return course!.identifier! } else { return identifier } }()
+			identifier: { if course!.type != nil { return course!.type! } else { return identifier } }()
 		)
 	}
 	throw {
@@ -403,15 +404,15 @@ struct Times: Codable {
 
 enum WeekAB: Codable { case a; case b }
 
-enum Identifier: Codable, Equatable {
-	case standard(Timeslot)
+enum CourseType: Codable, Equatable {
+	case standard/*(Timeslot)*/ // TODO: Need to move this timeslot stuff outside of a global definition of the course
 	case noSchool(TimeCase)
 	case fail
 }
 struct Timeslot: Codable, Equatable {
 	let week: WeekAB
 	let day: Int //1=Sun, 2=Mon, ...7=Sat
-let time: Int
+    let time: Int
 	//let Timetable: Timetable
 }
 
