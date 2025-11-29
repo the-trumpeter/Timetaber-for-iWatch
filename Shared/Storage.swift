@@ -69,9 +69,10 @@ class Storage: ObservableObject {
 }
 
 func reload() -> Void {
-
-	LocalData.shared.currentCourse = getCurrentClass2(date: .now, timetable: chaos)[0]
-	LocalData.shared.nextCourse = getCurrentClass2(date: .now, timetable: chaos)[1]
+    let now = getCurrentClass2(date: .now, timetable: chaos)
+    LocalData.shared.currentCourse = now[0] as! Course
+    LocalData.shared.nextCourse = now[1] as! Course
+    LocalData.shared.currentTime = now[2] as! Timeslot
 	
     print("Setup done\n")
     log()

@@ -63,7 +63,7 @@ struct HomeView: View {
 				
 				Text({
 					print(data.nextCourse )
-					if case .noSchool = data.nextCourse.identifier { print("Case"); return "" }
+					if case .noSchool = data.nextCourse.type { print("Case"); return "" }
 					guard let room = roomOrBlank(data.nextCourse) else { return "" }
 
 					return "Next up: \(data.nextCourse.name) • \(room)"

@@ -57,14 +57,20 @@ struct listTemplate: View {
 struct listedDay: View {
     @EnvironmentObject var data: LocalData
     @Environment(\.colorScheme) var colorScheme
-    let day: Dictionary<Int, Course>
+    var day: [Int: [Int]]
+    var timetable: Timetable
+    
+    init(day: [Int : [Int]], timetable: Timetable = chaos) {
+        self.day = day
+        self.timetable = timetable
+    }
     
     var body: some View {
         let dayKeys = Array(day.keys).sorted(by: <).dropLast()
         List {
             ForEach(dayKeys, id: \.self) { key in
                 
-                let listedCourse = day[key] ?? failCourse(feedback: "LV.lD@56")
+                let listedCourse = day[key] //?? failCourse(feedback: "ListView:\(#line)")
 				let isCurrent = {
 					guard data.currentCourse.identifier != nil && listedCourse.identifier != nil else {
 						return (data.currentCourse.name == listedCourse.name)

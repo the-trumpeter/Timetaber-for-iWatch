@@ -48,6 +48,7 @@ struct DisplayEntry: View {
 		let key: Int = timeslot.time
         self.properties = day[key]!
         self.listedCourse = courses[ day[key]![0] ]!
+        self.room = listedCourse.rooms[properties[1]]
     }
 
     var body: some View {
@@ -69,18 +70,19 @@ struct DisplayEntry: View {
 
 
 struct TimetableView: View {
-    let day: [Int: [Int]]
-    let courses: [Int: Course2]
-	let week: WeekAB
-	let weekday: Int
+    var day: [Int: [Int]]
+    var courses: [Int: Course2]
+    var week: WeekAB
+    var weekday: Int
     @EnvironmentObject var data: LocalData
     
     init(timetable: Timetable,
-		 week: WeekAB? = nil,
-		 day: Int? = nil
+		 week _week: WeekAB? = nil,
+		 day _day: Int? = nil
 	) {
-		let wkday = day ?? weekdayNumber(.now)
-		let wk = week ?? { if getIfWeekIsA_FromDateAndGhost(originDate: data.storage.startDateGB, ghostWeek: data.storage.ghostWeekGB) { .a } else { .b } }()
+		let wkday = _day ?? weekdayNumber(.now)
+        let wk = _week ?? { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }()
+        
 		self.weekday = wkday
 		self.week = wk
 
@@ -95,7 +97,7 @@ struct TimetableView: View {
 			List {
 				Section("Monday A") {
 					ForEach(dayKeys, id: \.self) { key in
-						let entry = DisplayEntry(timetableDay: day, timeslot: Timeslot(week: <#T##WeekAB#>, day: <#T##Int#>, time: <#T##Int#>), courses: courses)
+						let entry = DisplayEntry(timetableDay: day, timeslot: Timeslot(week: week, day: weekday, time: key), courses: courses)
 						let bG: Colour? = (data.currentTime==entry.timeslotIdentifier) ? Colour(entry.listedCourse.colour): nil
 						entry
 							.listRowBackground(bG)
