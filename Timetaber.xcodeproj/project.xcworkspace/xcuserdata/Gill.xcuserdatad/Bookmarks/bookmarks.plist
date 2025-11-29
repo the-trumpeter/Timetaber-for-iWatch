@@ -399,7 +399,7 @@ Define all courses for user's timetable
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>	let identifier: Identifier?
+				<string>	let type: CourseType?
 </string>
 				<key>leading</key>
 				<string>	let listIcon: String

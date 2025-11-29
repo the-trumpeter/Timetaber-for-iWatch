@@ -13,7 +13,7 @@ struct TimetaberApp: App {
         WindowGroup {
             TabView{
                 Tab("Home", systemImage: "clock") { HomeView().environmentObject(LocalData.shared) }
-                Tab("Timetable", systemImage: "list.bullet") { TimetableView(timetable: chaos, day: chaos.timetable[0].monday).environmentObject(LocalData.shared) }
+                Tab("Timetable", systemImage: "list.bullet") { TimetableView(timetable: chaos).environmentObject(LocalData.shared) }
 				Tab("Settings", systemImage: "gear") { SettingsView() }
             }
         }

@@ -31,7 +31,7 @@ struct DisplayEntry: View {
     private let day: [Int: [Int]]
     private let courses: [Int: Course2]
 	private let room: String
-    @State var properties: [Int]
+    private let properties: [Int]
 
 
 
@@ -71,12 +71,21 @@ struct DisplayEntry: View {
 struct TimetableView: View {
     let day: [Int: [Int]]
     let courses: [Int: Course2]
+	let week: WeekAB
+	let weekday: Int
     @EnvironmentObject var data: LocalData
     
     init(timetable: Timetable,
-         day: [Int : [Int]],//TODO: discard, at some point just calculate from timetable
-    ) {
-        self.day = day
+		 week: WeekAB? = nil,
+		 day: Int? = nil
+	) {
+		let wkday = day ?? weekdayNumber(.now)
+		let wk = week ?? { if getIfWeekIsA_FromDateAndGhost(originDate: data.storage.startDateGB, ghostWeek: data.storage.ghostWeekGB) { .a } else { .b } }()
+		self.weekday = wkday
+		self.week = wk
+
+		self.day = getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: timetable)
+
         self.courses = timetable.courses
     }
     
@@ -86,8 +95,8 @@ struct TimetableView: View {
 			List {
 				Section("Monday A") {
 					ForEach(dayKeys, id: \.self) { key in
-						let entry = DisplayEntry(timetableDay: day, timeslot: key, courses: courses)
-						let bG: Colour? = (data.currentCourse.identifier==entry.listedCourse.identifier) ? Colour(entry.listedCourse.colour): nil
+						let entry = DisplayEntry(timetableDay: day, timeslot: Timeslot(week: <#T##WeekAB#>, day: <#T##Int#>, time: <#T##Int#>), courses: courses)
+						let bG: Colour? = (data.currentTime==entry.timeslotIdentifier) ? Colour(entry.listedCourse.colour): nil
 						entry
 							.listRowBackground(bG)
 					}
@@ -107,5 +116,5 @@ struct TimetableView: View {
 
 
 #Preview {
-    TimetableView(timetable: chaos, day: chaos.timetable[0].monday).environmentObject(LocalData.shared)
+	TimetableView(timetable: chaos, week: .a, day: 2).environmentObject(LocalData.shared)
 }
