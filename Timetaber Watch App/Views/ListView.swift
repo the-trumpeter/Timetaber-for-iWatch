@@ -11,11 +11,31 @@ import SwiftUI
 //MARK: - Template
 struct listTemplate: View {
     
-    @EnvironmentObject var data: LocalData
-    @Environment(\.colorScheme) var colorScheme
+    let listedCourse: Course2
+    let timeslotIdentifier: Timeslot
     
-    var listedCourse: Course
-    var courseTime: String
+    private let day: [Int: [Int]]
+    private let courses: [Int: Course2]
+    private let room: String
+    private let properties: [Int]
+
+
+
+    init(
+        timetableDay: [Int: [Int] ],
+        timeslot: Timeslot,
+        courses: [Int : Course2],
+    )
+    {
+        self.day = timetableDay
+        self.timeslotIdentifier = timeslot
+        self.courses = courses
+        
+        let key: Int = timeslot.time
+        self.properties = day[key]!
+        self.listedCourse = courses[ day[key]![0] ]!
+        self.room = listedCourse.rooms[properties[1]]
+    }
     
     var body: some View {
 
@@ -32,18 +52,19 @@ struct listTemplate: View {
             
             VStack {
                 HStack {
-                    Text(listedCourse.listName)
+                    Text(listedCourse.listName ?? listedCourse.name)
                         .bold()
                     Spacer()
                     
                 }
                 HStack {
-                    Text(courseTime)
+                    
+                    Text( String(timeslotIdentifier.time) )
                         .foregroundStyle(.secondary)
-                    if let room = listedCourse.room {
-                        Text(room).bold()
-                            .foregroundStyle(.secondary)
-                    }
+                    
+                    Text(room).bold()
+                        .foregroundStyle(.secondary)
+                    
                     Spacer()
                 }
             }
@@ -55,14 +76,26 @@ struct listTemplate: View {
 
 //MARK: - Day
 struct listedDay: View {
-    @EnvironmentObject var data: LocalData
-    @Environment(\.colorScheme) var colorScheme
-    var day: [Int: [Int]]
-    var timetable: Timetable
     
-    init(day: [Int : [Int]], timetable: Timetable = chaos) {
-        self.day = day
-        self.timetable = timetable
+    var day: [Int: [Int]]
+    var courses: [Int: Course2]
+    var week: WeekAB
+    var weekday: Int
+    @EnvironmentObject var data: LocalData
+    
+    init(timetable: Timetable,
+         week _week: WeekAB? = nil,
+         day _day: Int? = nil
+    ) {
+        let wkday = _day ?? weekdayNumber(.now)
+        let wk = _week ?? { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }()
+        
+        self.weekday = wkday
+        self.week = wk
+
+        self.day = getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: timetable)
+
+        self.courses = timetable.courses
     }
     
     var body: some View {
@@ -70,21 +103,16 @@ struct listedDay: View {
         List {
             ForEach(dayKeys, id: \.self) { key in
                 
-                let listedCourse = day[key] //?? failCourse(feedback: "ListView:\(#line)")
-				let isCurrent = {
-					guard data.currentCourse.identifier != nil && listedCourse.identifier != nil else {
-						return (data.currentCourse.name == listedCourse.name)
-					}
-					return (data.currentCourse.identifier == listedCourse.identifier)
-				}()
-
-                listTemplate(listedCourse: listedCourse, courseTime: time24toNormal(key))
-                    .environmentObject(LocalData.shared)
-                    .listRowBackground(isCurrent ? ( Colour(listedCourse.colour)
-                        .opacity(0.2)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                    ): nil
+                
+                let entry = listTemplate(timetableDay: day, timeslot: Timeslot(week: week, day: weekday, time: key), courses: courses)
+                let bG: Colour? = (data.currentTime==entry.timeslotIdentifier) ? Colour(entry.listedCourse.colour): nil
+                entry
+                    .listRowBackground(
+                        bG
+                            .opacity(0.2)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                     )
+    
             }
         }
     }
@@ -102,18 +130,14 @@ struct ListView: View {
         //MARK: IF
         if data.termRunningGB && weekdayNumber(.now) > 1 && weekdayNumber(.now) < 7 {
             
-            let day = getTimetableDay(
-                isWeekA:
-                    getIfWeekIsA_FromDateAndGhost(
-                        originDate: .now,
-                        ghostWeek: data.ghostWeekGB
-                    ),
-             
-                weekDay: weekdayNumber(.now)
-            )
-
+            let wk = getIfWeekIsA_FromDateAndGhost(originDate: data.startDateGB, ghostWeek: data.ghostWeekGB)
+            let day = getTimetableDay2(isWeekA: wk, weekDay: weekdayNumber(.now), timetable: chaos)
+            
             if Array(day.keys).sorted(by: <).last! >= time24() { //if not after last class of day
-                listedDay(day: day)
+                listedDay(timetable: chaos,
+                          week: {if wk {.a}else{.b}}(),
+                          day: weekdayNumber(.now)
+                )
                     .environmentObject(LocalData.shared)
             } else {
                 Text("No school right now.\nThe day's classes will be displayed here.")

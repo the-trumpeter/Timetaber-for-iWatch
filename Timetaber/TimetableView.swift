@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/*
 struct ListEntry: View {
 	let course: Course
     @Environment(\.colorScheme) private var colourScheme
@@ -22,15 +23,17 @@ struct ListEntry: View {
 		.brightness((colourScheme == .dark) ? 0: brightnessModifier)
 	}
 }
+*/
 
 struct DisplayEntry: View {
 	
 	let listedCourse: Course2
 	let timeslotIdentifier: Timeslot
+    @Binding var activeCourse: Binding<Bool>
 	
     private let day: [Int: [Int]]
     private let courses: [Int: Course2]
-	private let room: String
+	private let room: String?
     private let properties: [Int]
 
 
@@ -39,8 +42,11 @@ struct DisplayEntry: View {
 		timetableDay: [Int: [Int] ],
 		timeslot: Timeslot,
         courses: [Int : Course2],
+        activeCourse: Binding<Bool>
     )
     {
+        self.activeCourse = activeCourse
+        
 		self.day = timetableDay
 		self.timeslotIdentifier = timeslot
         self.courses = courses
@@ -48,7 +54,8 @@ struct DisplayEntry: View {
 		let key: Int = timeslot.time
         self.properties = day[key]!
         self.listedCourse = courses[ day[key]![0] ]!
-        self.room = listedCourse.rooms[properties[1]]
+        self.room = if listedCourse.rooms.isEmpty { nil } else { listedCourse.rooms[properties[1]] }
+        print("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))")
     }
 
     var body: some View {
@@ -60,8 +67,9 @@ struct DisplayEntry: View {
 
 			Text(time24toNormal(timeslotIdentifier.time)).bold()
             Spacer()
+            
             VStack(alignment: .trailing) {
-                Text(room).font(.caption)	// listedCourse.rooms.indices.contains(properties[1]) |  listedCourse.rooms[properties[1]]
+                if room != nil { Text(room!).font(.caption) }
                 Text(listedCourse.name).bold()
             }
         }
@@ -77,11 +85,11 @@ struct TimetableView: View {
     @EnvironmentObject var data: LocalData
     
     init(timetable: Timetable,
-		 week _week: WeekAB? = nil,
-		 day _day: Int? = nil
+		 week _week: WeekAB = { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }(),
+		 day _day: Int = weekdayNumber(.now)
 	) {
-		let wkday = _day ?? weekdayNumber(.now)
-        let wk = _week ?? { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }()
+		let wkday = _day
+        let wk = _week
         
 		self.weekday = wkday
 		self.week = wk
@@ -89,6 +97,9 @@ struct TimetableView: View {
 		self.day = getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: timetable)
 
         self.courses = timetable.courses
+        
+        let dayKeys = Array(day.keys).sorted(by: <).dropLast()//temp
+        print("TimetableView.swift:\(#line) TimetableView Initialised,\n\tDay: \(day),\n\tSecond Course: \(String(describing: courses[ (day[dayKeys[1]])![1] ]))")
     }
     
     var body: some View {
@@ -97,10 +108,14 @@ struct TimetableView: View {
 			List {
 				Section("Monday A") {
 					ForEach(dayKeys, id: \.self) { key in
-						let entry = DisplayEntry(timetableDay: day, timeslot: Timeslot(week: week, day: weekday, time: key), courses: courses)
+                        @State var current = { data.currentTime==entry.timeslotIdentifier }()
+						let entry = DisplayEntry(
+                            timetableDay: day,timeslot: Timeslot(week: week, day: weekday, time: key), courses: courses, activeCourse: $current
+                        )
 						let bG: Colour? = (data.currentTime==entry.timeslotIdentifier) ? Colour(entry.listedCourse.colour): nil
 						entry
 							.listRowBackground(bG)
+                         
 					}
 				}
 			}

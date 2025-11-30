@@ -47,7 +47,7 @@ class Storage: ObservableObject {
 
     static let shared = Storage() //there is LocalData.storage, but it points here
 
-    @AppStorage(runningKey) var termRunningGB = false
+    @AppStorage(runningKey) var termRunningGB = true//false
     @AppStorage(ghostWeekKey) var ghostWeekGB = false
 
     // Backwards-compatible storage for Date using Double (timeIntervalSince1970)
