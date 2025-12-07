@@ -33,53 +33,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>12</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>11</string>
-					<key>Timestamp</key>
-					<string>784158070.416074</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/LocalData.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>class LocalData: ObservableObject {
-</string>
-				<key>leading</key>
-				<string>
-///The local equivalent of `GlobalData`. NOTE: iOS DATA IS THE ROOT SOURCE OF TRUTH FOR TIMETABER'S STORAGE.
-</string>
-				<key>trailing</key>
-				<string>	static let shared = LocalData()
-	@Published var currentCourse: Course  //  the current timetabled class in session.
-	@Published var nextCourse: Course     //  the next timetabled class in session
-</string>
-			</dict>
-			<key>title</key>
-			<string>Create local storage containers for each device; watch pings phone (SoT) to update timetable.</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>13</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -116,109 +69,6 @@ Define all courses for user's timetable
 			</dict>
 			<key>title</key>
 			<string>To be discarded</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>children</key>
-			<array>
-				<dict>
-					<key>destination</key>
-					<dict>
-						<key>location-parameters</key>
-						<dict>
-							<key>EndingColumnNumber</key>
-							<string>0</string>
-							<key>EndingLineNumber</key>
-							<string>71</string>
-							<key>StartingColumnNumber</key>
-							<string>0</string>
-							<key>StartingLineNumber</key>
-							<string>70</string>
-							<key>Timestamp</key>
-							<string>785193314.503866</string>
-						</dict>
-						<key>rebasable-url</key>
-						<dict>
-							<key>base</key>
-							<string>workspace</string>
-							<key>payload</key>
-							<dict>
-								<key>relative-path</key>
-								<string>Shared/StorageManager.swift</string>
-							</dict>
-						</dict>
-					</dict>
-					<key>text-context</key>
-					<dict>
-						<key>focused</key>
-						<string>func reload() -&gt; Void {
-</string>
-						<key>leading</key>
-						<string>}
-
-</string>
-						<key>trailing</key>
-						<string>
-    LocalData.shared.currentCourse = getCurrentClass(date: .now)[0]
-    LocalData.shared.nextCourse = getCurrentClass(date: .now)[1]
-</string>
-					</dict>
-					<key>title</key>
-					<string>Is a Void return really neccecary here?</string>
-					<key>type</key>
-					<string>bookmark</string>
-				</dict>
-			</array>
-			<key>title</key>
-			<string>Later</string>
-			<key>type</key>
-			<string>group</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>30</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>29</string>
-					<key>Timestamp</key>
-					<string>784875330.026159</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/LocalData.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>		self.storage = Storage()
-</string>
-				<key>leading</key>
-				<string>		self.nextCourse = now[1]
-		self.timetables = [chaos]
-</string>
-				<key>trailing</key>
-				<string>		self.timetable = chaos //[_][self.ActiveTimetable]
-	}
-}
-</string>
-			</dict>
-			<key>title</key>
-			<string>Can't do this (Index out of range)</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -375,13 +225,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>38</string>
+					<string>43</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>37</string>
+					<string>42</string>
 					<key>Timestamp</key>
-					<string>786006231.199154</string>
+					<string>786592037.904641</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -426,11 +276,11 @@ Define all courses for user's timetable
 					<key>EndingLineNumber</key>
 					<string>99</string>
 					<key>StartingColumnNumber</key>
-					<string>38</string>
+					<string>5</string>
 					<key>StartingLineNumber</key>
 					<string>98</string>
 					<key>Timestamp</key>
-					<string>785298051.244526</string>
+					<string>786166359.429812</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -449,17 +299,205 @@ Define all courses for user's timetable
 				<string>
 </string>
 				<key>leading</key>
-				<string>        if data.termRunningGB &amp;&amp; weekdayNumber(.now) &gt; 1 &amp;&amp; weekdayNumber(.now) &lt; 7 {
-            
-            let day = getTimetableDay(</string>
+				<string>
+        self.courses = timetable.courses
+    }</string>
 				<key>trailing</key>
-				<string>                isWeekA:
-                    getIfWeekIsA_FromDateAndGhost(
-                        originDate: .now,
+				<string>    
+    var body: some View {
+        let dayKeys = Array(day.keys).sorted(by: &lt;).dropLast()
 </string>
 			</dict>
 			<key>title</key>
 			<string>Migrate to new protocols</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>11</string>
+					<key>StartingColumnNumber</key>
+					<string>27</string>
+					<key>StartingLineNumber</key>
+					<string>10</string>
+					<key>Timestamp</key>
+					<string>786576126.451587</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/TimetableView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>
+
+struct DisplayEntry: View {</string>
+				<key>trailing</key>
+				<string>	
+	let listedCourse: Course2
+	let timeslotIdentifier: Timeslot
+</string>
+			</dict>
+			<key>title</key>
+			<string>Can DisplayEntry be nested inside TimetableView?</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>122</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>121</string>
+					<key>Timestamp</key>
+					<string>786576602.226622</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/TimetableView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                            .listRowBackground(bG)
+</string>
+				<key>leading</key>
+				<string>                        let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
+                        entry
+</string>
+				<key>trailing</key>
+				<string>				}
+			}
+            .toolbar {
+</string>
+			</dict>
+			<key>title</key>
+			<string>Need to improve colour</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>134</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>133</string>
+					<key>Timestamp</key>
+					<string>786592037.904673</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/FunctionsEnumsDataTypes.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>		case nil: "Not yet, anyway..."
+</string>
+				<key>leading</key>
+				<string>		case .afterClass: "School's out for today!"
+	//	case .freePeriod: "No class right now"
+</string>
+				<key>trailing</key>
+				<string>	}
+	let name: String = switch key {
+	//	case .freePeriod: "Free Period"
+</string>
+			</dict>
+			<key>title</key>
+			<string>Do I need case nil or is this covered by default: ?</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>190</string>
+					<key>StartingColumnNumber</key>
+					<string>18</string>
+					<key>StartingLineNumber</key>
+					<string>189</string>
+					<key>Timestamp</key>
+					<string>786592048.466591</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/FunctionsEnumsDataTypes.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>
+</string>
+				<key>leading</key>
+				<string>
+
+//MARK: Conversion</string>
+				<key>trailing</key>
+				<string>
+enum ConversionError: Error {
+	case noParameters
+</string>
+			</dict>
+			<key>title</key>
+			<string>I can create custom inits in both Course and Course2 to do this automatically</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

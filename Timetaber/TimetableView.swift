@@ -7,46 +7,28 @@
 
 import SwiftUI
 
-/*
-struct ListEntry: View {
-	let course: Course
-    @Environment(\.colorScheme) private var colourScheme
-	var body: some View {
-		HStack {
-			Image(systemName: course.icon)
-			Spacer()
-			Text(course.listName)
-		}
-		.font(.title)
-		.bold()
-		.foregroundStyle(Colour(course.colour))
-		.brightness((colourScheme == .dark) ? 0: brightnessModifier)
-	}
-}
-*/
 
 struct DisplayEntry: View {
 	
 	let listedCourse: Course2
 	let timeslotIdentifier: Timeslot
-    @Binding var activeCourse: Binding<Bool>
-	
+
     private let day: [Int: [Int]]
     private let courses: [Int: Course2]
 	private let room: String?
     private let properties: [Int]
 
+	@State var isBold: Bool
 
 
     init(
 		timetableDay: [Int: [Int] ],
 		timeslot: Timeslot,
         courses: [Int : Course2],
-        activeCourse: Binding<Bool>
     )
     {
-        self.activeCourse = activeCourse
-        
+		self.isBold = (LocalData.shared.currentTime == timeslot) ? true : false
+
 		self.day = timetableDay
 		self.timeslotIdentifier = timeslot
         self.courses = courses
@@ -60,19 +42,30 @@ struct DisplayEntry: View {
 
     var body: some View {
 
-        HStack {
-            Image(systemName: listedCourse.icon)
-                .font(.title).frame(width: 30)
+		HStack(spacing: 12) {
+			if LocalData.shared.currentTime == timeslotIdentifier {
+				RoundedRectangle(cornerRadius: 2, style: .continuous)
+					.fill(Colour(listedCourse.colour))
+					.frame(width: 4, height: 32)
+					.transition(.opacity.combined(with: .move(edge: .leading)))
+			}
 
+			Image(systemName: listedCourse.icon)
+				.font(.title)
+				.frame(width: 30)
+				.bold(isBold)
 
-			Text(time24toNormal(timeslotIdentifier.time)).bold()
-            Spacer()
-            
-            VStack(alignment: .trailing) {
-                if room != nil { Text(room!).font(.caption) }
-                Text(listedCourse.name).bold()
-            }
-        }
+			Text(time24toNormal(timeslotIdentifier.time))
+				.bold()
+
+			Spacer()
+
+			VStack(alignment: .trailing) {
+				if room != nil { Text(room!).font(.caption) }
+				Text(listedCourse.name).bold(isBold)
+			}
+		}
+		.animation(.easeInOut(duration: 0.25), value: LocalData.shared.currentTime)
     }
 }
 
@@ -83,11 +76,15 @@ struct TimetableView: View {
     var week: WeekAB
     var weekday: Int
     @EnvironmentObject var data: LocalData
-    
+
+	@State var sectionHeader: String
+
     init(timetable: Timetable,
 		 week _week: WeekAB = { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }(),
 		 day _day: Int = weekdayNumber(.now)
 	) {
+		//May need to return early in case of weekend or no term
+
 		let wkday = _day
         let wk = _week
         
@@ -97,34 +94,43 @@ struct TimetableView: View {
 		self.day = getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: timetable)
 
         self.courses = timetable.courses
-        
-        let dayKeys = Array(day.keys).sorted(by: <).dropLast()//temp
-        print("TimetableView.swift:\(#line) TimetableView Initialised,\n\tDay: \(day),\n\tSecond Course: \(String(describing: courses[ (day[dayKeys[1]])![1] ]))")
+
+		let suffix =  if week == .a { " A" } else { " B" }
+		self.sectionHeader = switch weekday {
+			case 2: "Monday"+suffix
+			case 3: "Tuesday"+suffix
+			case 4: "Wednesday"+suffix
+			case 5: "Thursday"+suffix
+			case 6: "Friday"+suffix
+			default: "Error \(#line)"
+		  }
     }
     
     var body: some View {
         NavigationStack {
             let dayKeys = Array(day.keys).sorted(by: <).dropLast()
 			List {
-				Section("Monday A") {
 					ForEach(dayKeys, id: \.self) { key in
-                        @State var current = { data.currentTime==entry.timeslotIdentifier }()
-						let entry = DisplayEntry(
-                            timetableDay: day,timeslot: Timeslot(week: week, day: weekday, time: key), courses: courses, activeCourse: $current
+                        let timeslot = Timeslot(week: week, day: weekday, time: key)
+                        let entry = DisplayEntry(
+                            timetableDay: day,
+                            timeslot: timeslot,
+                            courses: courses
                         )
-						let bG: Colour? = (data.currentTime==entry.timeslotIdentifier) ? Colour(entry.listedCourse.colour): nil
-						entry
-							.listRowBackground(bG)
-                         
-					}
+                        let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
+                        entry
+                            .listRowBackground(bG)
 				}
 			}
             .toolbar {
-                NavigationLink {
-                    EditDayView(timetable: data.timetable, week: .a).environmentObject(LocalData.shared)
-                } label: {
-                    Label("Edit", systemImage: "pencil")
-                }
+				ToolbarItem(placement: .principal) { Text(sectionHeader) }
+				ToolbarItem(placement: .primaryAction) {
+					NavigationLink {
+						EditDayView(timetable: data.timetable, week: .a).environmentObject(LocalData.shared)
+					} label: {
+						Label("Edit", systemImage: "pencil")
+					}
+				}
             }
         }
     }
@@ -135,3 +141,4 @@ struct TimetableView: View {
 #Preview {
 	TimetableView(timetable: chaos, week: .a, day: 2).environmentObject(LocalData.shared)
 }
+

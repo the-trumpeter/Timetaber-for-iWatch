@@ -19,6 +19,11 @@ typealias Colour = Color
 
 
 
+
+
+
+
+
 //MARK: - Course and Course2
 
 
@@ -103,6 +108,18 @@ struct Course2: Codable {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 //MARK: No School and Fail
 /// Returns a `Course` representing the absence of school; with a `joke` relevant to the current date/time of interaction, obtained through the `key` parameter.\
 /// If `key` is not initialised; the `joke` will default to `"Not yet, anyway..."`.
@@ -113,12 +130,30 @@ func noSchool(_ key: TimeCase? = nil) -> Course {
 		case .noTimetable: "No timetable available."
 		case .beforeClass(let startTime): "First class at \(time24toNormal(startTime))."
 		case .afterClass: "School's out for today!"
+	//	case .freePeriod: "No class right now"
 		case nil: "Not yet, anyway..."
 	}
+	let name: String = switch key {
+	//	case .freePeriod: "Free Period"
+		default: "No School"
+	}
+
+
 	let id: CourseType? = if key != nil { CourseType.noSchool(key!) } else { nil }
-	return Course("No school", icon: "clock", colour: "Graphite", joke: joke, identifier: id)
+	return Course(name, icon: "clock", colour: "Graphite", joke: joke, identifier: id)
 }
 
+
+/// Various situations in which there is no school.\
+/// See `noSchool`.
+enum TimeCase: Codable, Equatable {
+	case weekend
+	case noTerm
+	case noTimetable
+	case beforeClass(startTime: Int)
+	case afterClass
+//	case freePeriod
+}
 
 
 
@@ -207,6 +242,16 @@ func convertCourse(
 
 
 
+
+
+
+
+
+
+
+
+
+
 //MARK: - UI functions
 
 
@@ -245,6 +290,14 @@ func nextPrefix(_ course: Course) -> String {
 	}
 	return "Next up:"
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -373,6 +426,15 @@ func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
 
 
 
+
+
+
+
+
+
+
+
+
 //MARK: - Timetable
 
 
@@ -414,16 +476,6 @@ struct Timeslot: Codable, Equatable {
 	let day: Int //1=Sun, 2=Mon, ...7=Sat
     let time: Int
 	//let Timetable: Timetable
-}
-
-/// Various situations in which there is no school.\
-/// See `noSchool`.
-enum TimeCase: Codable, Equatable {
-	case weekend
-	case noTerm
-	case noTimetable
-	case beforeClass(startTime: Int)
-	case afterClass
 }
 
 

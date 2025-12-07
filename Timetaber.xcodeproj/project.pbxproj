@@ -39,6 +39,7 @@
 /* Begin PBXFileReference section */
 		AE09C37E2E4D8A680032E777 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE1438DB2EC8393900075576 /* TimetaberIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = TimetaberIcon.icon; sourceTree = "<group>"; };
+		AE911A8B2EE24AC00084E3D9 /* local.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = local.bundle; sourceTree = "<group>"; };
 		AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timetaber Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -87,6 +88,7 @@
 				AE09C37E2E4D8A680032E777 /* Timetaber.app */,
 				AE09C37F2E4D8A680032E777 /* Timetaber */,
 				AE1438DB2EC8393900075576 /* TimetaberIcon.icon */,
+				AE911A8B2EE24AC00084E3D9 /* local.bundle */,
 			);
 			sourceTree = "<group>";
 		};

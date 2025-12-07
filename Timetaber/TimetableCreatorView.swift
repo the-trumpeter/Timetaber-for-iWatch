@@ -17,17 +17,10 @@ extension View {
 	}
 }
 
-struct EditDayEntryView: View {
-	@State var course: Course2
-	@State var room: Int
-	@State var time: Int
 
-	@Environment(\.colorScheme) private var colourScheme
 
-	var body: some View {
-		
-	}
-}
+
+//MARK: - Day
 
 struct EntryView: View {
 	@State var showingSheet = false
@@ -251,10 +244,24 @@ struct EditDayView: View {
 	}
 }
 
+
+
+
+struct TimetableEditor: View {
+	var body: some View {
+		Text("Hello world")
+	}
+}
+
+
+
+
 #Preview {
-	EditDayView(
+	/*EditDayView(
 		timetable: chaos,
 		week: .a
 	).environmentObject(LocalData.shared)
+	 */
+	TimetableEditor()
 }
 
