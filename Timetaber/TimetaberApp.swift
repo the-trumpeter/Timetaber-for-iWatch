@@ -14,6 +14,7 @@ struct TimetaberApp: App {
             TabView{
                 Tab("Home", systemImage: "clock") { HomeView().environmentObject(LocalData.shared) }
                 Tab("Timetable", systemImage: "list.bullet") { TimetableView(timetable: chaos).environmentObject(LocalData.shared) }
+				Tab("Edit", systemImage: "list.triangle") { TimetablesListEditor() }
 				Tab("Settings", systemImage: "gear") { SettingsView() }
             }
         }

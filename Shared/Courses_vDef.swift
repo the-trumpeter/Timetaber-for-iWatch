@@ -24,7 +24,7 @@ let English9 = Course("English", icon: "book.closed", room: "BT9", colour: "Lemo
 
 let GreaseOrchCourse = Course("Orchestra", icon: "theatermasks", colour: "Cherry")
 
-let HSIECourse = Course("HSIE", icon: "archivebox", room: "BG8", colour: "Rees")
+let HSIECourse = Course("HSIE", icon: "archivebox", room: "BG8", colour: "Rees1")
 
 let JCBCourse = Course("Junior C.B.", icon: "music.note", colour: "Cherry")
 let JSBCourse = Course("Jr Stage", icon: "music.note", room: "BT1", colour: "Graphite", listName: "Junior S.B.")

@@ -42,10 +42,14 @@ struct Course {
 	let joke: String?
 	let type: CourseType?
 
-	init(_ name: String, icon: String, room: String? = nil, colour: String,
-		 listName: String? = nil, listIcon: String? = nil,
-		 joke: String? = nil,
-		 identifier: CourseType? = nil
+	init( _	name: 		String,
+			icon: 		String,
+			room: 		String? 	= nil,
+			colour: 	String,
+			listName: 	String? 	= nil,
+			listIcon: 	String? 	= nil,
+			joke: 		String? 	= nil,
+			identifier:	CourseType? = nil
 	)
 	{
 
@@ -61,6 +65,18 @@ struct Course {
 		self.type = identifier
 	}
 
+
+	init(_ course2: Course2, room: String? = nil, identifier: CourseType? = nil) {
+		self.name = course2.name
+		self.icon = course2.icon
+		self.room = room
+		self.colour = course2.colour
+		self.listName = course2.listName ?? name
+		self.listIcon = course2.listIcon
+		self.joke = course2.joke
+		self.type = identifier ?? course2.type ?? nil
+	}
+
 }
 
 
@@ -68,12 +84,12 @@ struct Course {
 //MARK: Course2
 /// Representing a class/course in a timetable.
 /// Second version, including data for location in the timetable,
-struct Course2: Codable {
-	var name:	String
-	var icon:	String
-	var rooms: [String] ///If a course has muliple rooms used, store all the variations here
-	//var room:	String?
-	var colour:	String
+struct Course2: Codable, Equatable {
+	var name:	 String
+	var icon:	 String
+	var rooms:	[Int: String] ///If a course has muliple rooms used, store all the variations here
+//	var room:	 String?
+	var colour:	 String
 
 	var listName:	String?
 	var listIcon:	String
@@ -87,7 +103,7 @@ struct Course2: Codable {
 
 		self.name = name
 		self.icon = icon
-		self.rooms = rooms
+		self.rooms = Dictionary(uniqueKeysWithValues: zip(rooms.indices, rooms))
 		self.colour = colour
 
 		self.listName = listName
@@ -99,11 +115,15 @@ struct Course2: Codable {
 
 	}
 
-	/// Returns a copy of this course with an explicit room selected for a timetable slot.
-	func with(room explicitRoom: String) -> Course2 {
-		var copy = self
-		copy.rooms = [explicitRoom]
-		return copy
+	init(_ course: Course, identifier: CourseType? = nil) {
+		self.name = course.name
+		self.icon = course.icon
+		self.rooms = if course.room != nil { [0: course.room!] } else { [:] }
+		self.colour = course.colour
+		self.listName = course.listName
+		self.listIcon = course.listIcon
+		self.joke = course.joke
+		self.type = identifier ?? course.type ?? nil
 	}
 }
 
@@ -131,7 +151,7 @@ func noSchool(_ key: TimeCase? = nil) -> Course {
 		case .beforeClass(let startTime): "First class at \(time24toNormal(startTime))."
 		case .afterClass: "School's out for today!"
 	//	case .freePeriod: "No class right now"
-		case nil: "Not yet, anyway..."
+		default: "Not yet, anyway..."
 	}
 	let name: String = switch key {
 	//	case .freePeriod: "Free Period"
@@ -157,7 +177,7 @@ enum TimeCase: Codable, Equatable {
 
 
 
-///Method to handle informal errors, fails and exhaustions; so, bugs. Feedback of `"<#filename#>:\(#line)"` should be input to the `feedback` parameter.\
+///Method to handle informal errors, fails and exhaustions; so, bugs. Feedback of `"<#shortened filename#>:\(#line)"` should be input to the `feedback` parameter.\
 ///Display the error to the user for reporting by setting `LocalData.shared.currentCourse` to an instance of `failCourse`. They _should_ be directed to open an Issue in the GitHub repository.
 func failCourse(feedback: String? = "None") -> Course {
 	return Course("Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "Graphite", listIcon: "exclamationmark.triangle")
@@ -167,7 +187,7 @@ func failCourse(feedback: String? = "None") -> Course {
 
 func noSchool2(_ timecase: TimeCase? = nil) -> Course2 {
 	guard let key = timecase else { return failCourse2(feedback: "TimeManager:\(#line)")}
-
+7
 	let joke: String = switch key {
 		case .weekend: "It's the weekend."
 		case .noTerm: "No term running."
@@ -199,7 +219,8 @@ enum ConversionError: Error {
 
 
 
-func convertCourse(
+/*
+ func convertCourse(
 	course: Course? = nil,
 	course2: Course2? = nil, room: String? = nil,
 	identifier: CourseType? = nil
@@ -239,6 +260,7 @@ func convertCourse(
 		return ConversionError.noParameters
 	}()
 }
+ */
 
 
 
@@ -441,61 +463,23 @@ func getTimetableDay(isWeekA: Bool, weekDay: Int) -> Dictionary<Int, Course> {
 
 //MARK: Timetable Structs/Enums
 
-struct TimetabledWeek: Codable {
-	var monday:			[ Int: [Int] ]
-	var tuesday:		[ Int: [Int] ]
-	var wednesday:		[ Int: [Int] ]
-	var thursday:		[ Int: [Int] ]
-	var friday:			[ Int: [Int] ]
-}
-
-//A period in a day. See 'Times'
-struct TimeSet: Codable {
-	var startTime: Int;
-
-	// in minutes
-	var duration: Int
-}
-
-//The times and structure of a timetabled day, including periods etc.
-struct Times: Codable {
-	var standard: [ TimeSet ]
-	var variants: [String: [TimeSet]]
-	var variantDays: [Int: String]
+struct Timeslot: Codable, Equatable {
+	let week: WeekAB
+	let day: Int //1=Sun, 2=Mon, ...7=Sat
+	let time: Int
+	//let Timetable: Timetable
 }
 
 enum WeekAB: Codable { case a; case b }
 
 enum CourseType: Codable, Equatable {
-	case standard/*(Timeslot)*/ // TODO: Need to move this timeslot stuff outside of a global definition of the course
+	case standard
 	case noSchool(TimeCase)
 	case fail
 }
-struct Timeslot: Codable, Equatable {
-	let week: WeekAB
-	let day: Int //1=Sun, 2=Mon, ...7=Sat
-    let time: Int
-	//let Timetable: Timetable
-}
 
 
-///Contains all data of a user's timetable.
-class Timetable: Codable {
-	var name: String
 
-	//Doooo not modifyy!
-	var formatProtocol: String = "0.0.3"
 
-	/// All courses used in the timetable are stored in an array, with their index being a unique identifier (for use *within the timetable*, not on the frontend) for that course.
-	var courses: [Int : Course2]
 
-	var times: Times //I don't like this...
-	var timetable: [TimetabledWeek]
 
-	init(_ name: String, courses: [Int: Course2], times: Times, timetable: [TimetabledWeek] ) {
-		self.name = name
-		self.courses = courses
-		self.times = times
-		self.timetable = timetable
-	}
-}

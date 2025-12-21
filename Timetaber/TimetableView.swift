@@ -27,6 +27,7 @@ struct DisplayEntry: View {
         courses: [Int : Course2],
     )
     {
+		print("Start DisplayEntry init")
 		self.isBold = (LocalData.shared.currentTime == timeslot) ? true : false
 
 		self.day = timetableDay
@@ -37,18 +38,20 @@ struct DisplayEntry: View {
         self.properties = day[key]!
         self.listedCourse = courses[ day[key]![0] ]!
         self.room = if listedCourse.rooms.isEmpty { nil } else { listedCourse.rooms[properties[1]] }
-        print("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))")
+        print("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))\n")
     }
 
     var body: some View {
 
 		HStack(spacing: 12) {
-			if LocalData.shared.currentTime == timeslotIdentifier {
+
+/*			 if LocalData.shared.currentTime == timeslotIdentifier {
 				RoundedRectangle(cornerRadius: 2, style: .continuous)
 					.fill(Colour(listedCourse.colour))
 					.frame(width: 4, height: 32)
 					.transition(.opacity.combined(with: .move(edge: .leading)))
 			}
+*/
 
 			Image(systemName: listedCourse.icon)
 				.font(.title)
@@ -84,7 +87,7 @@ struct TimetableView: View {
 		 day _day: Int = weekdayNumber(.now)
 	) {
 		//May need to return early in case of weekend or no term
-
+		print("Start TimetableView init")
 		let wkday = _day
         let wk = _week
         
@@ -104,6 +107,7 @@ struct TimetableView: View {
 			case 6: "Friday"+suffix
 			default: "Error \(#line)"
 		  }
+		print("End TimetableView init")
     }
     
     var body: some View {
@@ -121,19 +125,24 @@ struct TimetableView: View {
                         entry
                             .listRowBackground(bG)
 				}
-			}
-            .toolbar {
+			}.toolbar {
 				ToolbarItem(placement: .principal) { Text(sectionHeader) }
-				ToolbarItem(placement: .primaryAction) {
-					NavigationLink {
-						EditDayView(timetable: data.timetable, week: .a).environmentObject(LocalData.shared)
-					} label: {
-						Label("Edit", systemImage: "pencil")
-					}
+		 }
+		 .toolbar {
+			 ToolbarItem(placement: .primaryAction) {
+				NavigationLink {
+					EditDayView(timetable: Storage.shared.timetable, week: week)
+				} label: {
+					Label("Edit", systemImage: "pencil")
 				}
-            }
+			 }
+		 }
         }
-    }
+
+
+    }//body
+
+
 }
 
 

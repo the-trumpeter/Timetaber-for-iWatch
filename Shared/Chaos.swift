@@ -6,13 +6,14 @@
 //
 
 
-let chaos = Timetable(
+var chaos = Timetable(
 	"Gill's Timetable",
+	icon: "backpack",
 	courses: [
 		 0: Course2("Check In", 	icon: "face.smiling",				rooms: ["HG1"], 				colour: "Graphite",								listIcon: "face.smiling.inverse"),
 		 1: Course2("English", 		icon: "book.closed", 				rooms: ["BT6", "BT9"],			colour: "Lemon"),
 		 2: Course2("Orchestra", 	icon: "theatermasks", 												colour: "Cherry"),
-		 3: Course2("HSIE",			icon: "archivebox", 				rooms: ["BG8"], 				colour: "Rees"),
+		 3: Course2("HSIE",			icon: "archivebox", 				rooms: ["BG8"], 				colour: "Rees1"),
 		 4: Course2("Junior C.B.",	icon: "music.note", 												colour: "Cherry"),
 		 5: Course2("Jr Stage",		icon: "music.note", 				rooms: ["BT1"], 				colour: "Graphite",	listName:"Junior S.B."),
 		 6: Course2("Lunch", 		icon: "fork.knife", 												colour: "Graphite"),
@@ -25,8 +26,8 @@ let chaos = Timetable(
 		13: Course2("Recess", 		icon: "fork.knife", 												colour: "Graphite"),
 		14: Course2("Senior C.B.", 	icon: "music.note", 												colour: "Cherry"),
 		15: Course2("Science", 		icon: "flask", 						rooms: ["FT10"], 				colour: "Ice",									listIcon: "flame.circle.fill"),
-		16: Course2("Stage Band",	icon: "music.note", 												colour: "cherry", 	listName: "Senior S.B."),
-		17: Course2("TAS", 			icon: "hammer", 					rooms: ["HG7"], 				colour: "Blueberry"),
+		16: Course2("Stage Band",	icon: "music.note", 												colour: "Cherry", 	listName: "Senior S.B."),
+		17: Course2("TAS", 			icon: "hammer", 					rooms: ["FT4"], 				colour: "Blueberry"),
 		18: Course2("Theatre Crew",	icon: "headset", 													colour: "Peach"),
 		19: Course2("Visual Arts", 	icon: "paintbrush.pointed",			rooms: ["HG5"], 				colour: "Apricot", 	listName: "Art"),
 		20: Course2("Year Assembly",icon: "person.3", 													colour: "Graphite",	listName: "Assembly",		listIcon: "person.2.circle.fill"),

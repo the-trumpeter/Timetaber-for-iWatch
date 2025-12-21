@@ -55,7 +55,7 @@ func setCourseChangeAlarm(for time: Int) {
         reload()
     }
     RunLoop.main.add(UpdateTimer!, forMode: .default)
-    NSLog("TimeManager_fDef.swift:%d - Succesfully set course change alarm for %@", #line, date.formatted(date: .numeric, time: .complete))
+    NSLog("DateTime.swift:%d - Succesfully set course change alarm for %@", #line, date.formatted(date: .numeric, time: .complete))
 }
 
 
@@ -69,7 +69,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     //MARK: Init and Ghost Week stuff
     let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
-    print("TimeManager_fDef.swift:\(#line) - the weekday today is \(todayWeekday)")
+    print("\(#file).swift:\(#line) - the weekday today is \(todayWeekday)")
     
     //func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
     ///returns `d.keys.sorted()`
@@ -125,7 +125,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
         let compare = times2Day[n] // time we r comparing to
         let now = time24Now // current time
-        print("TimeManager_fDef.swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
+        print("\(#file).swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
         
         let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int.max // next comparitive time; ensure we are not at end of array already
         
@@ -133,7 +133,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
         if now==compare {
             
-            print("TimeManager_fDef.swift:\(#line) - now\(now)==compare\(compare)")
+            print("\(#file).swift:\(#line) - now\(now)==compare\(compare)")
             
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: now,
@@ -155,7 +155,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
         } else if now>compare &&  now<next {
             
-            print("TimeManager_fDef.swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
+            print("\(#file).swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: compare,
             weekDay: todayWeekday, isWeekA: isweekA
@@ -218,17 +218,29 @@ func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime:
 			default: return [:]
 		}
 	}()
-	guard let now = timetableDay[sessionStartTime] else { return failCourse(feedback: "TimeManager:\(#line)") }
-
-	let course2: Course2 = timetable.courses[now[0]]!
-	let roomIndex = now[1]
-	let room: String = course2.rooms[roomIndex]
-	// convertCourse throws; use try? and fall back to a failure Course if conversion fails
-	if let converted = try? convertCourse(course2: course2, room: room) as? Course {
-	    return converted
-	} else {
-	    return failCourse(feedback: "TimeManager:\(#line)")
+	// Expecting `[courseId, roomIndex]` at this time key
+	guard let pair = timetableDay[sessionStartTime] else {
+		return failCourse(feedback: "DateTime:\(#line)")
 	}
+	// Ensure the pair has at least two integers
+	guard pair.count >= 2 else {
+		return failCourse(feedback: "DateTime:\(#line) invalid mapping for time \(sessionStartTime)")
+	}
+	let courseId = pair[0]
+	let roomIndex = pair[1]
+
+	// Look up the course; if missing, fail gracefully
+	guard let course2 = timetable.courses[courseId] else {
+		return failCourse(feedback: "DateTime:\(#line) missing course for id \(courseId)")
+	}
+
+	// If room index is valid, return with room; otherwise return base Course
+	if roomIndex >= 0 && roomIndex < course2.rooms.count {
+		return Course(course2, room: course2.rooms[roomIndex])
+	} else {
+		return Course(course2)
+	}
+
 }
 
 
@@ -240,7 +252,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 	//MARK: —Init and Ghost Week stuff
 	let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
-	print("TimeManager_fDef.swift:\(#line) - the weekday today is \(todayWeekday)")
+	print("\(#file):\(#line) - the weekday today is \(todayWeekday)")
 
 	//func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
 	///returns `d.keys.sorted()`
@@ -314,7 +326,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 		let compare = times2Day[n] // time we r comparing to
 		let now = time24Now // current time
-		print("TimeManager_fDef.swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
+		print("\(#file).swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
 
 		let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int.max // next comparitive time; ensure we are not at end of array already
 
@@ -322,7 +334,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 		if now==compare { //MARK: ——Bang on time
 
-			print("TimeManager_fDef.swift:\(#line) - now\(now)==compare\(compare)")
+			print("\(#file).swift:\(#line) - now\(now)==compare\(compare)")
 
 			let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA2(
 				timetable: timetable, sessionStartTime: now,
@@ -346,7 +358,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 		} else if now>compare &&  now<next { //MARK: ——In the Middle
 
-			print("TimeManager_fDef.swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
+			print("\(#file).swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
 			let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA2(
 				timetable: timetable,
 				sessionStartTime: compare,

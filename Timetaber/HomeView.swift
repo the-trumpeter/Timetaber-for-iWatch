@@ -72,6 +72,7 @@ struct HomeView: View {
 				.font(.system(size: 20))
 				
 			}.colorInvert()
+				.padding()
 		}
 	}
 }

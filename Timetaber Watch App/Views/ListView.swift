@@ -34,7 +34,7 @@ struct listTemplate: View {
         let key: Int = timeslot.time
         self.properties = day[key]!
         self.listedCourse = courses[ day[key]![0] ]!
-        self.room = listedCourse.rooms[properties[1]]
+        self.room = listedCourse.rooms[properties[1]]!
     }
     
     var body: some View {
