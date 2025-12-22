@@ -24,7 +24,7 @@ class LocalData: ObservableObject {
 		print("Start LocalData init")
 		let now = getCurrentClass2(date: .now, timetable: chaos)
 		guard ((now[0] as? Course) != nil), ((now[1] as? Course) != nil), ((now[2] as? Timeslot) != nil), now.count == 3 else {
-			fatalError("\(Date.now.formatted(date: .numeric, time: .complete)) | \(#file):\(#line)\n\tgetCurrentClass2 returned contents other than `[Course, Course, Timeslot]`.\n\tContents: \(now)")
+			fatalError("\(Date.now.formatted(date: .numeric, time: .complete)) | \(#fileID):\(#line)\n\tgetCurrentClass2 returned contents other than `[Course, Course, Timeslot]`.\n\tContents: \(now)")
 		}
 		self.currentCourse = now[0] as! Course
 		self.nextCourse = now[1] as! Course

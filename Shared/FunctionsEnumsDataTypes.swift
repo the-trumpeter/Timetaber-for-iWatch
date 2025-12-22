@@ -187,7 +187,7 @@ func failCourse(feedback: String? = "None") -> Course {
 
 func noSchool2(_ timecase: TimeCase? = nil) -> Course2 {
 	guard let key = timecase else { return failCourse2(feedback: "TimeManager:\(#line)")}
-7
+
 	let joke: String = switch key {
 		case .weekend: "It's the weekend."
 		case .noTerm: "No term running."
@@ -351,7 +351,7 @@ func dateFrom24hrInt(_ time24: Int) -> Date {
 	guard let date = calendar.date(from: components) else {
 
 		LocalData.shared.currentCourse = failCourse(feedback: "TimeManager:\(#line)")
-		NSLog("%@:%d @ dateFrom24hrInt | %@ | 🚨🚨 Catastrophic Error:\n    Composing date %@:%@.\n    DateComponents: %@", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: components.hour), String(describing: components.minute), String(describing: components)
+		NSLog("%@:%d @ dateFrom24hrInt | %@ | 🚨🚨 Catastrophic Error:\n    Composing date %@:%@.\n    DateComponents: %@", #fileID, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: components.hour), String(describing: components.minute), String(describing: components)
 			  )
 		log()
 		return Date.now

@@ -476,15 +476,63 @@ enum ConversionError: Error {
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
+					<string>28</string>
+					<key>EndingLineNumber</key>
+					<string>107</string>
+					<key>StartingColumnNumber</key>
+					<string>3</string>
+					<key>StartingLineNumber</key>
+					<string>107</string>
+					<key>Timestamp</key>
+					<string>787987806.802798</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/TimetableView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>is-complete</key>
+			<true/>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>default: "Error \(#line)"</string>
+				<key>leading</key>
+				<string>			case 5: "Thursday"+suffix
+			case 6: "Friday"+suffix
+			</string>
+				<key>trailing</key>
+				<string>
+		  }
+		print("End TimetableView init")
+</string>
+			</dict>
+			<key>title</key>
+			<string>Create fallback for weekends</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>465</string>
+					<string>631</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>464</string>
+					<string>630</string>
 					<key>Timestamp</key>
-					<string>787974275.5949661</string>
+					<string>788079874.102046</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -500,18 +548,20 @@ enum ConversionError: Error {
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>						.onLongPressGesture(
 </string>
 				<key>leading</key>
-				<string>					Button("Save", systemImage: "checkmark") {
-						let changes = compileChanges()
+				<string>					.listRowInsets(EdgeInsets())
+
 </string>
 				<key>trailing</key>
-				<string>						dismiss()
-					}
-				}
+				<string>							minimumDuration: 0,
+							maximumDistance: .infinity,
+							perform: {
 </string>
 			</dict>
+			<key>title</key>
+			<string>Test me</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

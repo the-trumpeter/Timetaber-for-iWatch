@@ -69,7 +69,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     
     //MARK: Init and Ghost Week stuff
     let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
-    print("\(#file).swift:\(#line) - the weekday today is \(todayWeekday)")
+    print("\(#fileID).swift:\(#line) - the weekday today is \(todayWeekday)")
     
     //func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
     ///returns `d.keys.sorted()`
@@ -125,7 +125,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
         let compare = times2Day[n] // time we r comparing to
         let now = time24Now // current time
-        print("\(#file).swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
+        print("\(#fileID).swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
         
         let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int.max // next comparitive time; ensure we are not at end of array already
         
@@ -133,7 +133,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
         
         if now==compare {
             
-            print("\(#file).swift:\(#line) - now\(now)==compare\(compare)")
+            print("\(#fileID).swift:\(#line) - now\(now)==compare\(compare)")
             
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: now,
@@ -155,7 +155,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
         } else if now>compare &&  now<next {
             
-            print("\(#file).swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
+            print("\(#fileID).swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
             let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA(
             sessionStartTime: compare,
             weekDay: todayWeekday, isWeekA: isweekA
@@ -180,7 +180,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
     } // for n
     
     // MARK: Catch
-    NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    Exhausted all possible options for day.\n    time: %@, times: %@\n", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
+    NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    Exhausted all possible options for day.\n    time: %@, times: %@\n", #fileID, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
     log()
     
     let failed = failCourse(feedback: "TimeManager:\(#line)")
@@ -252,7 +252,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 	//MARK: —Init and Ghost Week stuff
 	let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
-	print("\(#file):\(#line) - the weekday today is \(todayWeekday)")
+	print("\(#fileID):\(#line) - the weekday today is \(todayWeekday)")
 
 	//func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
 	///returns `d.keys.sorted()`
@@ -315,7 +315,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 		print("> There's no school at the moment. [afterClass]")
 		//try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
-		print(#file+String(#line))
+		print(#fileID+String(#line))
 		return [noSchool(.afterClass), noSchool(.afterClass), Timeslot(week: week, day: todayWeekday, time: -1)] //MARK: Return C
 	}
 
@@ -326,7 +326,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 		let compare = times2Day[n] // time we r comparing to
 		let now = time24Now // current time
-		print("\(#file).swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
+		print("\(#fileID).swift:\(#line) - Times today count is \(times2Day.count) and n+1 is \(n+1).")
 
 		let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int.max // next comparitive time; ensure we are not at end of array already
 
@@ -334,7 +334,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 		if now==compare { //MARK: ——Bang on time
 
-			print("\(#file).swift:\(#line) - now\(now)==compare\(compare)")
+			print("\(#fileID).swift:\(#line) - now\(now)==compare\(compare)")
 
 			let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA2(
 				timetable: timetable, sessionStartTime: now,
@@ -358,7 +358,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 		} else if now>compare &&  now<next { //MARK: ——In the Middle
 
-			print("\(#file).swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
+			print("\(#fileID).swift:\(#line) - now\(now)>compare\(compare) && now\(now)<next\(next)")
 			let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA2(
 				timetable: timetable,
 				sessionStartTime: compare,
@@ -383,10 +383,10 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 	} // for n
 
 	// MARK: Fatal Error: Fell Through
-	//NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    getCurrentClass fell through: Exhausted all possible options for day.\n    time: %@, times: %@\n", #file, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
+	//NSLog("%@:%d @ getCurrentClass | %@ |🚨🚨 Catastrophic Error:\n    getCurrentClass fell through: Exhausted all possible options for day.\n    time: %@, times: %@\n", #fileID, #line, Date.now.formatted(date: .numeric, time: .complete), String(describing: time24Now), String(describing: times2Day))
 	log()
-	print(#file+String(#line))
-	fatalError("\(Date.now.formatted(date: .numeric, time: .complete)) | \(#file):\(#line)\n\tgetCurrentClass fell through\n\tDate: \(date)\n\tTimetable: \(timetable)")
+	print(#fileID+String(#line))
+	fatalError("\(Date.now.formatted(date: .numeric, time: .complete)) | \(#fileID):\(#line)\n\tgetCurrentClass fell through\n\tDate: \(date)\n\tTimetable: \(timetable)")
 	/*
 	let failed = failCourse2(feedback: "TimeManager:\(#line)")
 	return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!

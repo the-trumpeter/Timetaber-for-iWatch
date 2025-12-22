@@ -92,7 +92,7 @@ class Storage: ObservableObject {
 			switch change {
 
 				case .course_create(index: let index, let value, timetable: let tblIndex):
-					self.timetables[tblIndex].courses.updateValue(value, forKey: index)
+				self.timetables[tblIndex].courses.updateValue(value, forKey: index ?? self.timetables[tblIndex].courses.count)
 
 				case .course_delete(index: let index, timetable: let tblIndex):
 					self.timetables[tblIndex].courses.removeValue(forKey: index)
@@ -138,7 +138,7 @@ class Storage: ObservableObject {
 
 				case .week_add(let week, position: let pos, timetable: let tblIndex):
 					guard self.timetables[tblIndex].timetable.count < 2 else {
-						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#file):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
+						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#fileID):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
 					}
 					self.timetables[tblIndex].timetable.insert(week, at: pos)
 
@@ -159,7 +159,7 @@ class Storage: ObservableObject {
 
 		}//for each
 
-		print("\(#file):\(#line) Successfully applied changes to stored data:\n\t\(changes)")
+		print("\(#fileID):\(#line) Successfully applied changes to stored data:\n\t\(changes)")
 	}//func applyChanges(_)
 
 	#if os(iOS)

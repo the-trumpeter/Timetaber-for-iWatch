@@ -32,28 +32,40 @@ extension Color {
 	}
 }
 
+
+
 extension Dictionary where Key == Int, Value == Course2 {
-	func applyCourseChanges(_ changes: [Change]) -> [Int: Course2] {
-		var courses: [Int: Course2] = self
+
+	mutating func applyCourseChanges(_ changes: [Change]) {
 		for change in changes {
+
 			switch change {
-				case .course_create(index: let index, let value, timetable: let tblIndex):
-					courses.updateValue(value, forKey: index)
+				case .course_create(index: let index, let value, timetable: _):
+					self.updateValue(value, forKey: index ?? self.count)
 
-				case .course_delete(index: let index, timetable: let tblIndex):
-					courses.removeValue(forKey: index)
+				case .course_delete(index: let index, timetable: _):
+					self.removeValue(forKey: index)
 
-				case .course_modify(index: let index, let coursechange, timetable: let tblIndex):
+				case .course_modify(index: let index, let coursechange, timetable: _):
 					switch coursechange {
-					case .colour(let new): courses[index]?.colour = new
-					case .rooms(let new): courses[index]?.rooms = new
-					case .icon(let new): courses[index]?.icon = new
-					case .name(let new): courses[index]?.name = new
+					case .colour(let new): self[index]?.colour = new
+					case .rooms(let new): self[index]?.rooms = new
+					case .icon(let new): self[index]?.icon = new
+					case .name(let new): self[index]?.name = new
 					}
-			default: print("\(#file):\(#line) Couldn't apply change \(change) to value of type [Int: Course2]")
+
+				default:
+					print("\(#fileID):\(#line) Couldn't apply change \(change) to value of type [Int: Course2]")
 			}
+
 		}
-		return courses
+	}
+
+}
+
+extension Binding where Value == [Int: Course2] {
+	func applyCourseChanges(_ changes: [Change]) {
+		wrappedValue.applyCourseChanges(changes)
 	}
 }
 
@@ -298,28 +310,33 @@ struct EditDayView: View {
 
 
 
+
+
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton/courseEdit
 struct courseEdit: View {
-	@ObservedObject var store: Storage = Storage.shared
 
-	@Binding var localTimetable: Timetable
 	let tblIndex: Int
 	let pos: Int
 
-	@Binding var course: Course2
+	@Binding var parentCourse: Course2
+	@State var course: Course2
 	@Binding var pendingChanges: [Change]?
 
 	@State var pendingRoom: String = ""
 	@State var coloursSheet = false
 
-	let culours = ["Graphite", "Peach", "Lemon", "Rees1", "Apricot",
+	let colours = ["Graphite", "Peach", "Lemon", "Rees1", "Apricot",
 				   "Lime", "Ice", "Blueberry", "Rose", "Cherry"]
 
 	@Environment(\.dismiss) var dismiss
 
+
+
 	private func compileChanges() -> [Change] {
+		
 		var changes: [Change] = []
-		let origin = localTimetable.courses[pos]!
+
+		let origin = parentCourse
 
 		if course.name != origin.name {
 			changes.append(Change.course_modify(index: pos, .name(course.name), timetable: tblIndex))
@@ -363,18 +380,18 @@ struct courseEdit: View {
 					Grid {
 						GridRow {
 							ForEach(0...4, id: \.self) { index in
-								let culour = culours[index]
-								Button { course.colour = culour } label: {
+								let colour = colours[index]
+								Button { course.colour = colour } label: {
 									Circle()
-										.fill(Colour(culour))
+										.fill(Colour(colour))
 										.frame(width: 30, height: 30)
 										.overlay {
 											Circle()
-												.stroke(Colour(culour).adjust(brightness: -0.2), lineWidth: 2)
+												.stroke(Colour(colour).adjust(brightness: -0.2), lineWidth: 2)
 										}
 										.padding(5)
 										.overlay {
-											if course.colour == culour {
+											if course.colour == colour {
 												Circle()
 													.stroke(Color.accentColor, lineWidth: 3)
 											}
@@ -385,18 +402,18 @@ struct courseEdit: View {
 
 						GridRow {
 							ForEach(5...9, id: \.self) { index in
-								let culour = culours[index]
-								Button { course.colour = culour } label: {
+								let colour = colours[index]
+								Button { course.colour = colour } label: {
 									Circle()
-										.fill(Colour(culour))
+										.fill(Colour(colour))
 										.frame(width: 30, height: 30)
 										.overlay {
 											Circle()
-												.stroke(Colour(culour).adjust(brightness: -0.2), lineWidth: 2)
+												.stroke(Colour(colour).adjust(brightness: -0.2), lineWidth: 2)
 										}
 										.padding(5)
 										.overlay {
-											if course.colour == culour {
+											if course.colour == colour {
 												Circle()
 													.stroke(Color.accentColor, lineWidth: 3)
 											}
@@ -462,7 +479,9 @@ struct courseEdit: View {
 				ToolbarItem(placement: .confirmationAction) {
 					Button("Save", systemImage: "checkmark") {
 						let changes = compileChanges()
-
+						pendingChanges = changes + (pendingChanges ?? [])
+						parentCourse = course
+						print("\(#line) parent course is now \(parentCourse)")
 						dismiss()
 					}
 				}
@@ -473,77 +492,247 @@ struct courseEdit: View {
 	}
 }
 
-
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton
 struct coursebutton: View {
-	@State var course: Course2
+	@State private var isPressed = false
 	let tblIndex: Int
-	@State var pos: Int
-	@Binding var localTimetable: Timetable
+	var localCourses: Binding<[Int: Course2]>
+	var course: Binding<Course2>
+
+	let pos: Int
 	@State var showingSheet = false
-	@Binding var pendingChanges: [Change]?
+
+	var pendingChanges: Binding<[Change]?>
+
+	var highlight: Binding<Int>
+	var showingSheetforIndex: Binding<Int>
+
+	private var courseExists: Bool {
+		localCourses.wrappedValue[pos] != nil
+	}
+
+	init(localCourses: Binding<[Int : Course2]>, tblIndex: Int, pos: Int, pendingChanges: Binding<[Change]?>, highlight: Binding<Int>, sheetForIndex: Binding<Int>) {
+		self.localCourses = localCourses
+		self.course = Binding(
+			get: { localCourses.wrappedValue[pos]! },
+			set: { localCourses.wrappedValue[pos] = $0 }
+		)
+		self.tblIndex = tblIndex
+		self.pos = pos
+		self.showingSheet = false
+		self.pendingChanges = pendingChanges
+		self.highlight = highlight
+		self.showingSheetforIndex = sheetForIndex
+	}
 
 	var body: some View {
 		Button { showingSheet.toggle() } label: {
-			HStack {
-				RoundedRectangle(cornerRadius: 2, style: .continuous)
-					.fill(Colour(course.colour))
-					.frame(width: 4)
+			ZStack(alignment: .leading) {
 
-				Image(systemName: course.icon)
-				Text(course.name).lineLimit(1)
-				Spacer()
-				let joinedRooms = course.rooms.keys.sorted().compactMap { course.rooms[$0] }.joined(separator: "; ")
-				Text(joinedRooms).foregroundStyle(.secondary).frame(minWidth: 0, maxWidth: 150, alignment: .trailing).lineLimit(1)
-			}
-		}.buttonStyle(.plain)
-			.sheet(isPresented: $showingSheet) {
-				courseEdit(localTimetable: $localTimetable, tblIndex: tblIndex, pos: pos, course: $course, pendingChanges: $pendingChanges)
-					.presentationDetents([.medium])
-			}
-	}
-}
-//MARK: TimetablesListEditor/timetableOptions/CoursesEditor
-struct CoursesEditor: View {
-	@ObservedObject var store: Storage = Storage.shared
-	let tblIndex: Int
-	@State var pendingChanges: [Change]? = nil
-	@State var localCourses: [Int: Course2]
-	init(tblIndex: Int) {
-		self.store = Storage.shared
-		self.tblIndex = tblIndex
-		self.pendingChanges = nil
-		self.localCourses = Storage.shared.timetables[tblIndex].courses
-	}
-	var body: some View {
-		NavigationStack {
-			List {
-				let courseIndices: [Int] = store.timetables[tblIndex].courses.keys.sorted()
-				ForEach(courseIndices, id: \.self) { index in
-					coursebutton(course: localCourses[index]!, tblIndex: tblIndex, pos: index, localTimetable: $store.timetables[tblIndex], pendingChanges: $pendingChanges)
-						.swipeActions(allowsFullSwipe: false) {
-							Button("Delete", systemImage: "trash", role: .destructive) {
-								pendingChanges = [Change.course_delete(index: index, timetable: tblIndex)] + (pendingChanges ?? [])
+				// THIS is what fills the row
+				Color.clear
 
-							}.labelStyle(.iconOnly)
-						}
+				HStack {
+					RoundedRectangle(cornerRadius: 2)
+						.fill(Colour(course.wrappedValue.colour))
+						.frame(width: 4)
+
+					Image(systemName: course.wrappedValue.icon)
+					Text(course.wrappedValue.name).lineLimit(1)
+
+					Spacer()
+
+					let joinedRooms = course.wrappedValue.rooms.keys.sorted()
+						.compactMap { course.wrappedValue.rooms[$0] }
+						.joined(separator: "; ")
+
+					Text(joinedRooms)
+						.foregroundStyle(.secondary)
+						.frame(maxWidth: 150, alignment: .trailing)
+						.lineLimit(1)
 				}
-				Button("Add Course", systemImage: "plus") { }
-			}.toolbar {
-				if pendingChanges != nil {
-					Button("Save", systemImage: "checkmark") {
-					do{	try store.distributeChanges(pendingChanges!)
-						} catch { return /** prompt user to copy changes to new timetable */ }
+			}
+			.frame(maxWidth: .infinity, alignment: .leading)
+			.contentShape(Rectangle())
+		}
 
-						store.applyChanges(pendingChanges!)
-					}
-				}
+		.buttonStyle(.plain)
+		.disabled(!courseExists)
+
+		.sheet(isPresented: $showingSheet) {
+			courseEdit(tblIndex: tblIndex, pos: pos, parentCourse: course, course: course.wrappedValue, pendingChanges: pendingChanges)
+				.presentationDetents([.medium])
+		}
+		.onChange(of: courseExists) { _, exists in
+			if !exists {
+				showingSheet = false
 			}
 		}
 	}
 }
 
-//MARK: TimetablesListEditor/timetableOptions
+struct ScrollOffsetKey: PreferenceKey {
+	static var defaultValue: CGFloat = 0
+	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+		value = nextValue()
+	}
+}
+
+//MARK: TimetablesListEditor/timetableOptions/CoursesEditor
+struct CoursesEditor: View {
+	@ObservedObject var store: Storage = Storage.shared
+	let tblIndex: Int
+
+	@State var pendingChanges: [Change]? = nil
+
+	@State var localCourses: [Int: Course2]
+
+	@State var newCourseSheet = false
+	@State var newCourse_fakePending: [Change]? = nil //courseEdit computes EDITS from tblIndex and pos, but it writes them back here where I can discard them and replace them with a .course_add
+	@State var newCourse_fakeNewCourse: Course2 = Course2("\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard) //courseEdit wil be comparing its normal Course2 with a control one of impossible characters, therefore there will always be changes.
+
+	@State var showingAlert = false
+	@State var alertIndex: Int = 0
+
+	@State var highlight = -1
+	@State var showingSheetForIndex = -1
+	@State var shouldAnimate = false
+	@State var actionCompleted = false
+
+	@State var scrollStartOffset = 0.0
+	@State var currentScrollOffset = 0.0
+
+	
+
+
+	init(tblIndex: Int) {
+		self.tblIndex = tblIndex
+		self.localCourses = Storage.shared.timetables[tblIndex].courses
+	}
+	var body: some View {
+		NavigationStack {
+			List {
+				let courseIndices: [Int] = localCourses.keys.sorted()
+				ForEach(courseIndices, id: \.self) { index in
+
+					ZStack {
+						Colour(.systemGray4)
+							.opacity(highlight == index ? 1 : 0)
+							.animation(shouldAnimate ? .easeOut(duration: 0.2) : nil, value: highlight)
+						coursebutton(localCourses: $localCourses, tblIndex: tblIndex, pos: index, pendingChanges: $pendingChanges, highlight: $highlight, sheetForIndex: $showingSheetForIndex)
+							.padding(.top, 13)
+							.padding(.bottom, 13)
+							.padding(.leading)
+							.padding(.trailing)
+					}
+					.transaction { txn in txn.disablesAnimations = !shouldAnimate }
+					.listRowInsets(EdgeInsets())
+
+						.onLongPressGesture(
+							minimumDuration: 0,
+							maximumDistance: .infinity,
+							perform: {
+								// We won’t use perform for the fade; all decisions happen in onPressingChanged
+							},
+							onPressingChanged: { pressing in
+								if pressing {
+									// Snap in: no animation
+									shouldAnimate = false
+									highlight = index
+									scrollStartOffset = currentScrollOffset
+								} else {
+									let delta = abs(scrollStartOffset - currentScrollOffset)
+									if delta < 2 {
+										// Completed: fade out
+										shouldAnimate = true
+										highlight = -1
+										shouldAnimate = false
+									} else {
+										// Cancelled: snap out (no animation)
+										shouldAnimate = false
+										highlight = -1
+									}
+								}
+							}
+						)
+
+						.swipeActions(allowsFullSwipe: false) {
+
+							Button("Delete", systemImage: "trash") {
+								alertIndex = index
+								showingAlert = true
+								//print("\(#line) Swipe action \(index), \(showingAlert)")
+							}.tint(.red)
+							.labelStyle(.iconOnly)
+
+
+
+						}
+
+				}
+				Button("Add Course", systemImage: "plus") {
+					newCourse_fakePending = []
+					newCourse_fakeNewCourse = Course2("\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard)
+
+					newCourseSheet.toggle()
+				}
+				.sheet(isPresented: $newCourseSheet) {//ondismiss
+					if newCourse_fakeNewCourse.name != "\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}" {
+						pendingChanges = [Change.course_create(newCourse_fakeNewCourse, timetable: tblIndex)] + (pendingChanges ?? [])
+						localCourses.applyCourseChanges([Change.course_create(newCourse_fakeNewCourse, timetable: tblIndex)])
+					}
+				} content: {
+					courseEdit(tblIndex: 0, pos: 0, parentCourse: $newCourse_fakeNewCourse, course: Course2("Course", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard), pendingChanges: $newCourse_fakePending)
+						.presentationDetents([.medium])
+				}
+
+			}.toolbar {
+				ToolbarItem(placement: .confirmationAction) {
+					if !(pendingChanges?.isEmpty ?? true) {
+						Button("Save", systemImage: "checkmark") {
+							do{	try store.distributeChanges(pendingChanges!)
+							} catch { return /** prompt user to copy changes to new timetable */ }
+
+							store.applyChanges(pendingChanges!)
+
+							pendingChanges = nil
+						}
+					}
+				}
+			}
+		}.background (
+			GeometryReader { geo in
+				Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
+			}
+		)
+		.onPreferenceChange(ScrollOffsetKey.self) { value in
+			currentScrollOffset = value
+		}
+		.alert("Delete \"\((localCourses[alertIndex]?.name) ?? "Error \(#line)")\"?", isPresented: $showingAlert) {
+			Button("Delete", role: .destructive) {
+				// Capture the course name before deletion so we can still display/log it after removal
+				let deletedName = localCourses[alertIndex]?.name ?? "Error \(#line)"
+
+				let change = Change.course_delete(index: alertIndex, timetable: tblIndex)
+				pendingChanges = [change] + (pendingChanges ?? [])
+				localCourses.applyCourseChanges([change])
+
+				print("\(#fileID):\(#line) Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(alertIndex))")
+			}
+			Button("Cancel", role: .cancel) {}
+		}
+	}
+}
+
+
+struct TimesEditor: View {
+	var body: some View {
+
+	}
+}
+
+
+//MARK: - TimetablesListEditor/timetableOptions
 struct timetableOptions: View {
 
 	@Binding var timetable: Timetable
@@ -581,10 +770,14 @@ struct timetableOptions: View {
 					HStack { Text("Courses").foregroundStyle(.primary); Spacer();
 						Text(String(timetable.courses.count)).foregroundStyle(.secondary) }
 				}
+
 				NavigationLink { } label: { HStack { Text("Times").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count)).foregroundStyle(.secondary) } }
+
 				NavigationLink { } label: { HStack { Text("Timetable").foregroundStyle(.primary); Spacer(); Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary) } }
 
-				Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) { }
+				Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) {
+					
+				}
 
 			}
 			.listStyle(.inset)
@@ -639,8 +832,6 @@ struct TimetablesListEditor: View {
 	 ).environmentObject(LocalData.shared)
 	 */
 
-	let tblIndex = 0
-	
-	CoursesEditor(tblIndex: 0)
+	TimesEditor()
 }
 

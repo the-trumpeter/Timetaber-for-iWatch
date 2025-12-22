@@ -64,7 +64,7 @@ class Timetable: Codable {
 			switch change {
 
 				case .course_create(index: let index, let value, timetable: let tblIndex):
-					self.courses.updateValue(value, forKey: index)
+					self.courses.updateValue(value, forKey: index ?? self.courses.count)
 				successChanges.append(change)
 
 				case .course_delete(index: let index, timetable: let tblIndex):
@@ -113,7 +113,7 @@ class Timetable: Codable {
 
 				case .week_add(let week, position: let pos, timetable: let tblIndex):
 					guard self.timetable.count < 2 else {
-						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#file):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
+						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#fileID):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
 					}
 					self.timetable.insert(week, at: pos)
 				successChanges.append(change)
@@ -134,13 +134,13 @@ class Timetable: Codable {
 					successChanges.append(change)
 
 				default:
-					print("\(#file):\(#line) Couldn't compile change\n\t\t\(change)\n\tto timetable \"\(self.name)\"")
+					print("\(#fileID):\(#line) Couldn't compile change\n\t\t\(change)\n\tto timetable \"\(self.name)\"")
 
 			}//switch
 
 		}//for each
 
-		print("\(#file):\(#line) Timetable.applyChanges\n\tSuccessfully applied changes to timetable \"\(self.name)\":\n\t\t\(successChanges)\n\tCouldn't apply changes:\n\t\t\(failChanges)")
+		print("\(#fileID):\(#line) Timetable.applyChanges\n\tSuccessfully applied changes to timetable \"\(self.name)\":\n\t\t\(successChanges)\n\tCouldn't apply changes:\n\t\t\(failChanges)")
 	}//func applyChanges(_)
 
 
@@ -163,7 +163,7 @@ enum Change: Codable {
 		 timetable_icon(String, timetable: Int)
 	case timetable_delete(Int)
 
-	case course_create(index: Int, Course2, timetable: Int),
+	case course_create(index: Int? = nil, Course2, timetable: Int),
 		 course_modify(index: Int, Course2Change, timetable: Int),
 		 course_delete(index: Int, timetable: Int)
 
