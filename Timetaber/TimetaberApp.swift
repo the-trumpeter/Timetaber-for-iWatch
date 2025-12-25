@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+let coloursNeedBlackOverlay = ["Peach", "Lemon"]
+
+
 @main
 struct TimetaberApp: App {
     var body: some Scene {
@@ -14,7 +17,6 @@ struct TimetaberApp: App {
             TabView{
                 Tab("Home", systemImage: "clock") { HomeView().environmentObject(LocalData.shared) }
                 Tab("Timetable", systemImage: "list.bullet") { TimetableView(timetable: chaos).environmentObject(LocalData.shared) }
-				Tab("Edit", systemImage: "list.triangle") { TimetablesListEditor() }
 				Tab("Settings", systemImage: "gear") { SettingsView() }
             }
         }

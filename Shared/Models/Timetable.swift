@@ -10,17 +10,25 @@ import Foundation
 
 //MARK: Timing
 
-//The times and structure of a timetabled day, including periods etc.
+///The times and structure of a timetabled day, including periods etc.
 struct Times: Codable {
 	var standard: [ TimeSet ]
 	var variants: [String: [TimeSet]]
 	var variantDays: [Int: String]
 }
-//A period in a day. See 'Times'
-struct TimeSet: Codable {
+
+///A period in a day. See 'Times'. `duration` is in minutes.
+struct TimeSet: Codable, Equatable {
+	var name: String
 	var startTime: Int
-	// in minutes
 	var duration: Int
+
+	init(_ name: String, startTime: Int, duration dur: Int) {
+		self.name = name
+		self.startTime = startTime
+		self.duration = dur
+	}
+
 }
 
 
@@ -40,7 +48,7 @@ class Timetable: Codable {
 	//Doooo not modifyy!
 	var formatProtocol: String = "0.0.3"
 
-	/// All courses used in the timetable are stored in an array, with their index being a unique identifier (for use *within the timetable*, not on the frontend) for that course.
+	///All courses used in the timetable are stored in an array, with their index being a unique identifier (for use *within the timetable*, not on the frontend) for that course.
 	var courses: [Int : Course2]
 
 	var times: Times //I don't like this...
@@ -63,15 +71,15 @@ class Timetable: Codable {
 
 			switch change {
 
-				case .course_create(index: let index, let value, timetable: let tblIndex):
+				case .course_create(index: let index, let value, timetable: _):
 					self.courses.updateValue(value, forKey: index ?? self.courses.count)
 				successChanges.append(change)
 
-				case .course_delete(index: let index, timetable: let tblIndex):
+				case .course_delete(index: let index, timetable: _):
 					self.courses.removeValue(forKey: index)
 				successChanges.append(change)
 
-				case .course_modify(index: let index, let coursechange, timetable: let tblIndex):
+				case .course_modify(index: let index, let coursechange, timetable: _):
 					switch coursechange {
 						case .colour(let new): self.courses[index]?.colour = new
 						case .rooms(let new): self.courses[index]?.rooms = new
@@ -81,44 +89,39 @@ class Timetable: Codable {
 				successChanges.append(change)
 
 
-				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: let tblIndex):
+				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: _):
 					self.times.variantDays.updateValue(variant, forKey: wkday)
 				successChanges.append(change)
 
-				case .times_variant_key_delete(weekday: let wkday, timetable: let tblIndex):
-					self.times.variantDays.removeValue(forKey: wkday)
-				successChanges.append(change)
-
-
-				case .times_variants_add(key: let key, let variant, timetable: let tblIndex):
+				case .times_variants_add(key: let key, let variant, timetable: _):
 					self.times.variants.updateValue(variant, forKey: key)
 				successChanges.append(change)
 
-				case .times_variant_modifyEntry(key: let key, setIndex: let setIdx, let value, timetable: let tblIndex):
+				case .times_variant_modifyEntry(key: let key, setIndex: let setIdx, let value, timetable: _):
 					self.times.variants[key]?[setIdx] = value
 				successChanges.append(change)
 
-				case .times_variants_delete(key: let key, setIndex: let setIdx, timetable: let tblIndex):
+				case .times_variants_delete(key: let key, setIndex: let setIdx, timetable: _):
 					self.times.variants[key]?.remove(at: setIdx)
 				successChanges.append(change)
 
-				case .timetable_icon(let icon, timetable: let tblIndex):
+				case .timetable_icon(let icon, timetable: _):
 					self.icon = icon
 				successChanges.append(change)
 
-				case .timetable_name(let name, timetable: let tblIndex):
+				case .timetable_name(let name, timetable: _):
 					self.name = name
 				successChanges.append(change)
 
 
-				case .week_add(let week, position: let pos, timetable: let tblIndex):
+				case .week_add(let week, position: let pos, timetable: _):
 					guard self.timetable.count < 2 else {
 						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#fileID):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
 					}
 					self.timetable.insert(week, at: pos)
 				successChanges.append(change)
 
-				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, time: let time, let data, timetable: let tblIndex):
+				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, time: let time, let data, timetable: _):
 					switch wkday {
 						case 2: self.timetable[wkIndex].monday[time] = data
 						case 3: self.timetable[wkIndex].tuesday[time] = data
@@ -129,7 +132,7 @@ class Timetable: Codable {
 					}
 					successChanges.append(change)
 
-				case .week_remove(let wkIndex, timetable: let tblIndex):
+				case .week_remove(let wkIndex, timetable: _):
 					self.timetable.remove(at: wkIndex)
 					successChanges.append(change)
 
@@ -174,7 +177,6 @@ enum Change: Codable {
 	case times_variants_add(key: String, [TimeSet], timetable: Int),
 		 times_variant_modifyEntry(key: String, setIndex: Int, TimeSet, timetable: Int),
 		 times_variants_delete(key: String, setIndex: Int, timetable: Int)
-	case times_variant_key(weekday: Int, variant: String, timetable: Int),
-		 times_variant_key_delete(weekday: Int, timetable: Int)
+	case times_variant_key(weekday: Int, variant: String, timetable: Int)
 
 }

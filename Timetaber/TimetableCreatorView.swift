@@ -468,14 +468,15 @@ struct courseEdit: View {
 					.labelStyle(.iconOnly)
 					.disabled(pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 				}
-			} // rooms
+			}.scrollContentBackground(.hidden)
+			// rooms
 
 			.toolbar {
 				ToolbarItem(placement: .cancellationAction) {
 					Button("Cancel", systemImage: "xmark") {
 						dismiss()
 					}
-				}
+				} 
 				ToolbarItem(placement: .confirmationAction) {
 					Button("Save", systemImage: "checkmark") {
 						let changes = compileChanges()
@@ -504,14 +505,11 @@ struct coursebutton: View {
 
 	var pendingChanges: Binding<[Change]?>
 
-	var highlight: Binding<Int>
-	var showingSheetforIndex: Binding<Int>
-
 	private var courseExists: Bool {
 		localCourses.wrappedValue[pos] != nil
 	}
 
-	init(localCourses: Binding<[Int : Course2]>, tblIndex: Int, pos: Int, pendingChanges: Binding<[Change]?>, highlight: Binding<Int>, sheetForIndex: Binding<Int>) {
+	init(localCourses: Binding<[Int : Course2]>, tblIndex: Int, pos: Int, pendingChanges: Binding<[Change]?>) {
 		self.localCourses = localCourses
 		self.course = Binding(
 			get: { localCourses.wrappedValue[pos]! },
@@ -521,40 +519,33 @@ struct coursebutton: View {
 		self.pos = pos
 		self.showingSheet = false
 		self.pendingChanges = pendingChanges
-		self.highlight = highlight
-		self.showingSheetforIndex = sheetForIndex
+
 	}
 
 	var body: some View {
 		Button { showingSheet.toggle() } label: {
-			ZStack(alignment: .leading) {
 
-				// THIS is what fills the row
-				Color.clear
+			HStack {
+				RoundedRectangle(cornerRadius: 2)
+					.fill(Colour(course.wrappedValue.colour))
+					.frame(width: 4)
 
-				HStack {
-					RoundedRectangle(cornerRadius: 2)
-						.fill(Colour(course.wrappedValue.colour))
-						.frame(width: 4)
+				Image(systemName: course.wrappedValue.icon)
+				Text(course.wrappedValue.name).lineLimit(1)
 
-					Image(systemName: course.wrappedValue.icon)
-					Text(course.wrappedValue.name).lineLimit(1)
+				Spacer()
 
-					Spacer()
+				let joinedRooms = course.wrappedValue.rooms.keys.sorted()
+					.compactMap { course.wrappedValue.rooms[$0] }
+					.joined(separator: "; ")
 
-					let joinedRooms = course.wrappedValue.rooms.keys.sorted()
-						.compactMap { course.wrappedValue.rooms[$0] }
-						.joined(separator: "; ")
-
-					Text(joinedRooms)
-						.foregroundStyle(.secondary)
-						.frame(maxWidth: 150, alignment: .trailing)
-						.lineLimit(1)
-				}
+				Text(joinedRooms)
+					.foregroundStyle(.secondary)
+					.frame(maxWidth: 150, alignment: .trailing)
+					.lineLimit(1)
 			}
-			.frame(maxWidth: .infinity, alignment: .leading)
-			.contentShape(Rectangle())
 		}
+		.contentShape(Rectangle())
 
 		.buttonStyle(.plain)
 		.disabled(!courseExists)
@@ -568,13 +559,6 @@ struct coursebutton: View {
 				showingSheet = false
 			}
 		}
-	}
-}
-
-struct ScrollOffsetKey: PreferenceKey {
-	static var defaultValue: CGFloat = 0
-	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-		value = nextValue()
 	}
 }
 
@@ -594,17 +578,6 @@ struct CoursesEditor: View {
 	@State var showingAlert = false
 	@State var alertIndex: Int = 0
 
-	@State var highlight = -1
-	@State var showingSheetForIndex = -1
-	@State var shouldAnimate = false
-	@State var actionCompleted = false
-
-	@State var scrollStartOffset = 0.0
-	@State var currentScrollOffset = 0.0
-
-	
-
-
 	init(tblIndex: Int) {
 		self.tblIndex = tblIndex
 		self.localCourses = Storage.shared.timetables[tblIndex].courses
@@ -615,59 +588,20 @@ struct CoursesEditor: View {
 				let courseIndices: [Int] = localCourses.keys.sorted()
 				ForEach(courseIndices, id: \.self) { index in
 
-					ZStack {
-						Colour(.systemGray4)
-							.opacity(highlight == index ? 1 : 0)
-							.animation(shouldAnimate ? .easeOut(duration: 0.2) : nil, value: highlight)
-						coursebutton(localCourses: $localCourses, tblIndex: tblIndex, pos: index, pendingChanges: $pendingChanges, highlight: $highlight, sheetForIndex: $showingSheetForIndex)
-							.padding(.top, 13)
-							.padding(.bottom, 13)
-							.padding(.leading)
-							.padding(.trailing)
+					coursebutton(localCourses: $localCourses, tblIndex: tblIndex, pos: index, pendingChanges: $pendingChanges)
+
+					.swipeActions(allowsFullSwipe: false) {
+
+						Button("Delete", systemImage: "trash") {
+							alertIndex = index
+							showingAlert = true
+							//print("\(#line) Swipe action \(index), \(showingAlert)")
+						}.tint(.red)
+						.labelStyle(.iconOnly)
+
+
+
 					}
-					.transaction { txn in txn.disablesAnimations = !shouldAnimate }
-					.listRowInsets(EdgeInsets())
-
-						.onLongPressGesture(
-							minimumDuration: 0,
-							maximumDistance: .infinity,
-							perform: {
-								// We won’t use perform for the fade; all decisions happen in onPressingChanged
-							},
-							onPressingChanged: { pressing in
-								if pressing {
-									// Snap in: no animation
-									shouldAnimate = false
-									highlight = index
-									scrollStartOffset = currentScrollOffset
-								} else {
-									let delta = abs(scrollStartOffset - currentScrollOffset)
-									if delta < 2 {
-										// Completed: fade out
-										shouldAnimate = true
-										highlight = -1
-										shouldAnimate = false
-									} else {
-										// Cancelled: snap out (no animation)
-										shouldAnimate = false
-										highlight = -1
-									}
-								}
-							}
-						)
-
-						.swipeActions(allowsFullSwipe: false) {
-
-							Button("Delete", systemImage: "trash") {
-								alertIndex = index
-								showingAlert = true
-								//print("\(#line) Swipe action \(index), \(showingAlert)")
-							}.tint(.red)
-							.labelStyle(.iconOnly)
-
-
-
-						}
 
 				}
 				Button("Add Course", systemImage: "plus") {
@@ -700,13 +634,6 @@ struct CoursesEditor: View {
 					}
 				}
 			}
-		}.background (
-			GeometryReader { geo in
-				Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
-			}
-		)
-		.onPreferenceChange(ScrollOffsetKey.self) { value in
-			currentScrollOffset = value
 		}
 		.alert("Delete \"\((localCourses[alertIndex]?.name) ?? "Error \(#line)")\"?", isPresented: $showingAlert) {
 			Button("Delete", role: .destructive) {
@@ -726,8 +653,129 @@ struct CoursesEditor: View {
 
 
 struct TimesEditor: View {
-	var body: some View {
 
+	@ObservedObject var store = Storage.shared
+
+	let tblIndex: Int
+	@State var localTimes: Times
+	@State var mappingSheet: Bool = false
+	@State var editing: Int = -1
+	init(tblIndex: Int? = 0) {
+		var localTimes_temp = Storage.shared.timetables[tblIndex ?? 0].times
+		for x in 2...6 {
+			if !localTimes_temp.variantDays.keys.contains(x) {
+				localTimes_temp.variantDays[x] = "Standard"
+				print("\(#fileID):\(#line) @ \(#function) Key \(x) is missing from given Times; added it with value \"Standard\":  \(String(describing: localTimes_temp.variantDays[x]))")
+			}
+		}
+
+		self.tblIndex = tblIndex ?? 0
+		self.localTimes = localTimes_temp
+	}
+
+	private func compileChanges() -> [Change] {
+		let origin = store.timetables[tblIndex].times
+		var changes: [Change] = []
+
+		//mapping
+		if !(localTimes.variantDays == origin.variantDays) {
+			for x in 2...6 {
+				if localTimes.variantDays[x] != origin.variantDays[x] {
+					changes.append(
+						.times_variant_key(weekday: x, variant: localTimes.variantDays[x]!, timetable: tblIndex)
+					)
+				}
+			}
+		}
+
+		//standard
+		
+
+		//variants
+
+		return changes
+	}
+
+	let week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
+	var body: some View {
+		NavigationStack {
+			List {
+				Button {
+					mappingSheet = true
+					print("\(#line) \(String(describing: localTimes.variantDays[6]))")
+				} label: {
+					HStack {
+						Text("Affected Days"); Spacer()
+						// Build a derived label of days whose variant matches the current selection
+						let name: String = {
+							if editing < 0 { return "Standard" }
+							return [String](localTimes.variants.keys)[editing]
+						}()
+						let matchedDays: [String] = localTimes.variantDays.compactMap { (key, val) in
+							return val == name ? key : nil
+						}.compactMap { val in
+							switch val {
+							case 2: return "Mon"
+							case 3: return "Tue"
+							case 4: return "Wed"
+							case 5: return "Thu"
+							case 6: return "Fri"
+							default: return "Error \(#line)"
+							}
+						}
+
+						let joinedLinks: String = matchedDays.joined(separator: ", ")
+						Text(joinedLinks.isEmpty ? "None" : joinedLinks)
+							.foregroundStyle(.secondary)
+					}
+				}
+
+			}
+			.sheet(isPresented: $mappingSheet) {
+				List {
+					ForEach(week_days, id: \.self) { day in
+						Picker(day,
+							   selection: $localTimes.variantDays[Int(week_days.firstIndex(of: day)!)+2]
+						) {
+							Text("Standard times").tag("Standard")
+							Divider()
+							ForEach(Array(localTimes.variants.keys), id: \.self) {
+								Text($0).tag($0)
+							}
+						}
+					}
+				}
+				.presentationDetents([.medium])
+			}
+
+
+			.toolbar {
+				ToolbarItem(placement: .navigation) {
+					Menu( {
+						if editing < 0 { return "Standard" }
+						return [String](localTimes.variants.keys)[editing]
+						}()
+					) {
+						Picker("Time Set", selection: $editing) {
+							Text("Standard").tag(-1)
+							Divider()
+							let keys = Array(localTimes.variants.keys)
+							ForEach(keys, id: \.self) { key in
+								let tag = keys.firstIndex(of: key)!
+								Text(key).tag(tag)
+							}
+						}
+						Button("Add variation", systemImage: "plus") { }
+					}
+				}
+				ToolbarItem(placement: .confirmationAction) {
+					Button("Save", systemImage: "checkmark") {
+						
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -740,6 +788,8 @@ struct timetableOptions: View {
 	@State var icon: String
 	@State var name: String
 
+	@State var timesSheet = false
+
 	init(_ timetable: Binding<Timetable>, index: Int) {
 		self.tblIndex = index
 		self._timetable = timetable
@@ -750,7 +800,7 @@ struct timetableOptions: View {
 	var body: some View {
 		NavigationStack {
 			List {
-				HStack {
+			/*	HStack {
 					TextField("Name", text: $name)
 						.font(.title)
 						.onSubmit {
@@ -763,30 +813,29 @@ struct timetableOptions: View {
 						Image(systemName: "list.bullet").tag("list.bullet")
 					}label:{}.pickerStyle(.menu)
 						.tint(.primary)
-				}
+				} */
 
 
 				NavigationLink { CoursesEditor(tblIndex: tblIndex) } label: {
 					HStack { Text("Courses").foregroundStyle(.primary); Spacer();
 						Text(String(timetable.courses.count)).foregroundStyle(.secondary) }
 				}
-
-				NavigationLink { } label: { HStack { Text("Times").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count)).foregroundStyle(.secondary) } }
+				NavigationLink {
+					TimesEditor(tblIndex: tblIndex)
+				} label: { HStack { Text("Times").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count)).foregroundStyle(.secondary) }
+				}.buttonStyle(.plain)
 
 				NavigationLink { } label: { HStack { Text("Timetable").foregroundStyle(.primary); Spacer(); Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary) } }
 
-				Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) {
-					
-				}
+				// Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) { }
 
-			}
-			.listStyle(.inset)
-			.background(Colour.clear)
+			}.listStyle(.inset)
+			.navigationTitle("My Timetable")
 			.scrollDisabled(true)
 
 
 		}
-		.padding()
+
 	}
 }
 
@@ -795,17 +844,16 @@ struct timetableOptions: View {
 struct TimetablesListEditor: View {
 
 	@ObservedObject var store: Storage = Storage.shared
-	@State var showingSheet = true
 	@State var timetableIndex = Storage.shared.ActiveTimetable
 
 	var body: some View {
-		NavigationStack {
+		//NavigationStack {
 
-			let editingTimetable = store.timetables[timetableIndex]
+			//let editingTimetable = store.timetables[timetableIndex]
 
 			timetableOptions($store.timetables[timetableIndex], index: timetableIndex)
 
-			.toolbar {
+			/*.toolbar {
 				ToolbarItem(placement: .navigation) {
 
 					Picker(editingTimetable.name, selection: $timetableIndex) {
@@ -817,12 +865,10 @@ struct TimetablesListEditor: View {
 
 					}.labelStyle(.titleOnly)
 				}
-			}
-		}
+			}*/
+		//}
 	}
 }
-
-
 
 
 #Preview {
@@ -832,6 +878,8 @@ struct TimetablesListEditor: View {
 	 ).environmentObject(LocalData.shared)
 	 */
 
-	TimesEditor()
+	//CoursesEditor(tblIndex: 0)
+
+	TimesEditor(tblIndex: 0)
 }
 

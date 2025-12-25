@@ -92,37 +92,51 @@ struct SettingsView: View {
 
 
 	var body: some View {
-		
-		VStack {
+
+		NavigationStack {
+
 
 			Link(destination: URL(string: "https://github.com/the-trumpeter/Timetaber-for-iWatch")!, label: {
 				Label("GitHub Repository", systemImage: "arrowshape.turn.up.right")
-			}).padding(.bottom)
+			}).padding()
 
+		 /*
 			Link(destination: URL(string: "https://github.com/the-trumpeter/Timetaber-for-iWatch/issues/new?template=bug_report.md")!, label: {
 				Label("Bug Report", systemImage: "exclamationmark.bubble")
-			}).padding(.bottom)
+			}).padding()
+		  */
 
+		 /*
             Link(destination: URL(string: "tel://0481177077")!, label: {
                 Label("Phone Gill", systemImage: "phone")
             })
+		 */
 
 			Spacer()
 
-			Label("Certified 100% Digitech Didn't Help", systemImage: "checkmark.seal")
-				.font(.system(size: 15))
-				.padding(1)
+			NavigationLink {
+				TimetablesListEditor()
+			} label: { Text("Edit Timetable").padding(5) }
+			.foregroundStyle(.primary)
+			.font(.title2)
+			.buttonStyle(.bordered)
 
-			Text("Timetaber • Gill Palmer, 2024-25")
-
-				.foregroundStyle(.gray)
-				.font(.system(size: 15))
+			Spacer()
+			VStack {
+				Label("Certified 100% Digitech Didn't Help", systemImage: "checkmark.seal")
+					.font(.system(size: 15))
+					.padding(1)
 				
+				Text("Timetaber • Gill Palmer, 2024-25")
+				
+					.foregroundStyle(.secondary)
+					.font(.system(size: 15))
+			}.padding()
 			
 		}
 		.multilineTextAlignment(.center)
 		.onAppear { print("SettingsView Updated") }
-		.padding()
+		//.padding()
 	}
 }
 

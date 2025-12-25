@@ -27,7 +27,7 @@ struct DisplayEntry: View {
         courses: [Int : Course2],
     )
     {
-		print("Start DisplayEntry init")
+		//print("Start DisplayEntry init")
 		self.isBold = (LocalData.shared.currentTime == timeslot) ? true : false
 
 		self.day = timetableDay
@@ -38,7 +38,7 @@ struct DisplayEntry: View {
         self.properties = day[key]!
         self.listedCourse = courses[ day[key]![0] ]!
         self.room = if listedCourse.rooms.isEmpty { nil } else { listedCourse.rooms[properties[1]] }
-        print("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))\n")
+        //print("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))\n")
     }
 
     var body: some View {
@@ -52,11 +52,10 @@ struct DisplayEntry: View {
 					.transition(.opacity.combined(with: .move(edge: .leading)))
 			}
 */
-
 			Image(systemName: listedCourse.icon)
+				.bold(isBold)
 				.font(.title)
 				.frame(width: 30)
-				.bold(isBold)
 
 			Text(time24toNormal(timeslotIdentifier.time))
 				.bold()
@@ -73,6 +72,7 @@ struct DisplayEntry: View {
 }
 
 
+
 struct TimetableView: View {
     var day: [Int: [Int]]
     var courses: [Int: Course2]
@@ -87,7 +87,7 @@ struct TimetableView: View {
 		 day _day: Int = weekdayNumber(.now)
 	) {
 		//May need to return early in case of weekend or no term
-		print("Start TimetableView init")
+		//print("Start TimetableView init")
 		let wkday = _day
         let wk = _week
         
@@ -107,7 +107,7 @@ struct TimetableView: View {
 			case 6: "Friday"+suffix
 			default: "Error \(#line)"
 		  }
-		print("End TimetableView init")
+		//print("End TimetableView init")
     }
     
     var body: some View {
@@ -123,9 +123,25 @@ struct TimetableView: View {
                         )
                         let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
                         entry
-                            .listRowBackground(bG)
+                            .listRowBackground(
+								ZStack {
+									bG
+									HStack {
+										Rectangle()
+											.foregroundStyle(Colour(entry.listedCourse.colour))
+											.frame(width: 5.0)
+										Spacer()
+									}
+								}
+							)
+							.foregroundStyle(
+								coloursNeedBlackOverlay.contains(entry.listedCourse.colour) && (bG != nil) ?
+									Colour.black : .primary
+							)
 				}
-			}.toolbar {
+			}
+			.listStyle(.inset)
+			.toolbar {
 				ToolbarItem(placement: .principal) { Text(sectionHeader) }
 		 }
 		 .toolbar {

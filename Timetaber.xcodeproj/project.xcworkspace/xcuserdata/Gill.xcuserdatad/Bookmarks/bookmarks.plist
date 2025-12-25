@@ -327,7 +327,7 @@ Define all courses for user's timetable
 					<key>StartingLineNumber</key>
 					<string>125</string>
 					<key>Timestamp</key>
-					<string>787215283.036975</string>
+					<string>788240286.832405</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -343,16 +343,16 @@ Define all courses for user's timetable
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>                            .listRowBackground(bG)
+				<string>                            .listRowBackground(
 </string>
 				<key>leading</key>
 				<string>                        let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
                         entry
 </string>
 				<key>trailing</key>
-				<string>				}
-			}.toolbar {
-				ToolbarItem(placement: .principal) { Text(sectionHeader) }
+				<string>								ZStack {
+									bG
+									HStack {
 </string>
 			</dict>
 			<key>title</key>
@@ -476,15 +476,15 @@ enum ConversionError: Error {
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>28</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>107</string>
+					<string>108</string>
 					<key>StartingColumnNumber</key>
-					<string>3</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
 					<string>107</string>
 					<key>Timestamp</key>
-					<string>787987806.802798</string>
+					<string>788240286.832426</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -502,15 +502,16 @@ enum ConversionError: Error {
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>default: "Error \(#line)"</string>
+				<string>			default: "Error \(#line)"
+</string>
 				<key>leading</key>
 				<string>			case 5: "Thursday"+suffix
 			case 6: "Friday"+suffix
-			</string>
+</string>
 				<key>trailing</key>
-				<string>
-		  }
-		print("End TimetableView init")
+				<string>		  }
+		//print("End TimetableView init")
+    }
 </string>
 			</dict>
 			<key>title</key>
@@ -526,13 +527,13 @@ enum ConversionError: Error {
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>631</string>
+					<string>126</string>
 					<key>StartingColumnNumber</key>
-					<string>0</string>
+					<string>42</string>
 					<key>StartingLineNumber</key>
-					<string>630</string>
+					<string>125</string>
 					<key>Timestamp</key>
-					<string>788079874.102046</string>
+					<string>788235118.042877</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -548,20 +549,20 @@ enum ConversionError: Error {
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>						.onLongPressGesture(
+				<string>
 </string>
 				<key>leading</key>
-				<string>					.listRowInsets(EdgeInsets())
+				<string>			Button("Clear", systemImage: "trash") { print("~ \(properties)") }.tint(.red)
 
-</string>
+			Button("Edit", systemImage: "pencil") {</string>
 				<key>trailing</key>
-				<string>							minimumDuration: 0,
-							maximumDistance: .infinity,
-							perform: {
+				<string>				showingSheet=true
+			}.tint(.orange)
+
 </string>
 			</dict>
 			<key>title</key>
-			<string>Test me</string>
+			<string>Move to clicking on the entry instead of a swipe action</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

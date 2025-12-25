@@ -48,13 +48,14 @@ struct HomeView: View {
 				Spacer()
 				
 				//MARK: Current Course
-				Image(systemName: course.icon)      //ICON
+				Image(systemName: course.icon)      // ICON
 					.font(.system(size: 80).weight(.semibold))
-				
-				Text(course.name)                   //NAME
+
+
+				Text(course.name)                   // NAME
 					.font(.system(size: 40).weight(.semibold))
 				
-				Text(roomOrBlank(course) ?? "")     //ROOM/JOKE
+				Text(roomOrBlank(course) ?? "")     // ROOM/JOKE
 					.font(.system(size: 20))
 				
 				Spacer()
@@ -62,7 +63,7 @@ struct HomeView: View {
 				//MARK: Next Course
 				
 				Text({
-					print(data.nextCourse )
+					//print(data.nextCourse)
 					if case .noSchool = data.nextCourse.type { print("Case"); return "" }
 					guard let room = roomOrBlank(data.nextCourse) else { return "" }
 
@@ -71,8 +72,15 @@ struct HomeView: View {
 				)
 				.font(.system(size: 20))
 				
-			}.colorInvert()
-				.padding()
+			}
+
+			.foregroundStyle(
+				coloursNeedBlackOverlay.contains(course.colour) ?
+					Colour.black : .primary
+			)
+			.if(!coloursNeedBlackOverlay.contains(course.colour)) { $0.colorInvert() }
+
+			.padding()
 		}
 	}
 }
