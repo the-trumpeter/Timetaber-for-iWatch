@@ -16,7 +16,7 @@
 import SwiftUI
 
 //MARK: Processes
-func startTermProcess(ghostWeek: Bool) -> Bool {
+fileprivate func startTermProcess(ghostWeek: Bool) -> Bool {
 	// process to start a term
 	
 	// ! Need to store that a term is running!!
@@ -30,7 +30,7 @@ func startTermProcess(ghostWeek: Bool) -> Bool {
 	
 }
 
-func endTermProcess() -> Bool {
+fileprivate func endTermProcess() -> Bool {
 	//processes to end a term, local 'termrunning' should be changed externally
 	
 	Storage.shared.termRunningGB = false
@@ -42,7 +42,7 @@ func endTermProcess() -> Bool {
 
 
 // MARK: Sheet
-struct NewTermSheet: View {
+fileprivate struct NewTermSheet: View {
 	@State var isGhostWeek = false
 	@Environment(\.dismiss) var dismiss
 	//@Binding var termRunning: Bool
@@ -83,6 +83,7 @@ struct NewTermSheet: View {
 
 
 //MARK: View
+///From here, start/stop the term, edit the timetable, etc.
 struct SettingsView: View {
 	@ObservedObject var data = Storage.shared
 	
@@ -96,9 +97,7 @@ struct SettingsView: View {
 		NavigationStack {
 
 
-			Link(destination: URL(string: "https://github.com/the-trumpeter/Timetaber-for-iWatch")!, label: {
-				Label("GitHub Repository", systemImage: "arrowshape.turn.up.right")
-			}).padding()
+
 
 		 /*
 			Link(destination: URL(string: "https://github.com/the-trumpeter/Timetaber-for-iWatch/issues/new?template=bug_report.md")!, label: {
@@ -112,16 +111,24 @@ struct SettingsView: View {
             })
 		 */
 
+			TimetablesListEditor()
+
 			Spacer()
 
+			Link(destination: URL(string: "https://github.com/the-trumpeter/Timetaber-for-iWatch")!, label: {
+				Label("GitHub Repository", systemImage: "arrowshape.turn.up.right")
+			}).padding()
+
+			/*
 			NavigationLink {
-				TimetablesListEditor()
+
 			} label: { Text("Edit Timetable").padding(5) }
 			.foregroundStyle(.primary)
 			.font(.title2)
 			.buttonStyle(.bordered)
+			 */
+			//Spacer()
 
-			Spacer()
 			VStack {
 				Label("Certified 100% Digitech Didn't Help", systemImage: "checkmark.seal")
 					.font(.system(size: 15))

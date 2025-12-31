@@ -5,7 +5,9 @@
 //  Created by Gill Palmer on 17/10/2025.
 //
 
-
+///Gill's 2024 timetable, used for testing/debugging
+///
+///This might also be used for things like intuivity testing, and may/may-not be a template at some point.
 var chaos = Timetable(
 	"Gill's Timetable",
 	icon: "backpack",
@@ -35,63 +37,63 @@ var chaos = Timetable(
 
 	times: Times(
 		standard: [
-				TimeSet("Check In",	startTime: 0900,	duration: 10),
-				TimeSet("1",		startTime: 0910,	duration: 60),
-				TimeSet("2",		startTime: 1010,	duration: 60),
-				TimeSet("Recess",	startTime: 1110,	duration: 20),
-				TimeSet("3",		startTime: 1130,	duration: 60),
-				TimeSet("4",		startTime: 1230,	duration: 60),
-				TimeSet("Lunch",	startTime: 1330,	duration: 40),
-				TimeSet("5",		startTime: 1410,	duration: 60)
+				Times.Period("Check In",	startTime: 0900,	duration: 10),
+				Times.Period("1",		startTime: 0910,	duration: 60),
+				Times.Period("2",		startTime: 1010,	duration: 60),
+				Times.Period("Recess",	startTime: 1110,	duration: 20),
+				Times.Period("3",		startTime: 1130,	duration: 60),
+				Times.Period("4",		startTime: 1230,	duration: 60),
+				Times.Period("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period("5",		startTime: 1410,	duration: 60)
 		],
 		variants: [
 			"9:30 Music lesson": [
-				TimeSet("Check In",	startTime: 0900,	duration: 10),
-				TimeSet("1",		startTime: 0910,	duration: 20),
-				TimeSet("ML",		startTime: 0930,	duration: 30),
-				TimeSet("1",		startTime: 1000,	duration: 10),
-				TimeSet("2",		startTime: 1010,	duration: 60),
-				TimeSet("3",		startTime: 1110,	duration: 20),
-				TimeSet("Recess",	startTime: 1130,	duration: 60),
-				TimeSet("4",		startTime: 1230,	duration: 60),
-				TimeSet("Lunch",	startTime: 1330,	duration: 40),
-				TimeSet("5",		startTime: 1410,	duration: 60)
+				Times.Period("Check In",	startTime: 0900,	duration: 10),
+				Times.Period("1",		startTime: 0910,	duration: 20),
+				Times.Period("ML",		startTime: 0930,	duration: 30),
+				Times.Period("1",		startTime: 1000,	duration: 10),
+				Times.Period("2",		startTime: 1010,	duration: 60),
+				Times.Period("3",		startTime: 1110,	duration: 20),
+				Times.Period("Recess",	startTime: 1130,	duration: 60),
+				Times.Period("4",		startTime: 1230,	duration: 60),
+				Times.Period("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period("5",		startTime: 1410,	duration: 60)
 			],
 			"Band til 5pm": [
-				TimeSet("Check In",	startTime: 0900,	duration: 10),
-				TimeSet("1",		startTime: 0910,	duration: 60),
-				TimeSet("2",		startTime: 1010,	duration: 60),
-				TimeSet("Recess",	startTime: 1110,	duration: 20),
-				TimeSet("3",		startTime: 1130,	duration: 60),
-				TimeSet("4",		startTime: 1230,	duration: 60),
-				TimeSet("Lunch",	startTime: 1330,	duration: 40),
-				TimeSet("5",		startTime: 1410,	duration: 60),
-				TimeSet("SBU",		startTime: 1510,	duration: 110)
+				Times.Period("Check In",	startTime: 0900,	duration: 10),
+				Times.Period("1",		startTime: 0910,	duration: 60),
+				Times.Period("2",		startTime: 1010,	duration: 60),
+				Times.Period("Recess",	startTime: 1110,	duration: 20),
+				Times.Period("3",		startTime: 1130,	duration: 60),
+				Times.Period("4",		startTime: 1230,	duration: 60),
+				Times.Period("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period("5",		startTime: 1410,	duration: 60),
+				Times.Period("SBU",		startTime: 1510,	duration: 110)
 			],
 			"Band til 5:30": [
-				TimeSet("Check In",	startTime: 0900,	duration: 10),
-				TimeSet("1",		startTime: 0910,	duration: 60),
-				TimeSet("2",		startTime: 1010,	duration: 60),
-				TimeSet("Recess",	startTime: 1110,	duration: 20),
-				TimeSet("3",		startTime: 1130,	duration: 60),
-				TimeSet("4",		startTime: 1230,	duration: 60),
-				TimeSet("Lunch",	startTime: 1330,	duration: 40),
-				TimeSet("5",		startTime: 1410,	duration: 60),
-				TimeSet("SBU",		startTime: 1510,	duration: 140)
+				Times.Period("Check In",	startTime: 0900,	duration: 10),
+				Times.Period("1",		startTime: 0910,	duration: 60),
+				Times.Period("2",		startTime: 1010,	duration: 60),
+				Times.Period("Recess",	startTime: 1110,	duration: 20),
+				Times.Period("3",		startTime: 1130,	duration: 60),
+				Times.Period("4",		startTime: 1230,	duration: 60),
+				Times.Period("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period("5",		startTime: 1410,	duration: 60),
+				Times.Period("SBU",		startTime: 1510,	duration: 140)
 			],
 			"Band til 4:30": [
-				TimeSet("Check In",	startTime: 0900,	duration: 10),
-				TimeSet("1",		startTime: 0910,	duration: 60),
-				TimeSet("2",		startTime: 1010,	duration: 60),
-				TimeSet("Recess",	startTime: 1110,	duration: 20),
-				TimeSet("3",		startTime: 1130,	duration: 60),
-				TimeSet("4",		startTime: 1230,	duration: 60),
-				TimeSet("Lunch",	startTime: 1330,	duration: 40),
-				TimeSet("5",		startTime: 1410,	duration: 60),
-				TimeSet("SBU",		startTime: 1510,	duration: 80)
+				Times.Period("Check In",	startTime: 0900,	duration: 10),
+				Times.Period("1",		startTime: 0910,	duration: 60),
+				Times.Period("2",		startTime: 1010,	duration: 60),
+				Times.Period("Recess",	startTime: 1110,	duration: 20),
+				Times.Period("3",		startTime: 1130,	duration: 60),
+				Times.Period("4",		startTime: 1230,	duration: 60),
+				Times.Period("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period("5",		startTime: 1410,	duration: 60),
+				Times.Period("SBU",		startTime: 1510,	duration: 80)
 			],
 		],
-		variantDays: [
+		mapping: [
 			2: "9:30 Music lesson", //mon
 			3: "Band til 5pm",		//tue
 			4: "Band til 5:30",		//wed
@@ -100,7 +102,7 @@ var chaos = Timetable(
 	),
 	timetable: [
 		// Week A (key 1): Mon..Fri (from previous 1..5)
-		TimetabledWeek(
+		Timetable.TimetabledWeek(
 			monday: [
 				0900: [0,  0],
 				0910: [1,  1],
@@ -162,7 +164,7 @@ var chaos = Timetable(
 		),
 
 		// Week B (key 2): Mon..Fri (from previous 6..10)
-		TimetabledWeek(
+		Timetable.TimetabledWeek(
 			monday: [
 				0900: [0,  0],
 				0910: [1,  1],

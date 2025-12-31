@@ -8,7 +8,6 @@
 import SwiftUI
 import UIKit
 
-let brightnessModifier = -0.6
 
 
 extension Colour {
@@ -35,10 +34,21 @@ extension Colour {
 
 
 //MARK: HomeView
+///The app's landing and main view.
 struct HomeView: View {
 	
 	@EnvironmentObject var data: LocalData
 	@Environment(\.colorScheme) var colourScheme
+
+	private func roomOrBlank(_ course: DisplayCourse) -> String? {
+		guard let room = course.room else {
+			guard let joke = course.joke else {
+				return nil
+			}
+			return joke
+		}
+		return room
+	}
 
 	var body: some View {
 		let course = data.currentCourse
@@ -64,7 +74,7 @@ struct HomeView: View {
 				
 				Text({
 					//print(data.nextCourse)
-					if case .noSchool = data.nextCourse.type { print("Case"); return "" }
+					if case .noSchool = data.nextCourse.type { return "" }
 					guard let room = roomOrBlank(data.nextCourse) else { return "" }
 
 					return "Next up: \(data.nextCourse.name) • \(room)"
@@ -75,10 +85,10 @@ struct HomeView: View {
 			}
 
 			.foregroundStyle(
-				coloursNeedBlackOverlay.contains(course.colour) ?
+				coloursNeedBlackForeground.contains(course.colour) ?
 					Colour.black : .primary
 			)
-			.if(!coloursNeedBlackOverlay.contains(course.colour)) { $0.colorInvert() }
+			.if(!coloursNeedBlackForeground.contains(course.colour)) { $0.colorInvert() }
 
 			.padding()
 		}

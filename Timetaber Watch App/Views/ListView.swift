@@ -19,7 +19,12 @@ struct listTemplate: View {
     private let room: String
     private let properties: [Int]
 
-
+	// Use SF Symbols directly to avoid missing-asset crashes at runtime
+	private let customSymbols = [
+		"paintbrush.pointed.circle.fill": Image(systemName: "paintbrush.pointed.circle.fill"),
+		"music.note.circle.fill": Image(systemName: "music.note.circle.fill"),
+		"movieclapper.circle.fill": Image(systemName: "movieclapper.circle.fill")
+	]
 
     init(
         timetableDay: [Int: [Int] ],
@@ -133,7 +138,7 @@ struct ListView: View {
             let wk = getIfWeekIsA_FromDateAndGhost(originDate: data.startDateGB, ghostWeek: data.ghostWeekGB)
             let day = getTimetableDay2(isWeekA: wk, weekDay: weekdayNumber(.now), timetable: chaos)
             
-            if Array(day.keys).sorted(by: <).last! >= time24() { //if not after last class of day
+            if Array(day.keys).sorted(by: <).last! >= Time24() { //if not after last class of day
                 listedDay(timetable: chaos,
                           week: {if wk {.a}else{.b}}(),
                           day: weekdayNumber(.now)

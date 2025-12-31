@@ -8,8 +8,8 @@
 import SwiftUI
 
 
-struct DisplayEntry: View {
-	
+fileprivate struct DisplayEntry: View {
+
 	let listedCourse: Course2
 	let timeslotIdentifier: Timeslot
 
@@ -57,7 +57,7 @@ struct DisplayEntry: View {
 				.font(.title)
 				.frame(width: 30)
 
-			Text(time24toNormal(timeslotIdentifier.time))
+			Text(timeslotIdentifier.time.display())
 				.bold()
 
 			Spacer()
@@ -72,7 +72,7 @@ struct DisplayEntry: View {
 }
 
 
-
+///"List view" of today's classes
 struct TimetableView: View {
     var day: [Int: [Int]]
     var courses: [Int: Course2]
@@ -135,7 +135,7 @@ struct TimetableView: View {
 								}
 							)
 							.foregroundStyle(
-								coloursNeedBlackOverlay.contains(entry.listedCourse.colour) && (bG != nil) ?
+								coloursNeedBlackForeground.contains(entry.listedCourse.colour) && (bG != nil) ?
 									Colour.black : .primary
 							)
 				}

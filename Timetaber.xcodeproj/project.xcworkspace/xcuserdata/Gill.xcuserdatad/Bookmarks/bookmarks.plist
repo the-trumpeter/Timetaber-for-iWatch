@@ -225,62 +225,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>43</string>
+					<string>104</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>42</string>
+					<string>103</string>
 					<key>Timestamp</key>
-					<string>786592037.904641</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/FunctionsEnumsDataTypes.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>is-complete</key>
-			<true/>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>	let type: CourseType?
-</string>
-				<key>leading</key>
-				<string>	let listIcon: String
-	let joke: String?
-</string>
-				<key>trailing</key>
-				<string>
-	init( _	name: 		String,
-			icon: 		String,
-</string>
-			</dict>
-			<key>title</key>
-			<string>Each instance of Course (in the timetable) needs a unique ID (based on its location in the timetable) to differ it from other instances of the same course in the one day</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>99</string>
-					<key>StartingColumnNumber</key>
-					<string>5</string>
-					<key>StartingLineNumber</key>
-					<string>98</string>
-					<key>Timestamp</key>
-					<string>786166359.429812</string>
+					<string>788847065.1520391</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -296,12 +247,12 @@ Define all courses for user's timetable
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>    }
 </string>
 				<key>leading</key>
 				<string>
         self.courses = timetable.courses
-    }</string>
+</string>
 				<key>trailing</key>
 				<string>    
     var body: some View {
@@ -363,53 +314,6 @@ Define all courses for user's timetable
 		<dict>
 			<key>destination</key>
 			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>210</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>209</string>
-					<key>Timestamp</key>
-					<string>787824053.560949</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/FunctionsEnumsDataTypes.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>//MARK: Conversion
-</string>
-				<key>leading</key>
-				<string>
-
-</string>
-				<key>trailing</key>
-				<string>
-enum ConversionError: Error {
-	case noParameters
-</string>
-			</dict>
-			<key>title</key>
-			<string>I can create custom inits in both Course and Course2 to do this automatically</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
 				<key>rebasable-url</key>
 				<dict>
 					<key>base</key>
@@ -432,15 +336,15 @@ enum ConversionError: Error {
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
-					<string>81</string>
+					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>83</string>
+					<string>80</string>
 					<key>StartingColumnNumber</key>
-					<string>53</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>83</string>
+					<string>79</string>
 					<key>Timestamp</key>
-					<string>787897883.2642111</string>
+					<string>788847297.603452</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -456,15 +360,16 @@ enum ConversionError: Error {
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>//TODO: how to compute this?</string>
+				<string>		self.timetable = chaos //[_][self.ActiveTimetable] //TODO: how to compute this?
+</string>
 				<key>leading</key>
 				<string>
 		self.timetables = [chaos]//[]
-		self.timetable = chaos //[_][self.ActiveTimetable] </string>
+</string>
 				<key>trailing</key>
-				<string>
-	}
+				<string>	}
 
+	///Apply a set of changes to stored data
 </string>
 			</dict>
 			<key>type</key>
@@ -563,6 +468,147 @@ enum ConversionError: Error {
 			</dict>
 			<key>title</key>
 			<string>Move to clicking on the entry instead of a swipe action</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>428</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>427</string>
+					<key>Timestamp</key>
+					<string>788499607.385385</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/TimetableCreatorView.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>                        if setExpanded == ind {
+</string>
+				<key>leading</key>
+				<string>						}.buttonStyle(.plain)
+
+</string>
+				<key>trailing</key>
+				<string>							
+							let startBinding = Binding&lt;Date&gt;(
+								get: {
+</string>
+			</dict>
+			<key>title</key>
+			<string>This to be a sheet</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>65</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>64</string>
+					<key>Timestamp</key>
+					<string>788847297.603442</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Storage.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>	@Published var timetables: [Timetable]
+</string>
+				<key>leading</key>
+				<string>	///
+	///The iOS app is the source of truth.
+</string>
+				<key>trailing</key>
+				<string>
+	//Ease-of-access variables for current/active timetable
+	var ActiveTimetable: Int = 0
+</string>
+			</dict>
+			<key>title</key>
+			<string>GOTTA STORE THIS</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>68</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>67</string>
+					<key>Timestamp</key>
+					<string>788847297.603217</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Storage.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>	var ActiveTimetable: Int = 0
+</string>
+				<key>leading</key>
+				<string>
+	//Ease-of-access variables for current/active timetable
+</string>
+				<key>trailing</key>
+				<string>	@Published var timetable: Timetable
+
+
+</string>
+			</dict>
+			<key>title</key>
+			<string>GOTTA STORE THIS TOO</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

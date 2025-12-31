@@ -7,10 +7,13 @@
 
 import SwiftUI
 
-let coloursNeedBlackOverlay = ["Peach", "Lemon"]
+///White text against these colours is illegible; use black for them instead.
+let coloursNeedBlackForeground = ["Peach", "Lemon"]
 
 
 @main
+
+///World's greatest timetable app
 struct TimetaberApp: App {
     var body: some Scene {
         WindowGroup {

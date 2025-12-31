@@ -12,7 +12,6 @@ import SwiftUI
 struct Timetaber_Watch_AppApp: App {
     @Environment(\.scenePhase) private var scenePhase
     init() {
-        calendar.timeZone = TimeZone.current
 		//TODO: update from phone here
     }
     

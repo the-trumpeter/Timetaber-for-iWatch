@@ -15,14 +15,18 @@
 
 import Foundation
 
-var calendar = Calendar.current
-let dFormatter = DateFormatter()
 
+/*
 let weekA = [monA, tueA, wedA, thuA, friA]
 let weekB = [monB, tueB, wedB, thuB, friB]
+*/
 
 
+enum WeekAB: Codable { case a; case b }
 
+func weekdayNumber(_ ofDate: Date) -> Int {
+	return Int(Calendar.current.component(.weekday, from: ofDate)) // Sun=1, Sat=7
+}
 
 
 /*
@@ -43,13 +47,63 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 }
  */
 
+func getTimetableDay2(isWeekA: Bool, weekDay: Int, timetable: Timetable) -> Dictionary< Int, [Int] > {
+	let weeks = timetable.timetable
+	if isWeekA {
+		switch weekDay {
+			case 2: return weeks[0].monday
+			case 3: return weeks[0].tuesday
+			case 4: return weeks[0].wednesday
+			case 5: return weeks[0].thursday
+			case 6: return weeks[0].friday
+			default: return [:]
+		}
+	} else {
+		switch weekDay {
+			case 2: return weeks[1].monday
+			case 3: return weeks[1].tuesday
+			case 4: return weeks[1].wednesday
+			case 5: return weeks[1].thursday
+			case 6: return weeks[1].friday
+			default: return [:]
+		}
+	}
+}
+
+func getIfWeekIsA_FromDateAndGhost(originDate: Date, ghostWeek: Bool) -> Bool {
+	//week A and B alternate each week. he input date is always a week a unless ghost is true.
+
+	let originWeek = Calendar.current.component(.weekOfYear, from: originDate)
+	let currentWeek = Calendar.current.component(.weekOfYear, from: Date())
+
+
+
+	if (originWeek%2 != 0) == (currentWeek%2 != 0) {
+		//they match, so currentWeek is same week a/b as originWeek
+		if !ghostWeek {
+			return true
+		} else {
+			return false
+		}
+	} else { if !ghostWeek {
+			return false
+		} else {
+			return true
+		}
+	}
+
+}
+
+
 //MARK: - Timer
+
+///Fires at change of classes to update views and other data
 var UpdateTimer: Timer?
 
-func setCourseChangeAlarm(for time: Int) {
+func setCourseChangeAlarm(for time: Time24) {
     UpdateTimer?.invalidate()
     
-    let date = dateFrom24hrInt(time)
+	let date = Date(time24: time)
     UpdateTimer = Timer(fire: date, interval: 0, repeats: false) { timer in
         print("\(#fileID):\(#line) Update timer fired; time is \(Date.now.formatted(date: .numeric, time: .complete))")
         reload()
@@ -68,7 +122,7 @@ func setCourseChangeAlarm(for time: Int) {
 func getCurrentClass(date: Date) -> Array<Course> {
     
     //MARK: Init and Ghost Week stuff
-    let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
+    let todayWeekday = weekdayNumber(date)//sunday = 1, mon = 2, etc
     print("\(#fileID).swift:\(#line) - the weekday today is \(todayWeekday)")
     
     //func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
@@ -78,7 +132,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
 
     var times2Day: Array<Int>
 
-    let time24Now = time24()
+    let time24Now = Time24()
 
     //let times2Morrow: Array<Int>? = if todayWeekday<6 { weekdayTimes[todayWeekday-1] } else { nil }
     
@@ -148,7 +202,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             } else { noSchool(.afterClass) }
             
             
-            NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
+            NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, next.display())
             setCourseChangeAlarm(for: next)
             return [currentCourseLocal, nextCourseLocal]
             
@@ -170,7 +224,7 @@ func getCurrentClass(date: Date) -> Array<Course> {
             
             
             
-            NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, time24toNormal(next))
+            NSLog("> The current class is %@\n> Next class is %@, due at %@", currentCourseLocal.name, nextCourseLocal.name, next.display())
             setCourseChangeAlarm(for: next)
             return [currentCourseLocal, nextCourseLocal]
             
@@ -203,7 +257,7 @@ func storagePing() -> Storage {
 
 
 //MARK: Class from Time & Weekday & if Week is A
-func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> Course {
+func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> DisplayCourse {
 
 	if !Storage.shared.termRunningGB { return noSchool(.noTerm) } //catch if term not running
 
@@ -236,9 +290,9 @@ func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime:
 
 	// If room index is valid, return with room; otherwise return base Course
 	if roomIndex >= 0 && roomIndex < course2.rooms.count {
-		return Course(course2, room: course2.rooms[roomIndex])
+		return DisplayCourse(course2, room: course2.rooms[roomIndex])
 	} else {
-		return Course(course2)
+		return DisplayCourse(course2)
 	}
 
 }
@@ -250,7 +304,7 @@ func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime:
 func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 	//MARK: —Init and Ghost Week stuff
-	let todayWeekday = Int(weekdayNumber(date))//sunday = 1, mon = 2, etc
+	let todayWeekday = weekdayNumber(date)//sunday = 1, mon = 2, etc
 	print("\(#fileID):\(#line) the weekday today is \(todayWeekday)")
 
 	//func sK(_ dict: [Int: Course]) -> [Int] { Array(dict.keys).sorted(by:  <) } // sK for sortKeys
@@ -259,7 +313,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 	var times2Day: Array<Int>
 
-	let time24Now = time24()
+	let time24Now = Time24()
 
 	//let times2Morrow: Array<Int>? = if todayWeekday<6 { weekdayTimes[todayWeekday-1] } else { nil }
 
@@ -289,7 +343,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 	//MARK: —Before/After
 
-	let weekdayTimes: Array<[Int]> = {
+	let weekdayTimes: Array<[Time24]> = {
 		let wk=timetable.timetable[isweekA ? 0 : 1]
 		return [ sK(wk.monday), sK(wk.tuesday), sK(wk.wednesday), sK(wk.thursday), sK(wk.friday) ]
 
@@ -349,7 +403,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 			setCourseChangeAlarm(for: next)
 			print("\(#fileID):\(#line) \(#function) exit with result now(\(now)) == compare(\(compare))")
-            print("> The current class is \(currentCourseLocal.name)\n> Next class is \(nextCourseLocal.name), due at \(time24toNormal(next))")
+            print("> The current class is \(currentCourseLocal.name)\n> Next class is \(nextCourseLocal.name), due at \(next.display())")
 			return [currentCourseLocal, nextCourseLocal, Timeslot(week: week, day: todayWeekday, time: compare)]//MARK: Return D
 
 
@@ -374,7 +428,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 			setCourseChangeAlarm(for: next)
 			print("\(#fileID):\(#line) \(#function) exit with result now(\(now)) > compare(\(compare)) && now(\(now)) < next(\(next))")
-			print("> The current class is \(currentCourseLocal.name)\n> Next class is \(nextCourseLocal.name), due at \(time24toNormal(next))")
+			print("> The current class is \(currentCourseLocal.name)\n> Next class is \(nextCourseLocal.name), due at \(next.display())")
 			return [currentCourseLocal, nextCourseLocal, Timeslot(week: week, day: todayWeekday, time: compare)] //MARK: Return E
 
 		} // either of these `if`s mean `now` is the current class and `next` is next

@@ -8,12 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		AE09C38A2E4D8A820032E777 /* Timetaber Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		AE1438DC2EC8393900075576 /* TimetaberIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AE1438DB2EC8393900075576 /* TimetaberIcon.icon */; };
-		AE1438DD2EC8393900075576 /* TimetaberIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AE1438DB2EC8393900075576 /* TimetaberIcon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		AE09C38B2E4D8A820032E777 /* PBXContainerItemProxy */ = {
+		AE1E654A2EFF94BE006B238C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AE5BB4B52D12962C009928BD /* Project object */;
 			proxyType = 1;
@@ -38,24 +36,51 @@
 
 /* Begin PBXFileReference section */
 		AE09C37E2E4D8A680032E777 /* Timetaber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timetaber.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AE1438DB2EC8393900075576 /* TimetaberIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = TimetaberIcon.icon; sourceTree = "<group>"; };
 		AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Timetaber Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		AE09C37F2E4D8A680032E777 /* Timetaber */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Timetaber;
-			sourceTree = "<group>";
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AE80C4732EFFB58A00C8DE24 /* Exceptions for "Old" folder in "Timetaber Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Courses_old.swift,
+				Timetable_old.swift,
+			);
+			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
 		};
+		AE80C4742EFFB58A00C8DE24 /* Exceptions for "Old" folder in "Timetaber" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Courses_old.swift,
+				Timetable_old.swift,
+			);
+			target = AE09C37D2E4D8A680032E777 /* Timetaber */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
 		AE09C38E2E4D8B120032E777 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		AE1E65552EFF94E2006B238C /* Timetaber */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Timetaber;
+			sourceTree = "<group>";
+		};
 		AE5BB4C52D12962C009928BD /* Timetaber Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Timetaber Watch App";
+			sourceTree = "<group>";
+		};
+		AE80C4722EFFB58A00C8DE24 /* Old */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AE80C4732EFFB58A00C8DE24 /* Exceptions for "Old" folder in "Timetaber Watch App" target */,
+				AE80C4742EFFB58A00C8DE24 /* Exceptions for "Old" folder in "Timetaber" target */,
+			);
+			path = Old;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -81,12 +106,12 @@
 		AE5BB4B42D12962C009928BD = {
 			isa = PBXGroup;
 			children = (
+				AE80C4722EFFB58A00C8DE24 /* Old */,
 				AE09C38E2E4D8B120032E777 /* Shared */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
 				AEEC74B62D290163003BC9DF /* Timetaber Watch App.app */,
 				AE09C37E2E4D8A680032E777 /* Timetaber.app */,
-				AE09C37F2E4D8A680032E777 /* Timetaber */,
-				AE1438DB2EC8393900075576 /* TimetaberIcon.icon */,
+				AE1E65552EFF94E2006B238C /* Timetaber */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,11 +130,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				AE09C38C2E4D8A820032E777 /* PBXTargetDependency */,
+				AE1E654B2EFF94BE006B238C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				AE09C37F2E4D8A680032E777 /* Timetaber */,
 				AE09C38E2E4D8B120032E777 /* Shared */,
+				AE1E65552EFF94E2006B238C /* Timetaber */,
+				AE80C4722EFFB58A00C8DE24 /* Old */,
 			);
 			name = Timetaber;
 			packageProductDependencies = (
@@ -133,6 +159,7 @@
 			fileSystemSynchronizedGroups = (
 				AE09C38E2E4D8B120032E777 /* Shared */,
 				AE5BB4C52D12962C009928BD /* Timetaber Watch App */,
+				AE80C4722EFFB58A00C8DE24 /* Old */,
 			);
 			name = "Timetaber Watch App";
 			packageProductDependencies = (
@@ -184,7 +211,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE1438DC2EC8393900075576 /* TimetaberIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,7 +218,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE1438DD2EC8393900075576 /* TimetaberIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,10 +241,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		AE09C38C2E4D8A820032E777 /* PBXTargetDependency */ = {
+		AE1E654B2EFF94BE006B238C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
-			targetProxy = AE09C38B2E4D8A820032E777 /* PBXContainerItemProxy */;
+			targetProxy = AE1E654A2EFF94BE006B238C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

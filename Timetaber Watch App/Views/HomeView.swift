@@ -10,10 +10,44 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject var data: LocalData
-    
+
+	private func getNextString(_ course: DisplayCourse) -> String {
+		if course.name == "Error" || LocalData.shared.currentCourse.name=="Error" {
+			return "bit.ly/ttberError1"
+		}
+		if course.name == "No school" {
+			return ""
+		} else if let room = course.room {
+			return course.name+" - "+room
+		}
+		return course.name
+
+	}
+
+
+	private func nextPrefix(_ course: DisplayCourse) -> String {
+		if course.name == "Error" {
+			return "Report this:"
+		}
+		if course.name == "No school" {
+			return ""
+		}
+		return "Next up:"
+	}
+
+	private func roomOrBlank(_ course: DisplayCourse) -> String? {
+		guard let room = course.room else {
+			guard let joke = course.joke else {
+				return nil
+			}
+			return joke
+		}
+		return room
+	}
+
     var body: some View {
 
-		let current = ScienceCourse//data.currentCourse
+		let current = data.currentCourse
 		let next = if current.name != "Error" { data.nextCourse } else { current }
 
         VStack {
