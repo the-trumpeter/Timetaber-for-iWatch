@@ -37,61 +37,61 @@ var chaos = Timetable(
 
 	times: Times(
 		standard: [
-				Times.Period("Check In",	startTime: 0900,	duration: 10),
-				Times.Period("1",		startTime: 0910,	duration: 60),
-				Times.Period("2",		startTime: 1010,	duration: 60),
-				Times.Period("Recess",	startTime: 1110,	duration: 20),
-				Times.Period("3",		startTime: 1130,	duration: 60),
-				Times.Period("4",		startTime: 1230,	duration: 60),
-				Times.Period("Lunch",	startTime: 1330,	duration: 40),
-				Times.Period("5",		startTime: 1410,	duration: 60)
+				Times.Period ("Check In",startTime: 0900,	duration: 10),
+				Times.Period ("1",		startTime: 0910,	duration: 60),
+				Times.Period ("2",		startTime: 1010,	duration: 60),
+				Times.Period ("Recess",startTime: 1110,	duration: 20),
+				Times.Period ("3",		startTime: 1130,	duration: 60),
+				Times.Period ("4",		startTime: 1230,	duration: 60),
+				Times.Period ("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period ("5",		startTime: 1410,	duration: 60)
 		],
 		variants: [
-			"9:30 Music lesson": [
-				Times.Period("Check In",	startTime: 0900,	duration: 10),
-				Times.Period("1",		startTime: 0910,	duration: 20),
-				Times.Period("ML",		startTime: 0930,	duration: 30),
-				Times.Period("1",		startTime: 1000,	duration: 10),
-				Times.Period("2",		startTime: 1010,	duration: 60),
-				Times.Period("3",		startTime: 1110,	duration: 20),
-				Times.Period("Recess",	startTime: 1130,	duration: 60),
-				Times.Period("4",		startTime: 1230,	duration: 60),
-				Times.Period("Lunch",	startTime: 1330,	duration: 40),
-				Times.Period("5",		startTime: 1410,	duration: 60)
-			],
-			"Band til 5pm": [
-				Times.Period("Check In",	startTime: 0900,	duration: 10),
-				Times.Period("1",		startTime: 0910,	duration: 60),
-				Times.Period("2",		startTime: 1010,	duration: 60),
-				Times.Period("Recess",	startTime: 1110,	duration: 20),
-				Times.Period("3",		startTime: 1130,	duration: 60),
-				Times.Period("4",		startTime: 1230,	duration: 60),
-				Times.Period("Lunch",	startTime: 1330,	duration: 40),
-				Times.Period("5",		startTime: 1410,	duration: 60),
-				Times.Period("SBU",		startTime: 1510,	duration: 110)
-			],
-			"Band til 5:30": [
-				Times.Period("Check In",	startTime: 0900,	duration: 10),
-				Times.Period("1",		startTime: 0910,	duration: 60),
-				Times.Period("2",		startTime: 1010,	duration: 60),
-				Times.Period("Recess",	startTime: 1110,	duration: 20),
-				Times.Period("3",		startTime: 1130,	duration: 60),
-				Times.Period("4",		startTime: 1230,	duration: 60),
-				Times.Period("Lunch",	startTime: 1330,	duration: 40),
-				Times.Period("5",		startTime: 1410,	duration: 60),
-				Times.Period("SBU",		startTime: 1510,	duration: 140)
-			],
-			"Band til 4:30": [
-				Times.Period("Check In",	startTime: 0900,	duration: 10),
-				Times.Period("1",		startTime: 0910,	duration: 60),
-				Times.Period("2",		startTime: 1010,	duration: 60),
-				Times.Period("Recess",	startTime: 1110,	duration: 20),
-				Times.Period("3",		startTime: 1130,	duration: 60),
-				Times.Period("4",		startTime: 1230,	duration: 60),
-				Times.Period("Lunch",	startTime: 1330,	duration: 40),
-				Times.Period("5",		startTime: 1410,	duration: 60),
-				Times.Period("SBU",		startTime: 1510,	duration: 80)
-			],
+			0:	Times.Variant("9:30 Music lesson",	variant: [
+				Times.Period ("Check In",startTime: 0900,	duration: 10),
+				Times.Period ("1",		startTime: 0910,	duration: 20),
+				Times.Period ("ML",		startTime: 0930,	duration: 30),
+				Times.Period ("1",		startTime: 1000,	duration: 10),
+				Times.Period ("2",		startTime: 1010,	duration: 60),
+				Times.Period ("3",		startTime: 1110,	duration: 20),
+				Times.Period ("Recess",startTime: 1130,	duration: 60),
+				Times.Period ("4",		startTime: 1230,	duration: 60),
+				Times.Period ("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period ("5",		startTime: 1410,	duration: 60)
+			]),
+			1:	Times.Variant("Band til 5pm", 		variant: [
+				Times.Period ("Check In",startTime: 0900,	duration: 10),
+				Times.Period ("1",		startTime: 0910,	duration: 60),
+				Times.Period ("2",		startTime: 1010,	duration: 60),
+				Times.Period ("Recess",startTime: 1110,	duration: 20),
+				Times.Period ("3",		startTime: 1130,	duration: 60),
+				Times.Period ("4",		startTime: 1230,	duration: 60),
+				Times.Period ("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period ("5",		startTime: 1410,	duration: 60),
+				Times.Period ("SBU",	startTime: 1510,	duration:110)
+			]),
+			2:	Times.Variant("Band til 5:30",		variant: [
+				Times.Period ("Check In",startTime: 0900,	duration: 10),
+				Times.Period ("1",		startTime: 0910,	duration: 60),
+				Times.Period ("2",		startTime: 1010,	duration: 60),
+				Times.Period ("Recess",startTime: 1110,	duration: 20),
+				Times.Period ("3",		startTime: 1130,	duration: 60),
+				Times.Period ("4",		startTime: 1230,	duration: 60),
+				Times.Period ("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period ("5",		startTime: 1410,	duration: 60),
+				Times.Period ("SBU",	startTime: 1510,	duration:140)
+			]),
+			3:	Times.Variant("Band til 4:30",		variant: [
+				Times.Period ("Check In",startTime: 0900,	duration: 10),
+				Times.Period ("1",		startTime: 0910,	duration: 60),
+				Times.Period ("2",		startTime: 1010,	duration: 60),
+				Times.Period ("Recess",startTime: 1110,	duration: 20),
+				Times.Period ("3",		startTime: 1130,	duration: 60),
+				Times.Period ("4",		startTime: 1230,	duration: 60),
+				Times.Period ("Lunch",	startTime: 1330,	duration: 40),
+				Times.Period ("5",		startTime: 1410,	duration: 60),
+				Times.Period ("SBU",	startTime: 1510,	duration: 80)
+			]),
 		],
 		mapping: [
 			2: "9:30 Music lesson", //mon

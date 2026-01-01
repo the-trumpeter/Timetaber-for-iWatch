@@ -8,6 +8,10 @@
 import SwiftUI
 
 
+
+
+
+//MARK: NewPeriodView
 fileprivate struct NewPeriodView: View {
 	@Binding var period: Times.Period
 	var body: some View {
@@ -86,6 +90,13 @@ fileprivate struct NewPeriodView: View {
 	}
 }
 
+
+
+
+
+
+
+//MARK: TimesSheetView
 fileprivate struct TimesSheetView: View {
 	var startBinding: Binding<Date>
 	var durationBinding: Binding<Date>
@@ -169,14 +180,14 @@ fileprivate struct TimesSheetView: View {
 					get: {
 						if editing == -1 {
 							if index < localTimes.wrappedValue.standard.count {
-								return localTimes.wrappedValue.standard[index].name
+								return localTimes.wrappedValue.standard[index]!.name
 							} else {
 								return ""
 							}
 						} else {
 							let key = Array(localTimes.wrappedValue.variants.keys)[editing]
 							if let arr = localTimes.wrappedValue.variants[key], index < arr.count {
-								return arr[index].name
+								return arr[index]!.name
 							} else {
 								return ""
 							}
@@ -185,12 +196,12 @@ fileprivate struct TimesSheetView: View {
 					set: { newValue in
 						if editing == -1 {
 							if index < localTimes.wrappedValue.standard.count {
-								localTimes.wrappedValue.standard[index].name = newValue
+								localTimes.wrappedValue.standard[index]!.name = newValue
 							}
 						} else {
 							let key = Array(localTimes.wrappedValue.variants.keys)[editing]
 							if var arr = localTimes.wrappedValue.variants[key], index < arr.count {
-								arr[index].name = newValue
+								arr[index]!.name = newValue
 								localTimes.wrappedValue.variants[key] = arr
 							}
 						}
@@ -216,6 +227,14 @@ fileprivate struct TimesSheetView: View {
 }
 
 
+
+
+
+
+
+
+
+//MARK: TimesRowView
 fileprivate struct TimesRowView: View {
 	var localTimes: Binding<Times>
 	let editing: Int
@@ -243,14 +262,17 @@ fileprivate struct TimesRowView: View {
 						set: { newDate in
 							let newValue = Time24(from: newDate)
 							if editing == -1 {
-								if index < localTimes.standard.count {
-									localTimes.wrappedValue.standard[index].startTime = newValue
+								if index < localTimes.wrappedValue.standard.count {
+									localTimes.wrappedValue.standard[index]!.startTime = newValue
 								}
 							} else {
-								let key = Array(localTimes.wrappedValue.variants.keys)[editing]
-								if var arr = localTimes.wrappedValue.variants[key], index < arr.count {
-									arr[index].startTime = newValue
-									localTimes.wrappedValue.variants[key] = arr
+								let keys = Array(localTimes.wrappedValue.variants.keys)
+								if editing >= 0 && editing < keys.count {
+									let key = keys[editing]
+									if var arr = localTimes.wrappedValue.variants[key], index < arr.count {
+										arr[index]!.startTime = newValue
+										localTimes.wrappedValue.variants[key] = arr
+									}
 								}
 							}
 						}
@@ -292,6 +314,18 @@ fileprivate struct TimesRowView: View {
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+//MARK: TimesEditor
 ///Edit the structure of each day.
 struct TimesEditor: View {
 
@@ -315,52 +349,142 @@ struct TimesEditor: View {
 	}
 
 
+
+
+
 	private func compileChanges() -> [Change] {
+
 		let origin = store.timetables[tblIndex].times
 		var changes: [Change] = []
 
-		//mapping
-		if !(localTimes.mapping == origin.mapping) {
-			for x in 2...6 {
-				if localTimes.mapping[x] != origin.mapping[x] {
-					changes.append(
-						.times_variant_key(weekday: x, variant: localTimes.mapping[x]!, timetable: tblIndex)
-					)
+
+		func theloop(local: [Int: Times.Period], original origin: [Int: Times.Period], for timeschange: Change.TimesChange ) {
+
+		//				Local/Origin Existence & Value combinations:
+		//
+		//  Local value || A  B  ~ | A  B    ~  ~ | A  B
+		// Origin value || A  B  ~ | ~  ~    A  B | B  A
+		//      Handler ||..none...|..#1..  ..#3..|..#2..
+
+
+			// Go through local periods and correct the corresponding ones
+			for p in local.keys {
+
+			//	#1 –– LOCAL HAS value, ORIGIN does NOT –––––––––––––––––––––––––––
+				if let period = local[p], origin[p] == nil {
+					changes.append( .times_variant_modifyEntry(in: timeschange, toModify: p, period, timetable: tblIndex) ) // the decoders use updateValue, so it's the same syntax for addition as mutation
 				}
+
+
+			//	#2 –– Both have DIFFERENT VALUES ––––––––––––––––––––––––––––––––
+				if let period = local[p], let oPeriod = origin[p] { //both have value
+					if period != oPeriod { //and they are not the same
+						changes.append( .times_variant_modifyEntry(in: timeschange, toModify: p, period, timetable: tblIndex) )
+					}
+				}
+
 			}
+
+			// Go through original periods and remove if there's not corresponding local one
+			for p in origin.keys {
+
+			//	#3 –– Origin HAS value, local does NOT ––––––––––––––––––––––————
+				if local[p] == nil {
+					changes.append( .times_variants_deleteEntry(in: timeschange, toDelete: p, timetable: tblIndex))
+				}
+
+			}
+
 		}
 
-		//standard
-		
+		// – Mapping ––––––––––––––––––––––––––––––––––––––––––––––––––––
+		// Don't need to do mapping since it is seperated into Week Structure (TimesMapping)
 
-		//variants
+		// – Standard –––––––––––––––––––––––––––––––––––––––––––––––––––
+		let lStandard = localTimes.standard
+		let oStandard = origin.standard
 
+		theloop(local: lStandard, original: oStandard, for: .standard)
+
+		// – Variants –––––––––––––––––––––––––––––––––––––––––––––––––––
+		// TODO: Seperate .times_variant_add from .times_variant_modify
+		// – Identifying changes to variants ––––––––––––––––––––
+		for v in localTimes.variants.keys {
+
+			if let lVariant = localTimes.variants[v], origin.variants[v] == nil {
+				changes.append(.times_variants_add(named: <#T##String#>, <#T##[Int : Times.Period]#>, timetable: <#T##Int#>))
+			}
+
+
+
+			
+			//theloop(local: lVariant, original: oVariant, for: .variant(v))
+		}
+
+		// – Return –––––––––––––––––––––––––––––––––––––––––––––––––––––
 		return changes
 	}
 
+
+
+
+
+	//MARK: TimesEditor.body
 	var body: some View {
 		NavigationStack {
+
+		//	––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		//	Precompute the timesets for the current editing selection
+			let timesets: [Int: Times.Period] = {
+				if editing == -1 {
+					return localTimes.standard
+				} else {
+					let keys = Array(localTimes.variants.keys)
+					if editing >= 0 && editing < keys.count, let variant = localTimes.variants[keys[editing]] {
+						return variant
+					} else {
+						return localTimes.standard
+					}
+				}
+			}()
+
+			let starttimesortedTimeset = Array(timesets.keys).sorted(by: { timesets[$0]!.startTime < timesets[$1]!.startTime } )
+
+
+
+		//	––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+
 			List {
-
-				let timesets: [Times.Period] = (editing == -1) ? localTimes.standard : localTimes.variants[Array(localTimes.variants.keys)[editing]]!
-
-                ForEach(timesets.indices, id: \.self) { index in
+				ForEach(starttimesortedTimeset, id: \.self) { index in
 
 					TimesRowView(localTimes: $localTimes, editing: editing, index: index, period: Binding(
 						get: {
 							if editing == -1 {
-								localTimes.standard[index]
+								return localTimes.standard[index]!
 							} else {
-								localTimes.variants[Array(localTimes.variants.keys)[editing]]![index]
+								let keys = Array(localTimes.variants.keys)
+								if editing >= 0 && editing < keys.count, let variant = localTimes.variants[keys[editing]] {
+									return variant[index]!
+								} else {
+									return localTimes.standard[index]!
+								}
 							}
-						},
-						set: {
+						}, //Binding(get: )
+						set: { newVal in
 							if editing == -1 {
-								localTimes.standard[index] = $0
+								localTimes.standard[index] = newVal
 							} else {
-								localTimes.variants[Array(localTimes.variants.keys)[editing]]![index] = $0
+								let keys = Array(localTimes.variants.keys)
+								if editing >= 0 && editing < keys.count {
+									let key = keys[editing]
+									if var variant = localTimes.variants[key] {
+										variant[index] = newVal
+										localTimes.variants[key] = variant
+									}
+								}
 							}
-						}
+						}//Binding(set: )
 						)
 					).swipeActions(allowsFullSwipe: false) {
 						Button("Delete", systemImage: "trash") {
@@ -370,32 +494,22 @@ struct TimesEditor: View {
 							.tint(.red)
 					}
 
-                }//foreach
-				.alert("Delete period \(Float(timesets[alertIndex].name) != nil ? "" : "\"" )\(timesets[alertIndex].name)\(Float(timesets[alertIndex].name) != nil ? "" : "\"" )?", isPresented: $showingAlert) {
-					Button("Delete", role: .destructive) {
-						// Capture the course name before deletion so we can still display/log it after removal
-						let deletedName = timesets[alertIndex].name// ?? "Error \(#line)"
+                }// ForEach( starttimesortedTimeset )
 
-						if editing == -1 {
-							localTimes.standard.remove(at: alertIndex)
-						} else {
-							localTimes.variants[Array(localTimes.variants.keys)[editing]]!.remove(at: alertIndex)
-						}
 
-						print("\(#fileID):\(#line) Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(alertIndex))")
-					}
-					Button("Cancel", role: .cancel) {}
-				}
+			//	––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
 
 				Button("Add Period", systemImage: "plus") {
 			///**	Calculate new period template from existing ones
-					let existingEnd = Date(time24: timesets.last?.startTime ?? 0900) //fetch start time of last period
-					let templateStart = existingEnd.addingTimeInterval(TimeInterval((timesets.last?.duration ?? 0) * 60 )) // calculate end time of last period; use end time as default starttime for next period
+					let lastPeriod = timesets.sorted { $0.key < $1.key }.last?.value
+					let existingEnd = Date(time24: lastPeriod?.startTime ?? 0900) //fetch start time of last period
+					let templateStart = existingEnd.addingTimeInterval(TimeInterval((lastPeriod?.duration ?? 0) * 60 )) // calculate end time of last period; use end time as default starttime for next period
 					newPeriod.startTime = Time24(from: templateStart)
 					newPeriod.duration = 60
 					var existingNumbers: [Float] = []
-					for set in timesets {
-						if let n = Float(set.name) {
+					for (_, p) in timesets {
+						if let n = Float(p.name) {
 							existingNumbers.append(n)
 						}
 					}
@@ -407,7 +521,9 @@ struct TimesEditor: View {
 
 					newPeriodSheet = true
 
-				}.sheet(isPresented: $newPeriodSheet) {
+				}// 'Add Period' new period button
+				.sheet(isPresented: $newPeriodSheet) {
+
 					NavigationStack {
 						NewPeriodView(period: $newPeriod)
 							.padding()
@@ -416,9 +532,12 @@ struct TimesEditor: View {
 								ToolbarItem(placement: .confirmationAction) {
 									Button("Save", systemImage: "checkmark") {
 										if editing == -1 {
-											localTimes.standard.append(newPeriod)
+											localTimes.standard.updateValue(newPeriod, forKey: localTimes.standard.count)
 										} else {
-											localTimes.variants[Array(localTimes.variants.keys)[editing]]!.append(newPeriod)
+											let keys = Array(localTimes.variants.keys)
+											if editing >= 0 && editing < keys.count {
+												localTimes.variants[keys[editing]]!.updateValue(newPeriod, forKey: localTimes.standard.count)
+											}
 										}
 										newPeriodSheet = false
 									}
@@ -428,18 +547,46 @@ struct TimesEditor: View {
 										newPeriodSheet = false
 									}
 								}
-							}
-					}
-				}
+							}// sheet toolbar
+					}// sheet NavStack
 
+				}// New period sheet
+
+
+			}//list
+
+
+		//	––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+			.alert("Delete period \(Float(timesets[alertIndex]!.name) == nil ? "\"\(timesets[alertIndex]!.name)\"" : timesets[alertIndex]!.name)?", isPresented: $showingAlert) {
+				Button("Delete", role: .destructive) {
+					let deletedName = timesets[alertIndex]!.name
+					if editing == -1 {
+						localTimes.standard.removeValue(forKey: alertIndex)
+					} else {
+						let keys = Array(localTimes.variants.keys)
+						if editing >= 0 && editing < keys.count {
+							let key = keys[editing]
+							localTimes.variants[key]!.removeValue(forKey: alertIndex)
+						}
+					}
+					print("\(#fileID):\(#line) Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(alertIndex))")
+				}
+				Button("Cancel", role: .cancel) {}
 			}
 
+
+		//	––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 			.toolbar {
 				ToolbarItem(placement: .navigation) {
 					Menu( {
 						if editing < 0 { return "Standard" }
-						return [String](localTimes.variants.keys)[editing]
+						let keys = Array(localTimes.variants.keys)
+						if editing >= 0 && editing < keys.count {
+							return keys[editing]
+						}
+						return "Standard"
 						}()
 					) {
 						Picker("Time Set", selection: $editing) {
@@ -460,9 +607,13 @@ struct TimesEditor: View {
 					}
 				}
 			}
-		}
-	}
-}
+
+
+
+		}// NavigationStack
+
+	}// body
+} // TimesEditor
 
 
 
@@ -471,6 +622,10 @@ struct TimesEditor: View {
 
 
 
+
+
+
+//MARK: - TimesMapping
 ///Edit the structure of each week.
 struct TimesMapping: View {
 	
@@ -585,6 +740,7 @@ struct TimesMapping: View {
 
 
 
+//MARK: #Preview
 #Preview {
 	TimesEditor()
 }

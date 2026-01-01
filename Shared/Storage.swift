@@ -114,11 +114,18 @@ class Storage: ObservableObject {
 				case .times_variants_add(named: let key, let variant, timetable: let tblIndex):
 					self.timetables[tblIndex].times.variants.updateValue(variant, forKey: key)
 
-				case .times_variant_modifyEntry(in: let key, toModify: let mod, let value, timetable: let tblIndex):
-					self.timetables[tblIndex].times.variants[key]?[mod] = value
+				case .times_variant_modifyEntry(in: let target, toModify: let set, let value, timetable: let tblIndex):
+					switch target {
+						case .standard: self.timetables[tblIndex].times.standard.updateValue(value, forKey: set)
+						case .variant(let key): self.timetables[tblIndex].times.variants[key]?.updateValue(value, forKey: set)
+					}
 
-				case .times_variants_deleteEntry(in: let key, toDelete: let del, timetable: let tblIndex):
-					self.timetables[tblIndex].times.variants[key]?.remove(at: del)
+				case .times_variants_deleteEntry(in: let target, toDelete: let set, timetable: let tblIndex):
+					switch target {
+						case .standard: self.timetables[tblIndex].times.standard.removeValue(forKey: set)
+						case .variant(let key): self.timetables[tblIndex].times.variants[key]?.removeValue(forKey: set)
+					}
+
 				case .times_variants_delete(let del, timetable: let tblIndex):
 					self.timetables[tblIndex].times.variants.removeValue(forKey: del)
 

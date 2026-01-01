@@ -82,7 +82,7 @@ extension Times {
 					self.variants[name]![target] = value
 
 				case .times_variants_deleteEntry(in: let name, toDelete: let target, timetable: _):
-					self.variants[name]?.remove(at: target)
+					self.variants[name]?.removeValue(forKey: target)
 
 				case .times_variant_key(weekday: let key, variant: let value, timetable: _):
 					guard let value else {

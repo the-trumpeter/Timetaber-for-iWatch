@@ -13,13 +13,36 @@ import Foundation
 ///The times and structure of a timetabled day (i.e. the whole timetable), including periods etc.
 struct Times: Codable, Equatable {
 	///Default times for the timetable
-	var standard: [Period]
+	var standard: [Int: Period]
 
 	///Timing variations set by the user
-	var variants: [String: [Period]]
+	var variants: [Int: Variant] //FIXME: FIX ME
 
 	///The weekday:timing mapping of days and timing
 	var mapping: [Int: String]
+
+	init(standard: [Period], variants: [Int: Variant], mapping: [Int: String]) {
+        self.standard = Dictionary(uniqueKeysWithValues: standard.enumerated().map { ($0.offset, $0.element) })
+        self.variants = variants
+        self.mapping = mapping
+	}
+
+	init(standard: [Int: Period], variants: [Int: Variant], mapping: [Int: String]) {
+		self.standard = standard
+		self.variants = variants
+		self.mapping = mapping
+	}
+
+	struct Variant: Codable, Equatable {
+		var name: String
+		var variant: [Int: Period]
+		init (_ name: String, variant: [Period]) {
+			self.name = name
+			self.variant = Dictionary(uniqueKeysWithValues: variant.enumerated().map { ($0.offset, $0.element) })
+		}
+		init(_ name: String, variant: [Int: Period]) { self.name = name; self.variant = variant }
+		init(name: String,   variant: [Int: Period]) { self.name = name; self.variant = variant }
+	}
 
 	///A period in a day.
 	struct Period: Codable, Equatable {
@@ -50,20 +73,21 @@ class Timetable: Codable {
 	var name: String
 	var icon: String
 
-	///May be used in future for JSON decoding to make sure that the input JSON format matches the app's version. This may not be used, and likely might be done with JSONDecoder throws instead.
+	///May be used in future for JSON decoding to make sure that the input JSON format matches the installed app's format version. This may not be used, and likely might be done with JSONDecoder throws instead.
 	var formatProtocol: String = "0.0.3"
 
 	///All courses used in the timetable are stored in an array, with their index being a unique identifier (for use *within the timetable*, not on the frontend) for that course.
 	var courses: [Int : Course2]
 
 	///The timing of school days, i.e. when each period is and if/what are the variations for some weekdays (e.g, extended 'sport period' on Wednesdays)
-	var times: Times //I don't like this...
+	var times: Times ///I don't like this...
 
 	///The timetable itself; the mapping between periods and courses for each day.
 	var timetable: [Timetable.TimetabledWeek]
 
 
 	///The mapping between periods, courses, and the rooms within those courses, for each day.
+	///
 	///Format as follows: `[ (Start time): [(Course index), (Room index in course)] ]
 	struct TimetabledWeek: Codable {
 		var monday:			[ Time24: [Int] ]
@@ -125,12 +149,19 @@ class Timetable: Codable {
 					self.times.variants.updateValue(variant, forKey: key)
 				successChanges.append(change)
 
-				case .times_variant_modifyEntry(in: let key, toModify: let setIdx, let value, timetable: _):
-					self.times.variants[key]?[setIdx] = value
+				case .times_variant_modifyEntry(in: let target, toModify: let setIdx, let value, timetable: _):
+					switch target {
+						case .standard: self.times.standard[setIdx] = value
+						case .variant(let key): self.times.variants[key]?[setIdx] = value
+					}
 				successChanges.append(change)
 
-				case .times_variants_deleteEntry(in: let key, toDelete: let set, timetable: _):
-				self.times.variants[key]?.remove(at: set)
+				case .times_variants_deleteEntry(in: let target, toDelete: let set, timetable: _):
+					switch target {
+						case .standard: self.times.standard.removeValue(forKey: set)
+						case .variant(let key): self.times.variants[key]?.removeValue(forKey: set)
+					}
+
 				successChanges.append(change)
 
 				case .timetable_icon(let icon, timetable: _):
@@ -191,6 +222,7 @@ class Timetable: Codable {
  */
 enum Change: Codable {
 
+	//MARK: Timetables
 		///	Create a timetable
 	case	timetable_create(Timetable, index: Int)
 		///	Change a timetable's name
@@ -200,6 +232,9 @@ enum Change: Codable {
 		///	Delete a timetable
 	case	timetable_delete(Int)
 
+
+
+	//MARK: Courses
 	/// Subproperty of `Change`, specifically dealing with changes within a `Course2`.
 	enum Course2Change: Codable {
 		/// Change a course's name
@@ -219,6 +254,9 @@ enum Change: Codable {
 		/// Delete a course
 	case	course_delete(index: Int, timetable: Int)
 
+
+
+	//MARK: Weeks
 		/// Add a week to the timetable
 	case	week_add(Timetable.TimetabledWeek, position: Int, timetable: Int)
 		/// Modify an entry in a week of the timetable
@@ -226,15 +264,26 @@ enum Change: Codable {
 		/// Remove a timetabled week
 	case	week_remove(Int, timetable: Int)
 
+
+
+	//MARK: Times
+	///The target of a modification to a time set
+	enum TimesChange: Codable {
+		///The standard timing
+		case standard
+		///A variation timing set
+		case variant(_ key: Int)
+	}
+
 		/// Add a variation of period times
-	case	times_variants_add(named: String, [Times.Period], timetable: Int)
+	case	times_variants_add(key: Int, Times.Variant, timetable: Int)
 		/// Change (redefine) a `Period` in a variation of period times
-	case	times_variant_modifyEntry(in: String, toModify: Int, Times.Period, timetable: Int)
+	case	times_variant_modifyEntry(in: TimesChange, toModify: Int, Times.Period, timetable: Int)
 		/// Delete a `Period` in a variation of period times. Not to be confused with `times_variants_delete`
-	case	times_variants_deleteEntry(in: String, toDelete: Int, timetable: Int)
+	case	times_variants_deleteEntry(in: TimesChange, toDelete: Int, timetable: Int)
 		/// Delete a variation of period times. Not to be confused with `times_variants_deleteEntry`
-	case 	times_variants_delete(_ named: String, timetable: Int)
+	case 	times_variants_delete(_ key: Int, timetable: Int)
 		/// Change the  period-times variation mapping for a day
-	case	times_variant_key(weekday: Int, variant: String?, timetable: Int)
+	case	times_variant_key(weekday: Int, variant: Int?, timetable: Int)
 
 }
