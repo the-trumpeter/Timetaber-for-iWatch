@@ -71,18 +71,31 @@ extension Times {
 
 			switch change {
 
-				case .times_variants_add(named: let name, let value, timetable: _):
+				case .times_variants_add(key: let name, let value, timetable: _):
 					self.variants.updateValue(value, forKey: name)
 
-				case .times_variant_modifyEntry(in: let name, toModify: let target, let value, timetable: _):
-					guard self.variants[name] != nil else {
-						print("\(#fileID):\(#line) @ \(#function) \(name) not present in Times")
-						break
-					}
-					self.variants[name]![target] = value
+				case .times_variant_modify(target: let target, let variantChange, timetable: _):
+					switch variantChange {
 
-				case .times_variants_deleteEntry(in: let name, toDelete: let target, timetable: _):
-					self.variants[name]?.removeValue(forKey: target)
+						case .rename(let name):
+							switch target {
+							case .standard: continue
+							case .variant(let key):
+								self.variants[key]?.name = name
+							}
+
+						case .modifyEntry(let setIdx, to: let value):
+							switch target {
+								case .standard: self.standard[setIdx] = value
+								case .variant(let key): self.variants[key]?.variant[setIdx] = value
+							}
+
+						case .deleteEntry(let deletee):
+							switch target {
+								case .standard: self.standard.removeValue(forKey: deletee)
+								case .variant(let key): self.variants[key]?.variant.removeValue(forKey: deletee)
+							}
+					}
 
 				case .times_variant_key(weekday: let key, variant: let value, timetable: _):
 					guard let value else {
@@ -144,7 +157,7 @@ fileprivate struct timetableOptions: View {
 
 				NavigationLink {
 					TimesEditor(tblIndex: tblIndex)
-				} label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.orange); Text("Day Structure").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary) }
+				} label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.yellow); Text("Day Structure").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary) }
 				}.buttonStyle(.plain)
 				NavigationLink {
 					TimesMapping(tblIndex: tblIndex)

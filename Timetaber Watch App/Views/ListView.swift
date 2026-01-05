@@ -19,12 +19,6 @@ struct listTemplate: View {
     private let room: String
     private let properties: [Int]
 
-	// Use SF Symbols directly to avoid missing-asset crashes at runtime
-	private let customSymbols = [
-		"paintbrush.pointed.circle.fill": Image(systemName: "paintbrush.pointed.circle.fill"),
-		"music.note.circle.fill": Image(systemName: "music.note.circle.fill"),
-		"movieclapper.circle.fill": Image(systemName: "movieclapper.circle.fill")
-	]
 
     init(
         timetableDay: [Int: [Int] ],
@@ -44,7 +38,7 @@ struct listTemplate: View {
     
     var body: some View {
 
-        let image = customSymbols[listedCourse.listIcon] ?? Image(systemName: listedCourse.listIcon)
+        let image = Image(systemName: listedCourse.listIcon)
         HStack{
             
             image

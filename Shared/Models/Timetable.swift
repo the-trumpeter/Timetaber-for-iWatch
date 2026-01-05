@@ -8,30 +8,51 @@
 import Foundation
 
 
+
 //MARK: Timing
 
 ///The times and structure of a timetabled day (i.e. the whole timetable), including periods etc.
 struct Times: Codable, Equatable {
+
 	///Default times for the timetable
 	var standard: [Int: Period]
 
 	///Timing variations set by the user
-	var variants: [Int: Variant] //FIXME: FIX ME
+	var variants: [Int: Variant]
 
 	///The weekday:timing mapping of days and timing
-	var mapping: [Int: String]
+	var mapping: [Int: Int]
+
+
+
 
 	init(standard: [Period], variants: [Int: Variant], mapping: [Int: String]) {
         self.standard = Dictionary(uniqueKeysWithValues: standard.enumerated().map { ($0.offset, $0.element) })
         self.variants = variants
-        self.mapping = mapping
+        self.mapping = {
+            var newmap: [Int: Int] = [:]
+            for (k, v) in mapping {
+                if v == "Standard" {
+                    newmap[k] = -1
+                } else if let match = variants.first(where: { (_, variant) in variant.name == v }) {
+                    newmap[k] = match.key
+                }
+            }
+            return newmap
+        }()
 	}
 
-	init(standard: [Int: Period], variants: [Int: Variant], mapping: [Int: String]) {
+
+
+	init(standard: [Int: Period], variants: [Int: Variant], mapping: [Int: Int]) {
 		self.standard = standard
 		self.variants = variants
 		self.mapping = mapping
 	}
+
+
+
+
 
 	struct Variant: Codable, Equatable {
 		var name: String
@@ -43,6 +64,8 @@ struct Times: Codable, Equatable {
 		init(_ name: String, variant: [Int: Period]) { self.name = name; self.variant = variant }
 		init(name: String,   variant: [Int: Period]) { self.name = name; self.variant = variant }
 	}
+
+
 
 	///A period in a day.
 	struct Period: Codable, Equatable {
@@ -59,6 +82,16 @@ struct Times: Codable, Equatable {
 			self.duration = dur
 		}
 
+	}
+
+
+
+	///A time set, either the standard set or a user variation
+	enum Set: Codable, Equatable {
+		///The standard timing set
+		case standard
+		///A variation timing set
+		case variant(_ key: Int)
 	}
 
 }
@@ -97,12 +130,36 @@ class Timetable: Codable {
 		var friday:			[ Time24: [Int] ]
 	}
 
+
 	init(_ name: String, icon: String, courses: [Int: Course2], times: Times, timetable: [Timetable.TimetabledWeek] ) {
 		self.name = name
 		self.icon = icon
 		self.courses = courses
 		self.times = times
 		self.timetable = timetable
+	}
+
+	init() {
+		self.name = "Timetable"
+		self.icon = "backpack.badge.clock"
+		self.courses = [:]
+		self.times = Times(standard: [:], variants: [:], mapping: [:])
+		self.timetable = [
+			TimetabledWeek(
+				monday:		[:],
+				tuesday:	[:],
+				wednesday:	[:],
+				thursday:	[:],
+				friday:		[:]
+			),
+			TimetabledWeek(
+				monday:		[:],
+				tuesday:	[:],
+				wednesday:	[:],
+				thursday:	[:],
+				friday:		[:]
+			)
+		]
 	}
 
 	
@@ -145,27 +202,38 @@ class Timetable: Codable {
 					self.times.mapping.updateValue(variant, forKey: wkday)
 				successChanges.append(change)
 
-				case .times_variants_add(named: let key, let variant, timetable: _):
+				case .times_variants_add(key: let key, let variant, timetable: _):
 					self.times.variants.updateValue(variant, forKey: key)
 				successChanges.append(change)
 
-				case .times_variant_modifyEntry(in: let target, toModify: let setIdx, let value, timetable: _):
-					switch target {
-						case .standard: self.times.standard[setIdx] = value
-						case .variant(let key): self.times.variants[key]?[setIdx] = value
-					}
-				successChanges.append(change)
 
-				case .times_variants_deleteEntry(in: let target, toDelete: let set, timetable: _):
-					switch target {
-						case .standard: self.times.standard.removeValue(forKey: set)
-						case .variant(let key): self.times.variants[key]?.removeValue(forKey: set)
-					}
 
+				case .times_variant_modify(target: let target, let variantChange, timetable: _):
+					switch variantChange {
+
+						case .rename(let name):
+							switch target {
+							case .standard: failChanges.append(change); continue
+							case .variant(let key):
+								self.times.variants[key]?.name = name
+							}
+
+						case .modifyEntry(let setIdx, to: let value):
+							switch target {
+								case .standard: self.times.standard[setIdx] = value
+								case .variant(let key): self.times.variants[key]?.variant[setIdx] = value
+							}
+
+						case .deleteEntry(let deletee):
+							switch target {
+								case .standard: self.times.standard.removeValue(forKey: deletee)
+								case .variant(let key): self.times.variants[key]?.variant.removeValue(forKey: deletee)
+							}
+					}
 				successChanges.append(change)
 
 				case .timetable_icon(let icon, timetable: _):
-					self.icon = icon
+				self.icon = icon
 				successChanges.append(change)
 
 				case .timetable_name(let name, timetable: _):
@@ -175,7 +243,9 @@ class Timetable: Codable {
 
 				case .week_add(let week, position: let pos, timetable: _):
 					guard self.timetable.count < 2 else {
-						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#fileID):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
+						print("\(#fileID):\(#line) Timetable cannot have more than 2 alternating weeks due to current beta limitations\n\tOffender:\n\t\(change)")
+						failChanges.append(change)
+						continue
 					}
 					self.timetable.insert(week, at: pos)
 				successChanges.append(change)
@@ -267,23 +337,24 @@ enum Change: Codable {
 
 
 	//MARK: Times
-	///The target of a modification to a time set
-	enum TimesChange: Codable {
-		///The standard timing
-		case standard
-		///A variation timing set
-		case variant(_ key: Int)
+
+	enum TimesVariantChange: Codable {
+		/// Rename a variation of day-period timing
+		case rename(_ to: String)
+		/// Change a `Period` in a variation of day-period timing
+		case modifyEntry(_ entry: Int, to: Times.Period)
+		/// Delete a `Period` **in** a variation of day-period timing
+		case deleteEntry(_ entry: Int)
 	}
 
 		/// Add a variation of period times
 	case	times_variants_add(key: Int, Times.Variant, timetable: Int)
-		/// Change (redefine) a `Period` in a variation of period times
-	case	times_variant_modifyEntry(in: TimesChange, toModify: Int, Times.Period, timetable: Int)
-		/// Delete a `Period` in a variation of period times. Not to be confused with `times_variants_delete`
-	case	times_variants_deleteEntry(in: TimesChange, toDelete: Int, timetable: Int)
-		/// Delete a variation of period times. Not to be confused with `times_variants_deleteEntry`
+		///	Modify a variation of day-period timing
+	case	times_variant_modify(target: Times.Set, _ change: TimesVariantChange, timetable: Int)
+		/// Delete **a** variation of period times. Not to be confused with `times_variants_deleteEntry`
 	case 	times_variants_delete(_ key: Int, timetable: Int)
 		/// Change the  period-times variation mapping for a day
 	case	times_variant_key(weekday: Int, variant: Int?, timetable: Int)
 
 }
+

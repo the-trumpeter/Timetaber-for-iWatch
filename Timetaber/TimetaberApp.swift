@@ -11,6 +11,24 @@ import SwiftUI
 let coloursNeedBlackForeground = ["Peach", "Lemon"]
 
 
+/*
+
+      (  )
+      (00)   //
+   ___ \/___//
+  /---\_/---\
+------------------
+  l           l
+  l___________l
+  l   ll ll   l
+  l   v   v   l
+  -           -
+  A 'cow'ntant
+
+
+ */
+
+
 @main
 
 ///World's greatest timetable app

@@ -225,13 +225,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>104</string>
+					<string>98</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>103</string>
+					<string>97</string>
 					<key>Timestamp</key>
-					<string>788847065.1520391</string>
+					<string>789270413.820012</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -609,6 +609,241 @@ Define all courses for user's timetable
 			</dict>
 			<key>title</key>
 			<string>GOTTA STORE THIS TOO</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>633</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>632</string>
+					<key>Timestamp</key>
+					<string>789274348.729646</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/Timetable Creating-Editing/Times_Editor.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>						Button("(Add variation)", systemImage: "plus") { }
+</string>
+				<key>leading</key>
+				<string>							}
+						}
+</string>
+				<key>trailing</key>
+				<string>					}
+				}
+				 */
+</string>
+			</dict>
+			<key>title</key>
+			<string>Add Times variation</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>623</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>622</string>
+					<key>Timestamp</key>
+					<string>789274348.729615</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/Timetable Creating-Editing/Times_Editor.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>						Picker("Time Set", selection: Binding(get: {editing}, set: {editing = Int($0)}) ) {
+</string>
+				<key>leading</key>
+				<string>						return "Standard"
+					}()) {
+</string>
+				<key>trailing</key>
+				<string>							Text("Standard").tag("-1")
+							Divider()
+							let keys = Array(localTimes.variants.keys)
+</string>
+			</dict>
+			<key>title</key>
+			<string>Navigating edit focus across different variations</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>726</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>725</string>
+					<key>Timestamp</key>
+					<string>789274348.72964</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/Timetable Creating-Editing/Times_Editor.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>struct TimesMapping: View {
+</string>
+				<key>leading</key>
+				<string>//MARK: - TimesMapping
+///Edit the structure of each week.
+</string>
+				<key>trailing</key>
+				<string>	
+	@ObservedObject var store = Storage.shared
+	var tblIndex: Int
+</string>
+			</dict>
+			<key>title</key>
+			<string>1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>129</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>128</string>
+					<key>Timestamp</key>
+					<string>789168567.245186</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>					.onAppear { if isNewCourse { nameFieldIsFocused = true; course.name = "" } } // Name
+</string>
+				<key>leading</key>
+				<string>
+				TextField("Course name", text: $course.name).font(.title).focused($nameFieldIsFocused)
+</string>
+				<key>trailing</key>
+				<string>
+			}.padding(.leading).padding(.bottom, 2)
+
+</string>
+			</dict>
+			<key>title</key>
+			<string>Problematically slow on first lauch</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>129</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>128</string>
+					<key>Timestamp</key>
+					<string>789168567.245279</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>					.onAppear { if isNewCourse { nameFieldIsFocused = true; course.name = "" } } // Name
+</string>
+				<key>leading</key>
+				<string>
+				TextField("Course name", text: $course.name).font(.title).focused($nameFieldIsFocused)
+</string>
+				<key>trailing</key>
+				<string>
+			}.padding(.leading).padding(.bottom, 2)
+
+</string>
+			</dict>
+			<key>title</key>
+			<string>Various yellow runtime warnings (reporters, keyboard, sessionID)</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

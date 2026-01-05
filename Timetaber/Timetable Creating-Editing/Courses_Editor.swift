@@ -19,8 +19,8 @@ fileprivate struct courseEdit: View {
 	@State var course: Course2
 	@Binding var pendingChanges: [Change]?
 
-	@State var pendingRoom: String = ""
-	@State var coloursSheet = false
+	@State private var pendingRoom: String = ""
+	@State private var coloursSheet = false
 
 	let colours = ["Graphite", "Peach", "Lemon", "Rees1", "Apricot",
 				   "Lime", "Ice", "Blueberry", "Rose", "Cherry"]
@@ -125,7 +125,8 @@ fileprivate struct courseEdit: View {
 				} // colour (&sheet)
 
 
-				TextField("Course name", text: $course.name).font(.title).focused($nameFieldIsFocused).onAppear { if isNewCourse { nameFieldIsFocused = true; course.name = "" } } // Name
+				TextField("Course name", text: $course.name).font(.title).focused($nameFieldIsFocused)
+					.onAppear { if isNewCourse { nameFieldIsFocused = true; course.name = "" } } // Name
 
 			}.padding(.leading).padding(.bottom, 2)
 
@@ -155,7 +156,7 @@ fileprivate struct courseEdit: View {
 						}
 				}
 				HStack {
-					TextField("Add Room", text: $pendingRoom); Spacer()
+					TextField("Add Room", text: $pendingRoom).multilineTextAlignment(.leading); Spacer()
 					Button("Save room", systemImage: "plus") {
 						let trimmed = pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines)
 						guard !trimmed.isEmpty else { return }
@@ -163,9 +164,11 @@ fileprivate struct courseEdit: View {
 						course.rooms[nextKey] = trimmed
 						pendingRoom = ""
 					}
+					.opacity(pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.0 : 1.0)
 					.buttonStyle(.bordered)
 					.labelStyle(.iconOnly)
 					.disabled(pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
 				}
 			}.scrollContentBackground(.hidden)
 			// rooms
@@ -297,21 +300,26 @@ struct CoursesEditor: View {
 
 					.swipeActions(allowsFullSwipe: false) {
 
-						Button("Delete", systemImage: "trash") {
-							alertIndex = index
-							showingAlert = true
+						Button("Delete", systemImage: "trash", role: .destructive) {
+							let deletedName = localCourses[index]?.name ?? "Error \(#line)"
+
+							let change = Change.course_delete(index: index, timetable: tblIndex)
+							pendingChanges = [change] + (pendingChanges ?? [])
+							localCourses.applyCourseChanges([change])
+
+							print("\(#fileID):\(#line) Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(index))")
+							//alertIndex = index
+							//showingAlert = true
 							//print("\(#line) Swipe action \(index), \(showingAlert)")
 						}.tint(.red)
 						.labelStyle(.iconOnly)
-
-
 
 					}
 
 				}
 				Button("Add Course", systemImage: "plus") {
 					newCourse_fakePending = []
-					newCourse_fakeNewCourse = Course2("\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard)
+					newCourse_fakeNewCourse = Course2("\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard)
 
 					newCourseSheet.toggle()
 				}
@@ -325,6 +333,8 @@ struct CoursesEditor: View {
 					courseEdit(tblIndex: 0, pos: 0, isNewCourse: true, parentCourse: $newCourse_fakeNewCourse, course: Course2("Course", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard), pendingChanges: $newCourse_fakePending)
 						.presentationDetents([.medium])
 				}
+
+
 
 			}.toolbar {
 				ToolbarItem(placement: .confirmationAction) {
@@ -340,6 +350,10 @@ struct CoursesEditor: View {
 					}
 				}
 			}
+
+			.onAppear {
+				localCourses = store.timetables[tblIndex].courses
+			}
 		}
 		.alert("Delete \"\((localCourses[alertIndex]?.name) ?? "Error \(#line)")\"?", isPresented: $showingAlert) {
 			Button("Delete", role: .destructive) {
@@ -353,6 +367,6 @@ struct CoursesEditor: View {
 				print("\(#fileID):\(#line) Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(alertIndex))")
 			}
 			Button("Cancel", role: .cancel) {}
-		}
+		}.navigationTitle("All Courses")
 	}
 }

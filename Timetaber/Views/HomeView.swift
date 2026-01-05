@@ -31,7 +31,22 @@ extension Colour {
                      opacity: Double(alpha))
     }
 }
+/*
 
+
+     ) (
+    ( o)\
+*    \o /
+ \    \/-----\
+  \-----   || \
+ $ |     --||  *
+  ||-vv--  ~~
+  ~~
+ Pablo Picowsso
+
+
+
+ */
 
 //MARK: HomeView
 ///The app's landing and main view.
