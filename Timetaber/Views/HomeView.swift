@@ -73,8 +73,12 @@ struct HomeView: View {
 				Spacer()
 				
 				//MARK: Current Course
-				Image(systemName: course.icon)      // ICON
-					.font(.system(size: 80).weight(.semibold))
+				if UIImage(systemName: course.icon) != nil {
+						 Image(systemName: course.icon).font(.system(size: 80))
+					 } else {
+						 Image(course.icon).font(.system(size: 80))
+					 }      // ICON
+
 
 
 				Text(course.name)                   // NAME
@@ -88,7 +92,7 @@ struct HomeView: View {
 				//MARK: Next Course
 				
 				Text({
-					//print(data.nextCourse)
+					//Logger.<#logger#>.<#action#>(data.nextCourse)
 					if case .noSchool = data.nextCourse.type { return "" }
 					guard let room = roomOrBlank(data.nextCourse) else { return "" }
 

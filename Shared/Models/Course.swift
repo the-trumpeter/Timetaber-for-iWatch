@@ -40,12 +40,13 @@ struct Course2: Codable, Equatable {
 
 	var listName:	String?
 	var listIcon:	String
+	var iOSListIcon:String?
 	var joke:		String?
 
 	let type:	CourseType?
     
 	init(_ name: String, icon: String, rooms: [String] = [], colour: String,
-		 listName: String? = nil, listIcon: String? = nil, joke: String? = nil, identifier: CourseType? = nil)
+		 listName: String? = nil, listIcon: String? = nil, iOSListIcon: String? = nil, joke: String? = nil, identifier: CourseType? = nil)
 	{
 
 		self.name = name
@@ -55,6 +56,7 @@ struct Course2: Codable, Equatable {
 
 		self.listName = listName
 		self.listIcon = listIcon ?? (icon+".circle.fill")
+		self.iOSListIcon = iOSListIcon ?? nil
 
 		self.joke = joke
 

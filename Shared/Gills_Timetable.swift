@@ -22,7 +22,7 @@ var chaos = Timetable(
 		 7: Course2("Maths",		icon: "number", 					rooms: ["FT5"], 				colour: "Rose"),
 		 8: Course2("Music Lesson", icon: "music.note", 												colour: "Graphite"),
 		 9: Course2("Multimedia", 	icon: "movieclapper",				rooms: ["GG2"], 				colour: "Blueberry"),
-		10: Course2("Marching Band",icon: "flag", 								colour: "Cherry",	listName:"Marching Bd.",	listIcon: "flag.2.crossed.circle.fill"),
+		10: Course2("Marching Band",icon: "flag.filled.and.flag.crossed", 								colour: "Cherry",	listName:"Marching Bd.",	listIcon: "flag.2.crossed.circle.fill", iOSListIcon: "flag"),
 		11: Course2("PA Music", 	icon: "music.note",					rooms: ["BG1", "BT1", "CG1"],	colour: "Cherry"),
 		12: Course2("PDHPE", 		icon: "figure.run", 				rooms: ["PRAC", "THEORY"],		colour: "Lime"),
 		13: Course2("Recess", 		icon: "fork.knife", 												colour: "Graphite"),
@@ -114,7 +114,7 @@ var chaos = Timetable(
 				1230: [15, 0],
 				1330: [5,  0],
 				1410: [19, 0],
-				1510: [21, 0]
+				//1510: [21, 0]
 			],
 			tuesday: [
 				0900: [0,  0],
@@ -126,7 +126,7 @@ var chaos = Timetable(
 				1330: [6,  0],
 				1410: [7,  0],
 				1510: [16, 0],
-				1700: [21, 0]
+				//1700: [21, 0]
 			],
 			wednesday: [
 				0900: [17, 0],
@@ -136,8 +136,8 @@ var chaos = Timetable(
 				1210: [7,  0],
 				1300: [6,  0],
 				1330: [18, 0],
-				1510: [10, 0],
-				1730: [21, 0]
+				1510: [10, 0], //TODO: This is not showing in TimetableListView
+				//1730: [21, 0]
 			],
 			thursday: [
 				0900: [0,  0],
@@ -148,7 +148,7 @@ var chaos = Timetable(
 				1230: [1,  0],
 				1330: [6,  0],
 				1410: [4,  0],
-				1630: [2,  0],
+				1530: [2,  0],
 			],
 			friday: [
 				0900: [0,  0],
@@ -159,7 +159,7 @@ var chaos = Timetable(
 				1230: [1,  1],
 				1330: [6,  0],
 				1410: [9,  0],
-				1510: [21, 0]
+				//1510: [21, 0]
 			]
 		),
 
@@ -175,7 +175,7 @@ var chaos = Timetable(
 				1230: [7,  0],
 				1330: [5,  0],
 				1410: [12, 1],
-				1510: [21, 0]
+				//1510: [21, 0]
 			],
 			tuesday: [
 				0900: [0,  0],
@@ -187,7 +187,7 @@ var chaos = Timetable(
 				1330: [6,  0],
 				1410: [17, 0],
 				1510: [16, 0],
-				1700: [21, 0]
+				//1700: [21, 0]
 			],
 			wednesday: [
 				0900: [3,  0],
@@ -199,7 +199,7 @@ var chaos = Timetable(
 				1300: [6,  0],
 				1330: [14, 0],
 				1510: [10, 0],
-				1730: [21, 0]
+				//1730: [21, 0]
 			],
 			thursday: [
 				0900: [0,  0],
@@ -211,7 +211,7 @@ var chaos = Timetable(
 				1330: [6,  0],
 				1410: [4,  0],
 				1530: [2,  0],
-				1700: [21, 0]
+				//1700: [21, 0]
 			],
 			friday: [
 				0900: [0,  0],
@@ -222,7 +222,7 @@ var chaos = Timetable(
 				1230: [15, 0],
 				1330: [6,  0],
 				1410: [11, 2],
-				1510: [21, 0]
+				//1510: [21, 0]
 			]
 		)
 	]

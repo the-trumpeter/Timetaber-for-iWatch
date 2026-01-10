@@ -338,13 +338,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>80</string>
+					<string>72</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>79</string>
+					<string>71</string>
 					<key>Timestamp</key>
-					<string>788847297.603452</string>
+					<string>789368499.51485</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -526,13 +526,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>65</string>
+					<string>57</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>64</string>
+					<string>56</string>
 					<key>Timestamp</key>
-					<string>788847297.603442</string>
+					<string>789368499.514858</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -573,13 +573,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>68</string>
+					<string>60</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>67</string>
+					<string>59</string>
 					<key>Timestamp</key>
-					<string>788847297.603217</string>
+					<string>789368499.5148261</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -620,107 +620,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>633</string>
+					<string>850</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>632</string>
+					<string>849</string>
 					<key>Timestamp</key>
-					<string>789274348.729646</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Times_Editor.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>						Button("(Add variation)", systemImage: "plus") { }
-</string>
-				<key>leading</key>
-				<string>							}
-						}
-</string>
-				<key>trailing</key>
-				<string>					}
-				}
-				 */
-</string>
-			</dict>
-			<key>title</key>
-			<string>Add Times variation</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>623</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>622</string>
-					<key>Timestamp</key>
-					<string>789274348.729615</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Times_Editor.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>						Picker("Time Set", selection: Binding(get: {editing}, set: {editing = Int($0)}) ) {
-</string>
-				<key>leading</key>
-				<string>						return "Standard"
-					}()) {
-</string>
-				<key>trailing</key>
-				<string>							Text("Standard").tag("-1")
-							Divider()
-							let keys = Array(localTimes.variants.keys)
-</string>
-			</dict>
-			<key>title</key>
-			<string>Navigating edit focus across different variations</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>726</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>725</string>
-					<key>Timestamp</key>
-					<string>789274348.72964</string>
+					<string>789718913.2149529</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -761,13 +667,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>129</string>
+					<string>624</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>128</string>
+					<string>623</string>
 					<key>Timestamp</key>
-					<string>789168567.245186</string>
+					<string>789718913.2149301</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -776,27 +682,27 @@ Define all courses for user's timetable
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
+						<string>Timetaber/Timetable Creating-Editing/Times_Editor.swift</string>
 					</dict>
 				</dict>
 			</dict>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>					.onAppear { if isNewCourse { nameFieldIsFocused = true; course.name = "" } } // Name
+				<string>						Text("End: \( Time24( from: Date(time24: timesets.sorted { $0.value.startTime &lt; $1.value.startTime }.last?.value.startTime ?? 0900).addingTimeInterval(TimeInterval((timesets.sorted { $0.value.startTime &lt; $1.value.startTime }.last?.value.duration ?? 0) * 60 )) ).display() )").foregroundStyle(.secondary)
 </string>
 				<key>leading</key>
-				<string>
-				TextField("Course name", text: $course.name).font(.title).focused($nameFieldIsFocused)
+				<string>				HStack {
+					if !timesets.isEmpty {
 </string>
 				<key>trailing</key>
-				<string>
-			}.padding(.leading).padding(.bottom, 2)
-
+				<string>						Spacer()
+					}
+					Button("Add Period", systemImage: "plus") {
 </string>
 			</dict>
 			<key>title</key>
-			<string>Problematically slow on first lauch</string>
+			<string>Should I sort these based on their keys?</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -808,13 +714,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>129</string>
+					<string>12</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>128</string>
+					<string>11</string>
 					<key>Timestamp</key>
-					<string>789168567.245279</string>
+					<string>789717528.47834</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -823,27 +729,27 @@ Define all courses for user's timetable
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
+						<string>Timetaber Watch App/TimetaberApp.swift</string>
 					</dict>
 				</dict>
 			</dict>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>					.onAppear { if isNewCourse { nameFieldIsFocused = true; course.name = "" } } // Name
+				<string>struct Timetaber_Watch_AppApp: App {
 </string>
 				<key>leading</key>
-				<string>
-				TextField("Course name", text: $course.name).font(.title).focused($nameFieldIsFocused)
+				<string>@main
+
 </string>
 				<key>trailing</key>
-				<string>
-			}.padding(.leading).padding(.bottom, 2)
-
+				<string>    @Environment(\.scenePhase) private var scenePhase
+    init() {
+		//TODO: update from phone here
 </string>
 			</dict>
 			<key>title</key>
-			<string>Various yellow runtime warnings (reporters, keyboard, sessionID)</string>
+			<string>Watch app crash on boot (not on Saturday, susp. to be weekdays)</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

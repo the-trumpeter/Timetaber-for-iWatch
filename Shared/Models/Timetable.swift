@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import OSLog
 
 
 //MARK: Timing
@@ -27,19 +27,20 @@ struct Times: Codable, Equatable {
 
 
 	init(standard: [Period], variants: [Int: Variant], mapping: [Int: String]) {
-        self.standard = Dictionary(uniqueKeysWithValues: standard.enumerated().map { ($0.offset, $0.element) })
-        self.variants = variants
-        self.mapping = {
-            var newmap: [Int: Int] = [:]
-            for (k, v) in mapping {
-                if v == "Standard" {
-                    newmap[k] = -1
-                } else if let match = variants.first(where: { (_, variant) in variant.name == v }) {
-                    newmap[k] = match.key
-                }
-            }
-            return newmap
-        }()
+		self.standard = Dictionary(uniqueKeysWithValues: standard.enumerated().map { ($0.offset, $0.element) })
+		self.variants = variants
+		self.mapping = {
+			var newmap: [Int: Int] = [:]
+			for (k, v) in mapping {
+				if v == "Standard" {
+					newmap[k] = -1
+				} else if let match = variants.first(where: {$1.name == v}) {
+					newmap[k] = match.key
+				}
+			}
+			Logger.general.debug("Initialised mapping from [Int: String] to: \(newmap)")
+			return newmap
+		}()
 	}
 
 
@@ -243,7 +244,7 @@ class Timetable: Codable {
 
 				case .week_add(let week, position: let pos, timetable: _):
 					guard self.timetable.count < 2 else {
-						print("\(#fileID):\(#line) Timetable cannot have more than 2 alternating weeks due to current beta limitations\n\tOffender:\n\t\(change)")
+						Logger.timetableChanges.fault("Timetable cannot have more than 2 alternating weeks due to current beta limitations. \(String(reflecting: change))")
 						failChanges.append(change)
 						continue
 					}
@@ -266,13 +267,14 @@ class Timetable: Codable {
 					successChanges.append(change)
 
 				default:
-					print("\(#fileID):\(#line) Couldn't compile change\n\t\t\(change)\n\tto timetable \"\(self.name)\"")
+				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change)) to timetable \(self.name)")
 
 			}//switch
 
 		}//for each
 
-		print("\(#fileID):\(#line) Timetable.applyChanges\n\tSuccessfully applied changes to timetable \"\(self.name)\":\n\t\t\(successChanges)\n\tCouldn't apply changes:\n\t\t\(failChanges)")
+		Logger.timetableChanges.info("Successfully applied changes to timetable \(self.name): \n\t\(successChanges)")
+		if !failChanges.isEmpty { Logger.timetableChanges.error("Couldn't apply changes:\n\t\t\(failChanges)") }
 	}//func applyChanges(_)
 
 
@@ -357,4 +359,5 @@ enum Change: Codable {
 	case	times_variant_key(weekday: Int, variant: Int?, timetable: Int)
 
 }
+
 

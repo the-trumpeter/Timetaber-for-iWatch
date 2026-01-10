@@ -14,9 +14,10 @@
 //  NB: While this is a view, it also generally handles all data and processes related to starting and stopping a term process.
 
 import SwiftUI
+import OSLog
 
 //MARK: Processes
-fileprivate func startTermProcess(ghostWeek: Bool) -> Bool {
+fileprivate func startTermProcess(ghostWeek: Bool) throws {
 	// process to start a term
 	
 	// ! Need to store that a term is running!!
@@ -25,19 +26,16 @@ fileprivate func startTermProcess(ghostWeek: Bool) -> Bool {
 	Storage.shared.termRunningGB = true
 	reload()
 	log()
-	
-	return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
-	
+
 }
 
-fileprivate func endTermProcess() -> Bool {
+fileprivate func endTermProcess() throws {
 	//processes to end a term, local 'termrunning' should be changed externally
 	
 	Storage.shared.termRunningGB = false
 	reload()
 	log()
-	
-	return true //return true if all processes are as expected, otherwise call false so we can deal with a fail in order not to disrupt the application flow.
+
 }
 
 
@@ -54,13 +52,14 @@ fileprivate struct NewTermSheet: View {
 			VStack{
 				
 				Button("Start") {
-					if startTermProcess(ghostWeek: isGhostWeek) {
-						print("Started term")
+					do {
+						try startTermProcess(ghostWeek: isGhostWeek)
+						Logger.term.log("Started term")
 						reload()
 						
-					} else {
+					} catch {
 						//call an error if function returns error
-						print("SettingsView, line 55: Error!")
+						Logger.term.fault("startTermProcess threw unexpected error")
 					}
 					
 					dismiss()
@@ -142,7 +141,7 @@ struct SettingsView: View {
 			
 		}
 		.multilineTextAlignment(.center)
-		.onAppear { print("SettingsView Updated") }
+		//.onAppear { Logger.<#logger#>.<#action#>("SettingsView Updated") }
 		//.padding()
 	}
 }

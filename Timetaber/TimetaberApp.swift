@@ -7,26 +7,14 @@
 
 import SwiftUI
 
+
+import OSLog
+
+
+
+
 ///White text against these colours is illegible; use black for them instead.
-let coloursNeedBlackForeground = ["Peach", "Lemon"]
-
-
-/*
-
-      (  )
-      (00)   //
-   ___ \/___//
-  /---\_/---\
-------------------
-  l           l
-  l___________l
-  l   ll ll   l
-  l   v   v   l
-  -           -
-  A 'cow'ntant
-
-
- */
+let coloursNeedBlackForeground = ["Peach", "Lemon", "Ice", "Lime"]
 
 
 @main

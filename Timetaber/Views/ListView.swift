@@ -27,7 +27,7 @@ fileprivate struct DisplayEntry: View {
         courses: [Int : Course2],
     )
     {
-		//print("Start DisplayEntry init")
+		//Logger.<#logger#>.<#action#>("Start DisplayEntry init")
 		self.isBold = (LocalData.shared.currentTime == timeslot) ? true : false
 
 		self.day = timetableDay
@@ -38,7 +38,7 @@ fileprivate struct DisplayEntry: View {
         self.properties = day[key]!
         self.listedCourse = courses[ day[key]![0] ]!
         self.room = if listedCourse.rooms.isEmpty { nil } else { listedCourse.rooms[properties[1]] }
-        //print("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))\n")
+        //Logger.<#logger#>.<#action#>("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))\n")
     }
 
     var body: some View {
@@ -52,7 +52,7 @@ fileprivate struct DisplayEntry: View {
 					.transition(.opacity.combined(with: .move(edge: .leading)))
 			}
 */
-			Image(systemName: listedCourse.icon)
+			Image(systemName: listedCourse.iOSListIcon ?? listedCourse.icon)
 				.bold(isBold)
 				.font(.title)
 				.frame(width: 30)
@@ -87,7 +87,7 @@ struct TimetableView: View {
 		 day _day: Int = weekdayNumber(.now)
 	) {
 		//May need to return early in case of weekend or no term
-		//print("Start TimetableView init")
+		//Logger.<#logger#>.<#action#>("Start TimetableView init")
 		let wkday = _day
         let wk = _week
         
@@ -107,53 +107,54 @@ struct TimetableView: View {
 			case 6: "Friday"+suffix
 			default: "Error \(#line)"
 		  }
-		//print("End TimetableView init")
+		//Logger.<#logger#>.<#action#>("End TimetableView init")
     }
     
     var body: some View {
         NavigationStack {
             let dayKeys = Array(day.keys).sorted(by: <).dropLast()
 			List {
-					ForEach(dayKeys, id: \.self) { key in
-                        let timeslot = Timeslot(week: week, day: weekday, time: key)
-                        let entry = DisplayEntry(
-                            timetableDay: day,
-                            timeslot: timeslot,
-                            courses: courses
-                        )
-                        let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
-                        entry
-                            .listRowBackground(
-								ZStack {
-									bG
-									HStack {
-										Rectangle()
-											.foregroundStyle(Colour(entry.listedCourse.colour))
-											.frame(width: 5.0)
-										Spacer()
-									}
+				//FIXME: Weird space here between content and toolbar/title
+				ForEach(dayKeys, id: \.self) { key in
+					let timeslot = Timeslot(week: week, day: weekday, time: key)
+					let entry = DisplayEntry(
+						timetableDay: day,
+						timeslot: timeslot,
+						courses: courses
+					)
+					let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
+					entry
+						.listRowBackground(
+							ZStack {
+								bG
+								HStack {
+									Rectangle()
+										.foregroundStyle(Colour(entry.listedCourse.colour))
+										.frame(width: 5.0)
+									Spacer()
 								}
-							)
-							.foregroundStyle(
-								coloursNeedBlackForeground.contains(entry.listedCourse.colour) && (bG != nil) ?
-									Colour.black : .primary
-							)
+							}
+						)
+						.foregroundStyle(
+							coloursNeedBlackForeground.contains(entry.listedCourse.colour) && (bG != nil) ?
+								Colour.black : .primary
+						)
 				}
 			}
 			.listStyle(.inset)
 			.toolbar {
 				ToolbarItem(placement: .principal) { Text(sectionHeader) }
-		 }
-		 .toolbar {
-			 ToolbarItem(placement: .primaryAction) {
-				NavigationLink {
-					EditDayView(timetable: Storage.shared.timetable, week: week)
-				} label: {
-					Label("Edit", systemImage: "pencil")
+			}
+			/*.toolbar {
+				ToolbarItem(placement: .primaryAction) {
+					NavigationLink {
+						EditDayView(timetable: Storage.shared.timetable, week: week)
+					} label: {
+						Label("Edit", systemImage: "pencil")
+					}
 				}
-			 }
-		 }
-        }
+			}*/
+		}
 
 
     }//body

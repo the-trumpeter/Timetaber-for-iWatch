@@ -4,12 +4,31 @@
 //
 //  Created by Gill Palmer on 7/11/2025.
 //
+//  This file (and Storage.swift) also contain general stuff for all targets, e.g. typealias, logging
 
 import Foundation
 import SwiftUI
+import OSLog
 
 ///Flippity-flopping American English
 typealias Colour = Color
+
+
+let bID = Bundle.main.bundleIdentifier!
+extension Logger {
+	static let editCourses = Logger(subsystem: bID, category: "Timetable Edit Courses")
+	static let editTimes = Logger(subsystem: bID, category: "Timetable Edit Times")
+	static let editTimetable = Logger(subsystem: bID, category: "Timetable Edit Timetable")
+	static let timetableChanges = Logger(subsystem: bID, category: "Timetable Changes")
+
+	static let updateTimer = Logger(subsystem: bID, category: "Update Timer")
+	static let dateTime = Logger(subsystem: bID, category: "Date/Time Computation")
+
+	static let general = Logger(subsystem: bID, category: "General")
+
+	static let term = Logger(subsystem: bID, category: "Term")
+}
+
 
 
 ///Main data model
@@ -25,10 +44,10 @@ class LocalData: ObservableObject {
 
 
 	init() {
-		print("\(#fileID):\(#line) Start LocalData init")
+		Logger.general.log("Initialising LocalData...")
 		let now = getCurrentClass2(date: .now, timetable: chaos)
 		guard ((now[0] as? DisplayCourse) != nil), ((now[1] as? DisplayCourse) != nil), ((now[2] as? Timeslot) != nil), now.count == 3 else {
-			fatalError("\(Date.now.formatted(date: .numeric, time: .complete)) | \(#fileID):\(#line)\n\tgetCurrentClass2 returned contents other than `[Course, Course, Timeslot]`.\n\tContents: \(now)")
+			fatalError("getCurrentClass2 returned contents other than `[Course, Course, Timeslot]`.\n\tContents: \(now)")
 		}
 		self.currentCourse = now[0] as! DisplayCourse
 		self.nextCourse = now[1] as! DisplayCourse
@@ -36,7 +55,7 @@ class LocalData: ObservableObject {
 		self.storage = Storage.shared
 
 		self.currentTime = now[2] as! Timeslot
-		print("\(#fileID):\(#line)  End LocalData init")
+		Logger.general.log("LocalData initialised")
 	}
 }
 

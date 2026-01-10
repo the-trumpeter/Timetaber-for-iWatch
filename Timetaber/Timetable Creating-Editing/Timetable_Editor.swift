@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OSLog
 //MARK: - Day
 
 fileprivate struct EntryView: View {
@@ -57,7 +58,9 @@ fileprivate struct EntryView: View {
 		//dayEntry
 		.swipeActions(allowsFullSwipe: false) {
 
-			Button("Clear", systemImage: "trash") { print("~ \(properties)") }.tint(.red)
+			Button("Clear", systemImage: "trash") {
+				#warning("TODO Free periods")
+			}.tint(.red)
 
 			Button("Edit", systemImage: "pencil") {
 				showingSheet=true
@@ -103,15 +106,15 @@ fileprivate struct DayEditorView: View {
 			if roomIndex != nil && !rooms.isEmpty {
 				ForEach( (0...rooms.count-1), id: \.self) { _roomIndex in
 
-					Text("\(rooms[_roomIndex]!)").tag(_roomIndex).onAppear { print( String(describing: roomIndex) ) }
+					Text("\(rooms[_roomIndex]!)").tag(_roomIndex)//.onAppear { Logger.<#logger#>.<#action#>( String(describing: roomIndex) ) }
 
 				}
 			} else {
                 { roomIndex = nil; return EmptyView() }()
 			}
 		}.disabled(roomIndex == nil || rooms.isEmpty)
-			.onChange(of: roomIndex, { print( "!! \(String(describing: roomIndex))" ) })
-        
+			//.onChange(of: roomIndex, { Logger.<#logger#>.<#action#>( "!! \(String(describing: roomIndex))" ) })
+
         HStack {
             Button("Cancel") {
                 showingSheet = false
@@ -124,9 +127,9 @@ fileprivate struct DayEditorView: View {
                 }
                 properties = [courseIndex, index]
                 listedCourse = courses[courseIndex]!
-                print([courseIndex, index])
+                //Logger.<#logger#>.<#action#>([courseIndex, index])
                 showingSheet = false
-                print("saved, hopefully")
+				Logger.editTimetable.log("Hopefully (i.e. this probably hasn't) saved changes")
             }.buttonStyle(.borderedProminent)
         }
 	}

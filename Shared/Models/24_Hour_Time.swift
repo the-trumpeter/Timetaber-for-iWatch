@@ -49,10 +49,10 @@ extension Date {
 		components.hour = time24/100
 		components.minute = time24%100
 		components.second = 0
-		//print("\(#fileID):\(#line) @ \(#function) Composing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
+		//Logger.<#logger#>.<#action#>(" Composing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
 		guard let date = Calendar.current.date(from: components) else {
 			log()
-			fatalError("\(#fileID):\(#line) @ \(#function) | \(Date.now.formatted(date: .numeric, time: .complete))\n\tAttempting: \(String(describing: components.hour)):\(String(describing: components.minute))\n\tDateComponents: \(String(describing: components))")
+			fatalError(" | \(Date.now.formatted(date: .numeric, time: .complete))\n\tAttempting: \(String(describing: components.hour)):\(String(describing: components.minute))\n\tDateComponents: \(String(describing: components))")
 		}
 		self = date
 	}
@@ -83,10 +83,10 @@ func dateFrom24hrInt(_ time24: Time24) -> Date {
 	components.hour = time24/100
 	components.minute = time24%100
 	components.second = 0
-	//print("\(#fileID):\(#line) @ \(#function) Composing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
+	//Logger.<#logger#>.<#action#>(" Composing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
 	guard let date = calendar.date(from: components) else {
 		log()
-		fatalError("\(#fileID):\(#line) @ \(#function) | \(Date.now.formatted(date: .numeric, time: .complete))\n\tAttempting: \(String(describing: components.hour)):\(String(describing: components.minute))\n\tDateComponents: \(String(describing: components))")
+		fatalError(" | \(Date.now.formatted(date: .numeric, time: .complete))\n\tAttempting: \(String(describing: components.hour)):\(String(describing: components.minute))\n\tDateComponents: \(String(describing: components))")
 	}
 	return date
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+import OSLog
 
 
 
@@ -17,47 +17,39 @@ import SwiftUI
 
 
 func log() {
-    print("""
-        ~ Log - %@ ~
-            Current course: %@, Next course: %@
-            Term running: <%@>, Ghost week: <%@>
-            Is today in week A?: <%@>
-        ~ End Log ~
-        """,
-        Date.now.formatted(date: .numeric, time: .complete),
-        LocalData.shared.currentCourse.name,
-        LocalData.shared.nextCourse.name,
-        String(describing: Storage.shared.termRunningGB),
-        String(describing: Storage.shared.ghostWeekGB),
-        String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: Storage.shared.ghostWeekGB) )
-    )
+	Logger.general.info("""
+		Current course: \(LocalData.shared.currentCourse.name), Next course: \(LocalData.shared.nextCourse.name)
+		Term running: \(String(describing: Storage.shared.termRunningGB)), Ghost week: \(String(describing: Storage.shared.ghostWeekGB))
+		Is it week A?: \(String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: Storage.shared.ghostWeekGB) ))
+		"""
+	)
 
 }
 
 ///Handles anything related to UserDefaults
 class Storage: ObservableObject {
 
-    static let shared = Storage() //there is LocalData.storage, but it points here
+	static let shared = Storage() //there is LocalData.storage, but it points here
 
-    @AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = true//false
-    @AppStorage("timetaber.userdefaults.ghostWeek") var ghostWeekGB = false
+	@AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = true//false
+	@AppStorage("timetaber.userdefaults.ghostWeek") var ghostWeekGB = false
 
-    // Backwards-compatible storage for Date using Double (timeIntervalSince1970)
-    var startDateGB: Date {
-        get {
-            let seconds = UserDefaults.standard.double(forKey: "timetaber.userdefaults.startDate")
-            if seconds == 0 {
-                // If not set, default to now and persist once for consistency
-                let now = Date()
-                UserDefaults.standard.set(now.timeIntervalSince1970, forKey: "timetaber.userdefaults.startDate")
-                return now
-            }
-            return Date(timeIntervalSince1970: seconds)
-        }
-        set {
-            UserDefaults.standard.set(newValue.timeIntervalSince1970, forKey: "timetaber.userdefaults.startDate")
-        }
-    }
+	// Backwards-compatible storage for Date using Double (timeIntervalSince1970)
+	var startDateGB: Date {
+		get {
+			let seconds = UserDefaults.standard.double(forKey: "timetaber.userdefaults.startDate")
+			if seconds == 0 {
+				// If not set, default to now and persist once for consistency
+				let now = Date()
+				UserDefaults.standard.set(now.timeIntervalSince1970, forKey: "timetaber.userdefaults.startDate")
+				return now
+			}
+			return Date(timeIntervalSince1970: seconds)
+		}
+		set {
+			UserDefaults.standard.set(newValue.timeIntervalSince1970, forKey: "timetaber.userdefaults.startDate")
+		}
+	}
 
 	///All timetables that the user has created.
 	///
@@ -119,7 +111,7 @@ class Storage: ObservableObject {
 
 						case .rename(let name):
 							switch target {
-							case .standard: print("\(#fileID):\(#line) Can't rename Standard times! variantChange: \(variantChange)"); continue
+							case .standard: Logger.timetableChanges.fault("Can't rename Standard times! variantChange: \(String(reflecting: variantChange))"); continue
 							case .variant(let key):
 								self.timetables[tblIndex].times.variants[key]?.name = name
 							}
@@ -176,7 +168,7 @@ class Storage: ObservableObject {
 			}//switch
 
 		}//for each
-		print("\(#fileID):\(#line) Successfully applied changes to stored data:\n\t\(changes)")
+		Logger.timetableChanges.info("Successfully applied changes to stored data:\n\t\(changes)")
 	}//func applyChanges(_)
 
 	#if os(iOS)
@@ -209,12 +201,12 @@ class Storage: ObservableObject {
 }
 
 func reload() -> Void {
-    let now = getCurrentClass2(date: .now, timetable: chaos)
-    LocalData.shared.currentCourse = now[0] as! DisplayCourse
-    LocalData.shared.nextCourse = now[1] as! DisplayCourse
-    LocalData.shared.currentTime = now[2] as! Timeslot
+	let now = getCurrentClass2(date: .now, timetable: chaos)
+	LocalData.shared.currentCourse = now[0] as! DisplayCourse
+	LocalData.shared.nextCourse = now[1] as! DisplayCourse
+	LocalData.shared.currentTime = now[2] as! Timeslot
 	
-    print("Setup done\n")
-    log()
+	Logger.general.log("Reloaded")
+	log()
 }
 

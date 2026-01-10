@@ -5,6 +5,7 @@
 //  Created by Gill Palmer on 7/11/2025.
 //
 import SwiftUI
+import OSLog
 
 extension View {
 	@ViewBuilder
@@ -52,7 +53,8 @@ extension Dictionary where Key == Int, Value == Course2 {
 					}
 
 				default:
-					print("\(#fileID):\(#line) @ \(#function) Couldn't apply change \(change) to value of type Binding<[Int: Course2]>\n\tself = \(self)")
+				let me = self
+				Logger.timetableChanges.fault("Dictionary extension - Couldn't apply change \(String(reflecting: change)) to value of type Binding<[Int: Course2]>\n\tself = \(me)")
 			}
 
 		}
@@ -102,15 +104,15 @@ extension Times {
 						self.mapping.removeValue(forKey: key)
 						break
 					}
-					print("dbg \(#line) @ \(#function) updating map \(key) to \(value)")
+				Logger.editTimes.debug("Updating map \(key) to \(value)")
 					self.mapping.updateValue(value, forKey: key)
 
 				default:
-				print("\(#fileID):\(#line) @ \(#function) Couldn't apply change \(change) to value of type Times")
+				Logger.editTimes.fault("Couldn't apply change \(String(reflecting: change)) to value of type Times")
 			}
 
 		}
-		print("\(#fileID):\(#line) @ \(#function) Applied changes \(changes) to self")
+		Logger.editTimes.info("Applied changes \(changes) to a (instance of) Times")
 	}
 }
 
@@ -152,21 +154,21 @@ fileprivate struct timetableOptions: View {
 
 				NavigationLink { CoursesEditor(tblIndex: tblIndex) } label: {
 					HStack { Image(systemName: "checkmark.diamond.fill").foregroundStyle(.green); Text("Courses").foregroundStyle(.primary); Spacer();
-						Text(String(timetable.courses.count)).foregroundStyle(.secondary) }
+						Text(String(timetable.courses.count)).foregroundStyle(.secondary) }; #warning("Revert label to initialiser (remove Image and HStack) at completion of timetable editor")
 				}
 
 				NavigationLink {
 					TimesEditor(tblIndex: tblIndex)
-				} label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.yellow); Text("Day Structure").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary) }
+				} label: { HStack { Image(systemName: "checkmark.diamond.fill").foregroundStyle(.green); Text("Day Structure").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary) }; #warning("Revert label to initialiser (remove Image and HStack) at completion of timetable editor")
 				}.buttonStyle(.plain)
 				NavigationLink {
 					TimesMapping(tblIndex: tblIndex)
 				} label: {
-					Image(systemName: "checkmark.diamond.fill").foregroundStyle(.green); Text("Week Structure").foregroundStyle(.primary)
+					Image(systemName: "checkmark.diamond.fill").foregroundStyle(.green); Text("Week Structure").foregroundStyle(.primary); #warning("Revert label to initialiser (remove Image and HStack) at completion of timetable editor")
 				}
 
 
-				NavigationLink { } label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.red); Text("Timetable").foregroundStyle(.primary); Spacer(); Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary) } }
+				NavigationLink { } label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.red); Text("Timetable").foregroundStyle(.primary); Spacer(); Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary) } }; #warning("Revert label to initialiser (remove Image and HStack) at completion of timetable editor")
 
 				// Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) { }
 

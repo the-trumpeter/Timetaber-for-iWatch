@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OSLog
 
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton/courseEdit
 fileprivate struct courseEdit: View {
@@ -125,8 +126,16 @@ fileprivate struct courseEdit: View {
 				} // colour (&sheet)
 
 
-				TextField("Course name", text: $course.name).font(.title).focused($nameFieldIsFocused)
-					.onAppear { if isNewCourse { nameFieldIsFocused = true; course.name = "" } } // Name
+				TextField("Course name", text: $course.name)
+					.font(.title)
+					.focused($nameFieldIsFocused)
+					.task(id: isNewCourse) {
+						// Ensure focus is requested after presentation settles to avoid slow/ignored focus
+						if isNewCourse {
+							await MainActor.run { course.name = "" }
+							await MainActor.run { nameFieldIsFocused = true }
+						}
+					}
 
 			}.padding(.leading).padding(.bottom, 2)
 
@@ -142,7 +151,7 @@ fileprivate struct courseEdit: View {
 					UIImage(systemName: course.icon.lowercased()) != nil ?
 						.primary : .secondary
 				)
-				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled()
+				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled(); #warning("TODO Create SF Symbol chooser")
 			}.padding(.leading) // icon
 
 			List {
@@ -151,7 +160,7 @@ fileprivate struct courseEdit: View {
 						.swipeActions {
 							Button("Delete", systemImage: "trash", role: .destructive) {
 								course.rooms.removeValue(forKey: roomKey)
-							//	print(course.rooms)
+							//	Logger.<#logger#>.<#action#>(course.rooms)
 							}.labelStyle(.iconOnly)
 						}
 				}
@@ -184,7 +193,7 @@ fileprivate struct courseEdit: View {
 						let changes = compileChanges()
 						pendingChanges = changes + (pendingChanges ?? [])
 						parentCourse = course
-						print("\(#line) parent course is now \(parentCourse)")
+						Logger.editCourses.debug("parent course is now \(String(reflecting: parentCourse) )")
 						dismiss()
 					}
 				}
@@ -194,7 +203,6 @@ fileprivate struct courseEdit: View {
 
 	}
 }
-
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton
 fileprivate struct coursebutton: View {
 	@State private var isPressed = false
@@ -307,10 +315,10 @@ struct CoursesEditor: View {
 							pendingChanges = [change] + (pendingChanges ?? [])
 							localCourses.applyCourseChanges([change])
 
-							print("\(#fileID):\(#line) Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(index))")
+							Logger.editCourses.log("Unconfirmedly removed \(index): \(deletedName) from UI courses")
 							//alertIndex = index
 							//showingAlert = true
-							//print("\(#line) Swipe action \(index), \(showingAlert)")
+							//Logger.<#logger#>.<#action#>("\(#line) Swipe action \(index), \(showingAlert)")
 						}.tint(.red)
 						.labelStyle(.iconOnly)
 
@@ -364,9 +372,12 @@ struct CoursesEditor: View {
 				pendingChanges = [change] + (pendingChanges ?? [])
 				localCourses.applyCourseChanges([change])
 
-				print("\(#fileID):\(#line) Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(alertIndex))")
+				Logger.editCourses.log("Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(alertIndex))")
 			}
 			Button("Cancel", role: .cancel) {}
 		}.navigationTitle("All Courses")
+			.onAppear {
+				Logger.editCourses.log("Started editing courses")
+			}
 	}
 }

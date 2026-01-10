@@ -39,13 +39,27 @@
           "hidden" : false,
           "image-name" : "Asset 9.svg",
           "name" : "Cutout",
-          "position" : {
-            "scale" : 1.2,
-            "translation-in-points" : [
-              45,
-              31
-            ]
-          }
+          "position-specializations" : [
+            {
+              "value" : {
+                "scale" : 1.2,
+                "translation-in-points" : [
+                  45,
+                  31
+                ]
+              }
+            },
+            {
+              "idiom" : "watchOS",
+              "value" : {
+                "scale" : 1.2,
+                "translation-in-points" : [
+                  -0.003967217365357101,
+                  0.029999999999972715
+                ]
+              }
+            }
+          ]
         },
         {
           "fill-specializations" : [
