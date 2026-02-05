@@ -8,11 +8,58 @@
 import SwiftUI
 import OSLog
 
+
+
+fileprivate struct symbolchooser: View {
+	@Binding var course: Course2
+	//@Binding var debugDelayDismiss: Bool
+	@Environment(\.dismiss) var dismiss
+	var body: some View {
+		ScrollView {
+			LazyVGrid(
+				columns: [
+					GridItem(.fixed(50)),
+					GridItem(.fixed(50)),
+					GridItem(.fixed(50)),
+					GridItem(.fixed(50))
+				],
+			) {
+				ForEach(sfsymbols, id: \.self) { symbol in
+					Button(symbol, systemImage: symbol) {
+						course.icon = symbol
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {dismiss()} )
+
+					}
+					.font(.title)
+					.labelStyle(.iconOnly)
+					.frame(width: 45, height: 45)
+					.buttonStyle(.plain)
+					.if(course.icon == symbol) {
+						$0.background {
+							RoundedRectangle(cornerRadius: 5.0).foregroundStyle(.tertiary)
+						}
+					}
+					.if(course.icon != symbol) {
+						$0.background {
+							RoundedRectangle(cornerRadius: 5.0).opacity(0.0)
+						}
+					}
+
+					.padding(15)
+
+				}
+			}.padding()
+		}
+
+	}
+}
+
+
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton/courseEdit
 fileprivate struct courseEdit: View {
 
 	let tblIndex: Int
-	let pos: Int
+	let pos: UUID
 
 	let isNewCourse: Bool
 
@@ -22,6 +69,7 @@ fileprivate struct courseEdit: View {
 
 	@State private var pendingRoom: String = ""
 	@State private var coloursSheet = false
+	@State private var iconSheetPopover = false
 
 	let colours = ["Graphite", "Peach", "Lemon", "Rees1", "Apricot",
 				   "Lime", "Ice", "Blueberry", "Rose", "Cherry"]
@@ -30,7 +78,7 @@ fileprivate struct courseEdit: View {
 	@FocusState private var nameFieldIsFocused: Bool
 
 
-
+	@State var debugSymbolDismissDelay = false
 
 	private func compileChanges() -> [Change] {
 		
@@ -58,6 +106,33 @@ fileprivate struct courseEdit: View {
 		NavigationStack {
 
 			HStack(alignment: .center) {
+
+				TextField("Course name", text: $course.name)
+					.font(.title)
+					.focused($nameFieldIsFocused)
+					.task(id: isNewCourse) {
+						// Ensure focus is requested after presentation settles to avoid slow/ignored focus
+						if isNewCourse {
+							await MainActor.run { course.name = "" }
+							await MainActor.run { nameFieldIsFocused = true }
+						}
+					}
+					.multilineTextAlignment(.leading)
+
+
+
+				Button { iconSheetPopover.toggle() } label: {
+					//let colour = Colour(course.colour)
+					Image(systemName: course.icon)
+						.font(.title)//.frame(width: 30, height: 30)
+						.background {
+							Circle()
+								.opacity(0.0)
+						}
+						.padding(5)
+				}.sheet(isPresented: $iconSheetPopover) {
+					symbolchooser(course: $course, )//debugDelayDismiss: $debugSymbolDismissDelay)
+				}
 
 				Button { coloursSheet.toggle() } label: {
 					let colour = Colour(course.colour)
@@ -125,22 +200,11 @@ fileprivate struct courseEdit: View {
 
 				} // colour (&sheet)
 
-
-				TextField("Course name", text: $course.name)
-					.font(.title)
-					.focused($nameFieldIsFocused)
-					.task(id: isNewCourse) {
-						// Ensure focus is requested after presentation settles to avoid slow/ignored focus
-						if isNewCourse {
-							await MainActor.run { course.name = "" }
-							await MainActor.run { nameFieldIsFocused = true }
-						}
-					}
-
-			}.padding(.leading).padding(.bottom, 2)
+			}//.padding(.leading).padding(.bottom, 2)
+			.padding()
 
 			HStack {
-				Image(systemName:
+				/*Image(systemName:
 						UIImage(systemName: course.icon.lowercased()) != nil ?
 					  course.icon.lowercased() : "questionmark.square.dashed"
 				)
@@ -152,7 +216,8 @@ fileprivate struct courseEdit: View {
 						.primary : .secondary
 				)
 				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled(); #warning("TODO Create SF Symbol chooser")
-			}.padding(.leading) // icon
+				 */
+			}//.padding(.leading) // icon
 
 			List {
 				ForEach(Array(course.rooms.keys), id: \.self) { roomKey in
@@ -179,6 +244,7 @@ fileprivate struct courseEdit: View {
 					.disabled(pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 
 				}
+				//Toggle("Symbols delay dismiss", systemImage: "stethoscope", isOn: $debugSymbolDismissDelay)
 			}.scrollContentBackground(.hidden)
 			// rooms
 
@@ -199,7 +265,7 @@ fileprivate struct courseEdit: View {
 				}
 			} // save/cancel
 
-		}
+		}//.padding()
 
 	}
 }
@@ -207,13 +273,13 @@ fileprivate struct courseEdit: View {
 fileprivate struct coursebutton: View {
 	@State private var isPressed = false
 	let tblIndex: Int
-	var localCourses: Binding<[Int: Course2]>
+	var localCourses: Binding<[UUID: Course2]>
 	var course: Binding<Course2>
 
 	let isNewCourse: Bool
 
 
-	let pos: Int
+	let pos: UUID
 	@State var showingSheet = false
 
 	var pendingChanges: Binding<[Change]?>
@@ -222,7 +288,7 @@ fileprivate struct coursebutton: View {
 		localCourses.wrappedValue[pos] != nil
 	}
 
-	init(localCourses: Binding<[Int : Course2]>, tblIndex: Int, pos: Int, pendingChanges: Binding<[Change]?>, isNewCourse: Bool = false) {
+	init(localCourses: Binding<[UUID : Course2]>, tblIndex: Int, pos: UUID, pendingChanges: Binding<[Change]?>, isNewCourse: Bool = false) {
 		self.localCourses = localCourses
 		self.course = Binding(
 			get: { localCourses.wrappedValue[pos]! },
@@ -249,9 +315,10 @@ fileprivate struct coursebutton: View {
 
 				Spacer()
 
-				let joinedRooms = course.wrappedValue.rooms.keys.sorted()
-					.compactMap { course.wrappedValue.rooms[$0] }
-					.joined(separator: "; ")
+                let joinedRooms: String = course.wrappedValue.rooms
+                    .sorted(by: { $0.key < $1.key })
+                    .map { $0.value }
+                    .joined(separator: "; ")
 
 				Text(joinedRooms)
 					.foregroundStyle(.secondary)
@@ -285,14 +352,14 @@ struct CoursesEditor: View {
 
 	@State var pendingChanges: [Change]? = nil
 
-	@State var localCourses: [Int: Course2]
+	@State var localCourses: [UUID: Course2]
 
 	@State var newCourseSheet = false
 	@State var newCourse_fakePending: [Change]? = nil //courseEdit computes EDITS from tblIndex and pos, but it writes them back here where I can discard them and replace them with a .course_add
 	@State var newCourse_fakeNewCourse: Course2 = Course2("\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard) //courseEdit wil be comparing its normal Course2 with a control one of impossible characters, therefore there will always be changes.
 
 	@State var showingAlert = false
-	@State var alertIndex: Int = 0
+	@State var alertIndex: UUID? = nil
 
 	init(tblIndex: Int = 0) {
 		self.tblIndex = tblIndex
@@ -301,30 +368,18 @@ struct CoursesEditor: View {
 	var body: some View {
 		NavigationStack {
 			List {
-				let courseIndices: [Int] = localCourses.keys.sorted()
-				ForEach(courseIndices, id: \.self) { index in
+                // Precompute a stable, type-explicit sorted list to help the type-checker
+                let sortedCourses: [(id: UUID, course: Course2)] = localCourses
+                    .map { ($0.key, $0.value) }
+                    .sorted { lhs, rhs in
+                        lhs.1.name.localizedCaseInsensitiveCompare(rhs.1.name) == .orderedDescending
+                    }
 
-					coursebutton(localCourses: $localCourses, tblIndex: tblIndex, pos: index, pendingChanges: $pendingChanges)
-
-					.swipeActions(allowsFullSwipe: false) {
-
-						Button("Delete", systemImage: "trash", role: .destructive) {
-							let deletedName = localCourses[index]?.name ?? "Error \(#line)"
-
-							let change = Change.course_delete(index: index, timetable: tblIndex)
-							pendingChanges = [change] + (pendingChanges ?? [])
-							localCourses.applyCourseChanges([change])
-
-							Logger.editCourses.log("Unconfirmedly removed \(index): \(deletedName) from UI courses")
-							//alertIndex = index
-							//showingAlert = true
-							//Logger.<#logger#>.<#action#>("\(#line) Swipe action \(index), \(showingAlert)")
-						}.tint(.red)
-						.labelStyle(.iconOnly)
-
-					}
-
+                ForEach(sortedCourses, id: \.id) { entry in
+                    let index = entry.id
+                    coursebutton(localCourses: $localCourses, tblIndex: tblIndex, pos: index, pendingChanges: $pendingChanges)
 				}
+
 				Button("Add Course", systemImage: "plus") {
 					newCourse_fakePending = []
 					newCourse_fakeNewCourse = Course2("\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard)
@@ -334,11 +389,12 @@ struct CoursesEditor: View {
 				.sheet(isPresented: $newCourseSheet) {
 					///ondismiss
 					if newCourse_fakeNewCourse.name != "\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}" {
-						pendingChanges = [Change.course_create(newCourse_fakeNewCourse, timetable: tblIndex)] + (pendingChanges ?? [])
-						localCourses.applyCourseChanges([Change.course_create(newCourse_fakeNewCourse, timetable: tblIndex)])
+						let id = UUID()
+						pendingChanges = [Change.course_create(index: id, newCourse_fakeNewCourse, timetable: tblIndex)] + (pendingChanges ?? [])
+						localCourses.applyCourseChanges([Change.course_create(index: id, newCourse_fakeNewCourse, timetable: tblIndex)])
 					}
 				} content: {
-					courseEdit(tblIndex: 0, pos: 0, isNewCourse: true, parentCourse: $newCourse_fakeNewCourse, course: Course2("Course", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard), pendingChanges: $newCourse_fakePending)
+					courseEdit(tblIndex: 0, pos: UUID(), isNewCourse: true, parentCourse: $newCourse_fakeNewCourse, course: Course2("Course", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard), pendingChanges: $newCourse_fakePending)
 						.presentationDetents([.medium])
 				}
 
@@ -363,16 +419,18 @@ struct CoursesEditor: View {
 				localCourses = store.timetables[tblIndex].courses
 			}
 		}
-		.alert("Delete \"\((localCourses[alertIndex]?.name) ?? "Error \(#line)")\"?", isPresented: $showingAlert) {
+		.alert("Delete \"\( (alertIndex.flatMap { localCourses[$0]?.name }) ?? "Error \(#line)" )\"?", isPresented: $showingAlert) {
 			Button("Delete", role: .destructive) {
 				// Capture the course name before deletion so we can still display/log it after removal
-				let deletedName = localCourses[alertIndex]?.name ?? "Error \(#line)"
+				let deletedName = alertIndex.flatMap { localCourses[$0]?.name } ?? "Error \(#line)"
 
-				let change = Change.course_delete(index: alertIndex, timetable: tblIndex)
+				// Ensure we have a valid UUID to delete
+				guard let id = alertIndex else { return }
+				let change = Change.course_delete(index: id, timetable: tblIndex)
 				pendingChanges = [change] + (pendingChanges ?? [])
 				localCourses.applyCourseChanges([change])
 
-				Logger.editCourses.log("Unconfirmedly removed \"\(deletedName)\" from UI courses (index \(alertIndex))")
+				Logger.editCourses.log("Unconfirmedly removed \"\(deletedName)\" from UI courses")
 			}
 			Button("Cancel", role: .cancel) {}
 		}.navigationTitle("All Courses")
@@ -381,3 +439,4 @@ struct CoursesEditor: View {
 			}
 	}
 }
+

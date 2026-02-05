@@ -11,39 +11,53 @@ import OSLog
 
 fileprivate struct EntryView: View {
 	@State var showingSheet = false
-	let day: [Int: [Int]]
-	let key: Int
-	let courses: [Int: Course2]
+	let day: [UUID: Times.Period.Contents]
+	let key: UUID
+	let courses: [UUID: Course2]
+	let time: Time24?
 
-	@State var properties: [Int]
+	@State var properties: Times.Period.Contents
 
 	@State var listedCourse: Course2
 
-	init(
-		day: [Int : [Int]],
-		key: Int,
-		courses: [Int : Course2],
+	init?(
+		day: [UUID : Times.Period.Contents],
+		key: UUID,
+		courses: [UUID : Course2],
+		time: Time24?
 	)
 	{
 		self.showingSheet = false
 		self.day = day
 		self.key = key
 		self.courses = courses
-		self.properties = day[key]!
-		self.listedCourse = courses[ day[key]![0] ]!
+
+		guard let prop = day[key] else {
+			Logger.editTimetable.fault("UUID \(key) not present in day")
+			return nil
+		}
+		self.properties = prop
+
+		guard let course = courses[ prop.courseID ] else {
+			Logger.editTimetable.fault("Course UID \(prop.courseID) not valid")
+			return nil
+		}
+		self.listedCourse = course
+
+		self.time = time
 	}
 
 	var body: some View {
 
         HStack {
-            let room = listedCourse.rooms[properties[1]]
+			let room = listedCourse.rooms[properties.roomIndex]
             let roomValid: Bool = (room != nil)
 
             Image(systemName: listedCourse.icon)
                 .font(.title).frame(width: 30)
                 .foregroundStyle(.secondary)
 
-			Text(key.display()).bold()
+			Text(time?.display() ?? "Error \(#line)").bold()
             Spacer()
             VStack(alignment: .trailing) {
                 Text(listedCourse.name).if(roomValid) { $0.font(.caption) }
@@ -68,8 +82,6 @@ fileprivate struct EntryView: View {
 
 		}.sheet(isPresented: $showingSheet) {
 			let editor = DayEditorView(
-				courseIndex: properties[0],
-				roomIndex: properties[1],
 				showingSheet: $showingSheet,
 				properties: $properties,
                 listedCourse: $listedCourse,
@@ -83,14 +95,30 @@ fileprivate struct EntryView: View {
 
 
 fileprivate struct DayEditorView: View {
-    @State var courseIndex: Int
+    @State var courseIndex: UUID
 	@State var roomIndex: Int?
 
 	@Binding var showingSheet: Bool
-	@Binding var properties: [Int]
+	@Binding var properties: Times.Period.Contents
     @Binding var listedCourse: Course2
 
-	let courses: [Int: Course2]
+	let courses: [UUID: Course2]
+
+	init(
+        showingSheet: Binding<Bool>,
+        properties: Binding<Times.Period.Contents>,
+        listedCourse: Binding<Course2>,
+        courses: [UUID : Course2]
+    ) {
+        // Initialize state from the current wrapped values
+        self._showingSheet = showingSheet
+        self._properties = properties
+        self._listedCourse = listedCourse
+        self.courses = courses
+        // Derive initial picker selections from current properties
+        self._courseIndex = State(initialValue: properties.wrappedValue.courseID)
+        self._roomIndex = State(initialValue: properties.wrappedValue.roomIndex)
+    }
 
 	var body: some View {
 		
@@ -121,11 +149,11 @@ fileprivate struct DayEditorView: View {
             }.buttonStyle(.bordered)
             
             Button("Save") {
-                guard let index = roomIndex else {
-                    properties = [courseIndex]
+                guard let rIndex = roomIndex else {
+					properties = Times.Period.Contents(courseID: courseIndex, roomIndex: -1)
                     return
                 }
-                properties = [courseIndex, index]
+				properties = Times.Period.Contents(courseID: courseIndex, roomIndex: rIndex)
                 listedCourse = courses[courseIndex]!
                 //Logger.<#logger#>.<#action#>([courseIndex, index])
                 showingSheet = false
@@ -143,7 +171,7 @@ struct EditDayView: View {
 	@State var pendingChanges: Bool
 	@State var header: String
 	@State var week: WeekAB
-	@State var day: [Int : [Int]]
+	@State var day: [UUID : Times.Period.Contents]
 	@State var weekday: Int
 	@State var weekAOnly: Bool
 
@@ -157,7 +185,7 @@ struct EditDayView: View {
 		self.timetable = timetable
 		self.showingSheet = false
 		self.pendingChanges = false
-		self.header = header ?? "Monday A"
+		self.header = header ?? "Error \(#line)"
 		self.week = week
 		self.day = day
 		self.weekday = 2
@@ -166,7 +194,7 @@ struct EditDayView: View {
 
 	var body: some View {
 		let courses = timetable.courses
-		var dayKeys: [Int] {
+		var dayKeys: [UUID] {
 			Array(day.keys).sorted(by: <).dropLast()
 		}
 
@@ -174,8 +202,13 @@ struct EditDayView: View {
 		NavigationStack {
 			List {
 				ForEach(dayKeys, id: \.self) { key in
+					let period = timetable.periodFromUUID(key)
+					if let entry = EntryView(day: day, key: key, courses: courses, time: period?.startTime) {
+						entry
+					} else {
+						Text("Error \(#line)")
+					}
 
-					EntryView(day: day, key: key, courses: courses)
 
 				}
 			}.toolbar {
@@ -240,3 +273,4 @@ struct EditDayView: View {
 
 	}
 }
+

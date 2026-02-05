@@ -1,17 +1,27 @@
 //
-//  at.swift
+//  Fallbacks_Default_Courses.swift
 //  Timetaber
 //
 //  Created by Gill Palmer on 31/12/2025.
 //
 
-/*
-/// Returns a `Course` representing the absence of school; with a `joke` relevant to the current date/time of interaction, obtained through the `key` parameter.\
-/// If `key` is not initialised; the `joke` will default to `"Not yet, anyway..."`.
- */
 
-/// The absence of school
-/// - Parameter key: A `TimeCase` which directly influences the content of the return value.
+
+/// Various scenarios in which there are no classes.
+///
+/// See `noSchool`.
+enum TimeCase: Codable, Equatable {
+	case weekend
+	case noTerm
+	case noTimetable
+	case beforeClass(startTime: Time24)
+	case afterClass
+//	case freePeriod
+}
+
+
+/// (Returns) a `DisplayCourse` representing the absence of school
+/// - Parameter key: A `TimeCase` which directly influences the content of the return value, informing the user _why_ there is no school.
 /// - Returns: A `DisplayCourse`, ready to be displayed in the UI.
 func noSchool(_ key: TimeCase? = nil) -> DisplayCourse {
 	let joke: String = switch key {
@@ -33,18 +43,6 @@ func noSchool(_ key: TimeCase? = nil) -> DisplayCourse {
 	return DisplayCourse(name, icon: "clock", colour: "Graphite", joke: joke, identifier: id)
 }
 
-
-/// Various scenarios in which there are no classes.
-/// 
-/// See `noSchool`.
-enum TimeCase: Codable, Equatable {
-	case weekend
-	case noTerm
-	case noTimetable
-	case beforeClass(startTime: Time24)
-	case afterClass
-//	case freePeriod
-}
 
 
 

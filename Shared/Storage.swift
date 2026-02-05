@@ -69,7 +69,7 @@ class Storage: ObservableObject {
 		self.ActiveTimetable = 0
 
 		self.timetables = [chaos]//[]
-		self.timetable = chaos //[_][self.ActiveTimetable] //TODO: how to compute this?
+		self.timetable = chaos //[_][self.ActiveTimetable]
 	}
 
 	///Apply a set of changes to stored data
@@ -82,7 +82,7 @@ class Storage: ObservableObject {
 			switch change {
 
 				case .course_create(index: let index, let value, timetable: let tblIndex):
-				self.timetables[tblIndex].courses.updateValue(value, forKey: index ?? self.timetables[tblIndex].courses.count)
+				self.timetables[tblIndex].courses.updateValue(value, forKey:  index )
 
 				case .course_delete(index: let index, timetable: let tblIndex):
 					self.timetables[tblIndex].courses.removeValue(forKey: index)
@@ -152,9 +152,9 @@ class Storage: ObservableObject {
 					}
 					self.timetables[tblIndex].timetable.insert(week, at: pos)
 
-				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, time: let time, let data, timetable: let tblIndex):
+				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, period: let time, let data, timetable: let tblIndex):
 					switch wkday {
-						case 2: self.timetables[tblIndex].timetable[wkIndex].monday[time] = data
+						case 2: self.timetables[tblIndex].timetable[wkIndex].tuesday[time] = data
 						case 3: self.timetables[tblIndex].timetable[wkIndex].tuesday[time] = data
 						case 4: self.timetables[tblIndex].timetable[wkIndex].wednesday[time] = data
 						case 5: self.timetables[tblIndex].timetable[wkIndex].thursday[time] = data
@@ -169,6 +169,7 @@ class Storage: ObservableObject {
 
 		}//for each
 		Logger.timetableChanges.info("Successfully applied changes to stored data:\n\t\(changes)")
+		reload()
 	}//func applyChanges(_)
 
 	#if os(iOS)
@@ -202,9 +203,9 @@ class Storage: ObservableObject {
 
 func reload() -> Void {
 	let now = getCurrentClass2(date: .now, timetable: chaos)
-	LocalData.shared.currentCourse = now[0] as! DisplayCourse
-	LocalData.shared.nextCourse = now[1] as! DisplayCourse
-	LocalData.shared.currentTime = now[2] as! Timeslot
+	LocalData.shared.currentCourse = now.0
+	LocalData.shared.nextCourse = now.1
+	LocalData.shared.currentTime = now.2
 	
 	Logger.general.log("Reloaded")
 	log()

@@ -25,6 +25,7 @@ let weekB = [monB, tueB, wedB, thuB, friB]
 
 enum WeekAB: Codable { case a; case b }
 
+
 func weekdayNumber(_ ofDate: Date) -> Int {
 	return Int(Calendar.current.component(.weekday, from: ofDate)) // Sun=1, Sat=7
 }
@@ -48,30 +49,16 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 }
  */
 
-func getTimetableDay2(isWeekA: Bool, weekDay: Int, timetable: Timetable) -> Dictionary< Time24, [Int] > {
+func getTimetableDay2(isWeekA: Bool, weekDay: Int, timetable: Timetable) -> Dictionary< UUID, Times.Period.Contents > {
 	let weeks = timetable.timetable
+	guard weekDay >= 2 && weekDay <= 6 else {
+		Logger.dateTime.fault("Invalid weekday \(weekDay)")
+		return [:]
+	}
 	if isWeekA {
-		switch weekDay {
-			case 2: return weeks[0].monday
-			case 3: return weeks[0].tuesday
-			case 4: return weeks[0].wednesday
-			case 5: return weeks[0].thursday
-			case 6: return weeks[0].friday
-			default:
-			Logger.dateTime.fault("Got non-weekday input for getTimetableDay2")
-			return [:]
-		}
+		return weeks[0][weekDay]!
 	} else {//weekB
-		switch weekDay {
-			case 2: return weeks[1].monday
-			case 3: return weeks[1].tuesday
-			case 4: return weeks[1].wednesday
-			case 5: return weeks[1].thursday
-			case 6: return weeks[1].friday
-			default:
-			Logger.dateTime.fault("Got non-weekday input for getTimetableDay2")
-			return [:]
-		}
+		return weeks[1][weekDay]!
 	}
 }
 
@@ -251,7 +238,45 @@ func getCurrentClass(date: Date) -> Array<Course> {
 
 
 
-//MARK: - New
+//MARK: - Newer methods
+
+
+
+//MARK: findTimes
+enum findTimesError: Error {
+	case invalidMapping(_ fail: DisplayCourse)
+}
+
+func findTimes(_ wkday: Int, _ timetable: Timetable) throws -> [ (Time24, Optional<UUID>) ] {
+	if let mapKey = timetable.times.mapping[wkday] {
+
+		//Logger.dateTime.debug("findTimes got map key \(mapKey)")
+		guard
+			let variant = switch mapKey {
+				case .variant(let id): timetable.times.variants[id]?.variant
+				case .standard: timetable.times.standard
+			}
+		else {
+			Logger.dateTime.fault("Time mapping value \( String(describing: mapKey) ) does not correspond to a variant in .variants.keys = \(timetable.times.variants.keys)")
+			throw findTimesError.invalidMapping(failCourse(feedback: "Error D\(#line) Invalid mapping value \(mapKey)"))
+		}
+		//Logger.dateTime.debug("findTimes found variant: \(String(describing: variant))")
+		//Logger.dateTime.debug("findTimes found times for weekday \(wkday)")
+
+		var times: [(Time24, UUID?)] = variant.map { ($1.startTime, $0 as UUID?) }.sorted(by: { $0.0 < $1.0 })
+
+		let lastPeriod = variant.sorted { $0.value.startTime < $1.value.startTime }.last?.value
+		let existingStart = Date(time24: lastPeriod?.startTime ?? 0900) //fetch start time of last period
+		let end = existingStart.addingTimeInterval(TimeInterval((lastPeriod?.duration ?? 0) * 60 ))
+
+		times.append( (Time24(from: end), nil) )
+
+		return times
+	}
+	//Logger.dateTime.debug("findTimes found (standard) times for weekday \(wkday)")
+	return timetable.times.standard.map { ($1.startTime, $0 as UUID?) }.sorted(by: { $0.0 < $1.0 })
+}
+
 
 
 //MARK: Temp storage ping
@@ -261,44 +286,38 @@ func storagePing() -> Storage {
 }
 
 
+
+
 //MARK: Class from Time & Weekday & if Week is A
-func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime: Int, weekDay: Int, isWeekA: Bool) -> DisplayCourse {
+func findClassFromTimeWeekDayAndIfWeekIsA_2(timetable: Timetable, period periodID: UUID, weekDay: Int, isWeekA: Bool) -> DisplayCourse {
 
 	if !Storage.shared.termRunningGB { return noSchool(.noTerm) } //catch if term not running
 
 	let week = timetable.timetable[isWeekA ? 0 : 1]
-	let timetableDay: [ Int: [Int] ] = {
-		switch weekDay {
-			case 2: return week.monday
-			case 3: return week.tuesday
-			case 4: return week.wednesday
-			case 5: return week.thursday
-			case 6: return week.friday
-			default: return [:]
-		}
-	}()
+	let timetableDay = week[weekDay]
+
 	// Expecting `[courseId, roomIndex]` at this time key
-	guard let pair = timetableDay[sessionStartTime] else {
-		Logger.dateTime.fault("Time \(sessionStartTime) not found in timetableDay")
+	guard let pair = timetableDay?[periodID] else {
+		Logger.dateTime.fault("Time \(periodID) not found in timetableDay, or weekday \(weekDay) is invalid")
 		return failCourse(feedback: "Error D\(#line)")
 	}
+	/* (from the brief days when it was an array)
 	// Ensure the pair has at least two integers
 	guard pair.count >= 2 else {
-		Logger.dateTime.fault("Invalid mapping for time \(sessionStartTime)")
-		return failCourse(feedback: "Error D\(#line) invalid mapping for time \(sessionStartTime)")
+		Logger.dateTime.fault("Invalid mapping for period \(periodID)")
+		return failCourse(feedback: "Error D\(#line) invalid mapping for period \(periodID)")
 	}
-	let courseId = pair[0]
-	let roomIndex = pair[1]
+	 */
 
 	// Look up the course; if missing, fail gracefully
-	guard let course2 = timetable.courses[courseId] else {
-		Logger.dateTime.fault("Missing course for id \(courseId)")
-		return failCourse(feedback: "Error D\(#line) missing course for id \(courseId)")
+	guard let course2 = timetable.courses[pair.courseID] else {
+		Logger.dateTime.fault("Missing course for id \(pair.courseID)")
+		return failCourse(feedback: "Error D\(#line) missing course for id \(pair.courseID)")
 	}
 
 	// If room index is valid, return with room; otherwise return base Course
-	if roomIndex >= 0 && roomIndex < course2.rooms.count {
-		return DisplayCourse(course2, room: course2.rooms[roomIndex])
+	if pair.roomIndex >= 0 && pair.roomIndex < course2.rooms.count {
+		return DisplayCourse(course2, room: course2.rooms[pair.roomIndex])
 	} else {
 		return DisplayCourse(course2)
 	}
@@ -309,12 +328,12 @@ func findClassfromTimeWeekDayNifWeekIsA2(timetable: Timetable, sessionStartTime:
 
 
 //MARK: getCurrentClass2
-func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
+func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCourse, next: DisplayCourse, timeslot: Timeslot) {
 	//MARK: —Init and Ghost Week stuff
 	let todayWeekday = weekdayNumber(date)//sunday = 1, mon = 2, etc
 	Logger.dateTime.log("Getting current class...")
 
-	var times2Day: Array<Int>
+	var times2Day: [(Time24, UUID?)]
 
 	let time24Now = Time24()
 
@@ -335,13 +354,21 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 
 	guard Storage.termRunningGB else { // if holidays then return
 		Logger.dateTime.info("Got current class. There's no school at the moment. [noTerm]")
-		return [noSchool(.noTerm), noSchool(.noTerm), Timeslot(week: week, day: todayWeekday, time: -1)]//MARK: Return A
+		return (
+			current: noSchool(.noTerm),
+			next: noSchool(.noTerm),
+			timeslot: Timeslot(week: week, day: todayWeekday, time: -1)
+		) //MARK: Return A
 	}
 
 
 	guard (2...6).contains(todayWeekday) else {
 		Logger.dateTime.info("Got current class. There's no school at the moment. [weekend]")
-		return [noSchool(.weekend), noSchool(.weekend), Timeslot(week: week, day: todayWeekday, time: -1)]//MARK: Return B
+		return (
+			current: noSchool(.weekend),
+			next: noSchool(.weekend),
+			timeslot: Timeslot(week: week, day: todayWeekday, time: -1)
+		) //MARK: Return B
 	}
 
 
@@ -349,134 +376,127 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 	//MARK: —Before/After
 
 	//MARK: —Timing chaos
-	enum findTimesError: Error {
-		case invalidMapping(_ fail: DisplayCourse)
-	}
 
-	func findTimes(_ wkday: Int) throws -> [Time24] {
-		if let mapKey = timetable.times.mapping[wkday],
-			mapKey >= 0 {
-
-			//Logger.dateTime.debug("findTimes got map key \(mapKey)")
-			guard let variant = timetable.times.variants[mapKey] else {
-				Logger.dateTime.fault("Time mapping value \(mapKey) does not correspond to a variant in \\.variants.keys = \(timetable.times.variants.keys)")
-				throw findTimesError.invalidMapping(failCourse(feedback: "Error D\(#line) Invalid mapping value \(mapKey)"))
-			}
-
-			//Logger.dateTime.debug("findTimes found variant: \(String(describing: variant))")
-			//Logger.dateTime.debug("findTimes found times for weekday \(wkday)")
-
-			var times = variant.variant.map{$1.startTime}.sorted()
-
-			let lastPeriod = variant.variant.sorted { $0.value.startTime < $1.value.startTime }.last?.value
-			let existingStart = Date(time24: lastPeriod?.startTime ?? 0900) //fetch start time of last period
-			let end = existingStart.addingTimeInterval(TimeInterval((lastPeriod?.duration ?? 0) * 60 ))
-
-			times.append(Time24(from: end))
-
-			return times
-		}
-		//Logger.dateTime.debug("findTimes found (standard) times for weekday \(wkday)")
-		return timetable.times.standard.map{$1.startTime}.sorted()
-	}
-
-	let weekdayTimes: [Int: [Time24] ]
+	//let times2Day: [Time24]
 	do {
-		weekdayTimes = [
-			2: try findTimes(2),
-			3: try findTimes(3),
-			4: try findTimes(4),
-			5: try findTimes(5),
-			6: try findTimes(6)
-		]
-		Logger.dateTime.log("Calculated weekday times from Times.")
+		times2Day = try findTimes(todayWeekday, timetable)
+		Logger.dateTime.debug("Times for today are \(times2Day.map { $0.0 })")
 	} catch findTimesError.invalidMapping(let fail) {
-		return [ fail, fail, Timeslot(week: week, day: todayWeekday, time: -1) ]
+		return (
+			current: fail,
+			next: fail,
+			timeslot: Timeslot(week: week, day: todayWeekday, time: -1)
+		)
 	} catch {
 		fatalError("findTimes threw other than findTimesError.invalidMapping")
 	}
-	times2Day = weekdayTimes[todayWeekday]!.sorted()
-	Logger.dateTime.debug("Times for today are \(times2Day)")
+
+	guard !times2Day.isEmpty else {
+		return (
+			current: noSchool(),
+			next: noSchool(),
+			timeslot: Timeslot(week: week, day: todayWeekday, time: -1)
+		)
+	}
 
 
-	if time24Now<times2Day.first! { // before first course/period/time
-		setCourseChangeAlarm(for: times2Day.first!)
-		Logger.dateTime.info("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!))]")
-		return [noSchool(.beforeClass(startTime: times2Day.first!)),
+	if time24Now < times2Day.first!.0 { // before first course/period/time
+		setCourseChangeAlarm(for: times2Day.first!.0)
+		Logger.dateTime.info("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!.0))]")
 
-				findClassfromTimeWeekDayNifWeekIsA2(
+		return (
+			current: noSchool(.beforeClass(startTime: times2Day.first!.0)),
+
+			next: findClassFromTimeWeekDayAndIfWeekIsA_2(
 					timetable: timetable,
-					sessionStartTime: times2Day.first!,
+					period: times2Day.first!.1 ?? UUID(),
 					weekDay: todayWeekday,
 					isWeekA: isweekA
 				),
-				Timeslot(week: week, day: todayWeekday, time: -1)
-		]//MARK: Return D
+			timeslot: Timeslot(week: week, day: todayWeekday, time: -1)
+		) //MARK: Return D
 
-	} else if time24Now>=times2Day.last! { // after last course/period/time
-		Logger.dateTime.info("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!)")
+	} else if time24Now >= times2Day.last!.0 { // after last course/period/time
+		Logger.dateTime.info("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!.0)")
 		//try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
-		return [noSchool(.afterClass), noSchool(.afterClass), Timeslot(week: week, day: todayWeekday, time: -1)] //MARK: Return C
+		return (
+			current: noSchool(.afterClass),
+			next: noSchool(.afterClass),
+			timeslot: Timeslot(week: week, day: todayWeekday, time: -1)
+			) //MARK: Return C
 	}
 
 	//MARK: —THE LOOP
 	//cycle through times til we find the two we are inbetween
-	for n in 0...times2Day.count {
+	for n in 0..<(times2Day.count) {
 
 
-		let compare = times2Day[n] // time we r comparing to
+		let compare = times2Day[n].0 // time we r comparing to
 		let now = time24Now // current time
 		//Logger.<#logger#>.<#action#>("- Times today count is \(times2Day.count) and n+1 is \(n+1).")
 
-		let next = times2Day.count >= (n+1) ? times2Day[n+1]: Int.max // next comparitive time; ensure we are not at end of array already
+		let next = times2Day.count > (n+1) ? times2Day[n+1].0 : Int.max // next comparitive time; ensure we are not at end of array already
 
 
 
-		if now==compare { //MARK: ——Bang on time
+		if now == compare { //MARK: ——Bang on time
 
-			let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA2(
-				timetable: timetable, sessionStartTime: now,
+			let currentCourseLocal = findClassFromTimeWeekDayAndIfWeekIsA_2(
+				timetable: timetable,
+				period: times2Day[n].1 ?? UUID(),
 			weekDay: todayWeekday, isWeekA: isweekA
 			)
 
 
-			let nextCourseLocal = if times2Day.last == next {
+			let nextCourseLocal = if times2Day.last?.0 == next {
 				noSchool(.afterClass)
 			} else if next != Int.max {
-					findClassfromTimeWeekDayNifWeekIsA2(
-						timetable: timetable, sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
+					findClassFromTimeWeekDayAndIfWeekIsA_2(
+						timetable: timetable,
+						period: times2Day[n+1].1 ?? UUID(),
+						weekDay: todayWeekday, isWeekA: isweekA
 					)
 			} else { noSchool(.afterClass) }
 
 
 			setCourseChangeAlarm(for: next)
 			Logger.dateTime.info("Got current class | now(\(now)) == compare(\(compare)) \nThe current class is \(currentCourseLocal.name). Next class is \(nextCourseLocal.name), due at \(next.display())")
-			return [currentCourseLocal, nextCourseLocal, Timeslot(week: week, day: todayWeekday, time: compare)]//MARK: Return D
+			return (
+				current: currentCourseLocal,
+				next: nextCourseLocal,
+				timeslot: Timeslot(week: week, day: todayWeekday, time: compare)
+			) //MARK: Return D
 
 
 
 
-		} else if now>compare &&  now<next { //MARK: ——In the Middle
+		} else if now > compare &&  now < next { //MARK: ——In the Middle
 
-			let currentCourseLocal = findClassfromTimeWeekDayNifWeekIsA2(
+			let currentCourseLocal = findClassFromTimeWeekDayAndIfWeekIsA_2(
 				timetable: timetable,
-				sessionStartTime: compare,
+				period: times2Day[n].1 ?? UUID(),
 				weekDay: todayWeekday, isWeekA: isweekA
 			)
 
 
-			let nextCourseLocal = if times2Day.last == next {
+			let nextCourseLocal = if times2Day.last?.0 == next {
 				noSchool(.afterClass)
 			} else if next != Int.max {
-					findClassfromTimeWeekDayNifWeekIsA2(
-						timetable: timetable, sessionStartTime: next, weekDay: todayWeekday, isWeekA: isweekA
+					findClassFromTimeWeekDayAndIfWeekIsA_2(
+						timetable: timetable,
+						period: times2Day[n+1].1 ?? UUID(),
+						weekDay: todayWeekday, isWeekA: isweekA
 					)
 			} else { noSchool(.afterClass) }
 
 
 			setCourseChangeAlarm(for: next)
 			Logger.dateTime.info("Got current class | now(\(now)) > compare(\(compare)) && now(\(now)) < next(\(next)) \nThe current class is \(currentCourseLocal.name)\nNext class is \(nextCourseLocal.name), due at \(next.display())")
-			return [currentCourseLocal, nextCourseLocal, Timeslot(week: week, day: todayWeekday, time: compare)] //MARK: Return E
+			return (
+				current: currentCourseLocal,
+				next: nextCourseLocal,
+				timeslot: Timeslot(week: week, day: todayWeekday, time: compare)
+			) //MARK: Return E
 
 		} // either of these `if`s mean `now` is the current class and `next` is next
 	} // for n
@@ -490,4 +510,3 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> Array<Any> {
 	return [failed, failed] //all class options should be exhausted, so this should not run. If it does, ERROR!!
 	 */
 }
-

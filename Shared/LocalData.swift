@@ -27,6 +27,8 @@ extension Logger {
 	static let general = Logger(subsystem: bID, category: "General")
 
 	static let term = Logger(subsystem: bID, category: "Term")
+	
+	static let views = Logger(subsystem: bID, category: "Views")
 }
 
 
@@ -46,15 +48,13 @@ class LocalData: ObservableObject {
 	init() {
 		Logger.general.log("Initialising LocalData...")
 		let now = getCurrentClass2(date: .now, timetable: chaos)
-		guard ((now[0] as? DisplayCourse) != nil), ((now[1] as? DisplayCourse) != nil), ((now[2] as? Timeslot) != nil), now.count == 3 else {
-			fatalError("getCurrentClass2 returned contents other than `[Course, Course, Timeslot]`.\n\tContents: \(now)")
-		}
-		self.currentCourse = now[0] as! DisplayCourse
-		self.nextCourse = now[1] as! DisplayCourse
-		
+
+		self.currentCourse = now.current
+		self.nextCourse = now.next
+
 		self.storage = Storage.shared
 
-		self.currentTime = now[2] as! Timeslot
+		self.currentTime = now.timeslot
 		Logger.general.log("LocalData initialised")
 	}
 }

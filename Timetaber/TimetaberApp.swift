@@ -21,11 +21,12 @@ let coloursNeedBlackForeground = ["Peach", "Lemon", "Ice", "Lime"]
 
 ///World's greatest timetable app
 struct TimetaberApp: App {
+	// init() { fatalError("This is a fatal error intended to test the debugging of fatal errors and whether or not they are suitable for use in production. Please remove the initialiser at \(#fileID): \(#line)") }
     var body: some Scene {
         WindowGroup {
             TabView{
                 Tab("Home", systemImage: "clock") { HomeView().environmentObject(LocalData.shared) }
-                Tab("Timetable", systemImage: "list.bullet") { TimetableView(timetable: chaos).environmentObject(LocalData.shared) }
+                Tab("Timetable", systemImage: "list.bullet") { TimetableView().environmentObject(LocalData.shared) }
 				Tab("Settings", systemImage: "gear") { SettingsView() }
             }
         }

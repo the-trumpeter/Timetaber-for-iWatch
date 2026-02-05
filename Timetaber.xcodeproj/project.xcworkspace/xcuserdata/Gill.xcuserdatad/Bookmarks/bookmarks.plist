@@ -7,172 +7,6 @@
 		<dict>
 			<key>destination</key>
 			<dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/TimetableCreatorView.swift</string>
-					</dict>
-				</dict>
-				<key>type</key>
-				<string>DVTDocumentLocation</string>
-			</dict>
-			<key>title</key>
-			<string>build Timetable creating interface</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>13</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>12</string>
-					<key>Timestamp</key>
-					<string>785295313.148743</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Courses_vDef.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>//MARK: - Old Courses
-</string>
-				<key>leading</key>
-				<string>
-
-</string>
-				<key>trailing</key>
-				<string>/*
-Define all courses for user's timetable
- 
-</string>
-			</dict>
-			<key>title</key>
-			<string>To be discarded</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>28</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>27</string>
-					<key>Timestamp</key>
-					<string>784875330.02619</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/LocalData.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>is-complete</key>
-			<true/>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>		self.nextCourse = now[1]
-</string>
-				<key>leading</key>
-				<string>		let now = getCurrentClass2(date: .now, timetable: chaos)
-		self.currentCourse = now[0]
-</string>
-				<key>trailing</key>
-				<string>		self.timetables = [chaos]
-		self.storage = Storage()
-		self.timetable = chaos //[_][self.ActiveTimetable]
-</string>
-			</dict>
-			<key>title</key>
-			<string>Use empty Timetable instead</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>25</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>24</string>
-					<key>Timestamp</key>
-					<string>785113020.796378</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/LocalData.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>is-complete</key>
-			<true/>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>		print("LocalData init")
-</string>
-				<key>leading</key>
-				<string>
-	init() {
-</string>
-				<key>trailing</key>
-				<string>		let now = getCurrentClass2(date: .now, timetable: chaos)
-		self.currentCourse = now[0]
-		self.nextCourse = now[1]
-</string>
-			</dict>
-			<key>title</key>
-			<string>Need to convert to 2nd protocol</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
 				<key>location-parameters</key>
 				<dict>
 					<key>EndingColumnNumber</key>
@@ -225,119 +59,6 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>98</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>97</string>
-					<key>Timestamp</key>
-					<string>789270413.820012</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber Watch App/Views/ListView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>    }
-</string>
-				<key>leading</key>
-				<string>
-        self.courses = timetable.courses
-</string>
-				<key>trailing</key>
-				<string>    
-    var body: some View {
-        let dayKeys = Array(day.keys).sorted(by: &lt;).dropLast()
-</string>
-			</dict>
-			<key>title</key>
-			<string>Migrate to new protocols</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>126</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>125</string>
-					<key>Timestamp</key>
-					<string>788240286.832405</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/TimetableView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>                            .listRowBackground(
-</string>
-				<key>leading</key>
-				<string>                        let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
-                        entry
-</string>
-				<key>trailing</key>
-				<string>								ZStack {
-									bG
-									HStack {
-</string>
-			</dict>
-			<key>title</key>
-			<string>Need to improve colour</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/LocalData.swift</string>
-					</dict>
-				</dict>
-				<key>type</key>
-				<string>DVTDocumentLocation</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>72</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -360,7 +81,7 @@ Define all courses for user's timetable
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>		self.timetable = chaos //[_][self.ActiveTimetable] //TODO: how to compute this?
+				<string>		self.timetable = chaos //[_][self.ActiveTimetable]
 </string>
 				<key>leading</key>
 				<string>
@@ -372,149 +93,8 @@ Define all courses for user's timetable
 	///Apply a set of changes to stored data
 </string>
 			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>108</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>107</string>
-					<key>Timestamp</key>
-					<string>788240286.832426</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/TimetableView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>is-complete</key>
-			<true/>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>			default: "Error \(#line)"
-</string>
-				<key>leading</key>
-				<string>			case 5: "Thursday"+suffix
-			case 6: "Friday"+suffix
-</string>
-				<key>trailing</key>
-				<string>		  }
-		//print("End TimetableView init")
-    }
-</string>
-			</dict>
 			<key>title</key>
-			<string>Create fallback for weekends</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>126</string>
-					<key>StartingColumnNumber</key>
-					<string>42</string>
-					<key>StartingLineNumber</key>
-					<string>125</string>
-					<key>Timestamp</key>
-					<string>788235118.042877</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/TimetableCreatorView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>
-</string>
-				<key>leading</key>
-				<string>			Button("Clear", systemImage: "trash") { print("~ \(properties)") }.tint(.red)
-
-			Button("Edit", systemImage: "pencil") {</string>
-				<key>trailing</key>
-				<string>				showingSheet=true
-			}.tint(.orange)
-
-</string>
-			</dict>
-			<key>title</key>
-			<string>Move to clicking on the entry instead of a swipe action</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>428</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>427</string>
-					<key>Timestamp</key>
-					<string>788499607.385385</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/TimetableCreatorView.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>                        if setExpanded == ind {
-</string>
-				<key>leading</key>
-				<string>						}.buttonStyle(.plain)
-
-</string>
-				<key>trailing</key>
-				<string>							
-							let startBinding = Binding&lt;Date&gt;(
-								get: {
-</string>
-			</dict>
-			<key>title</key>
-			<string>This to be a sheet</string>
+			<string>How to compute this?</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -561,7 +141,7 @@ Define all courses for user's timetable
 </string>
 			</dict>
 			<key>title</key>
-			<string>GOTTA STORE THIS</string>
+			<string>Add to UserDefaults</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -608,7 +188,7 @@ Define all courses for user's timetable
 </string>
 			</dict>
 			<key>title</key>
-			<string>GOTTA STORE THIS TOO</string>
+			<string>Add to UserDefaults</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -620,13 +200,13 @@ Define all courses for user's timetable
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>850</string>
+					<string>972</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>849</string>
+					<string>971</string>
 					<key>Timestamp</key>
-					<string>789718913.2149529</string>
+					<string>791967628.960945</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -656,53 +236,6 @@ Define all courses for user's timetable
 			</dict>
 			<key>title</key>
 			<string>1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>624</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>623</string>
-					<key>Timestamp</key>
-					<string>789718913.2149301</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Times_Editor.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>						Text("End: \( Time24( from: Date(time24: timesets.sorted { $0.value.startTime &lt; $1.value.startTime }.last?.value.startTime ?? 0900).addingTimeInterval(TimeInterval((timesets.sorted { $0.value.startTime &lt; $1.value.startTime }.last?.value.duration ?? 0) * 60 )) ).display() )").foregroundStyle(.secondary)
-</string>
-				<key>leading</key>
-				<string>				HStack {
-					if !timesets.isEmpty {
-</string>
-				<key>trailing</key>
-				<string>						Spacer()
-					}
-					Button("Add Period", systemImage: "plus") {
-</string>
-			</dict>
-			<key>title</key>
-			<string>Should I sort these based on their keys?</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

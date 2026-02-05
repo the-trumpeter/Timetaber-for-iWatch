@@ -8,6 +8,50 @@
 import SwiftUI
 import OSLog
 
+// MARK: - Period Time Utilities
+private extension Times.Period {
+    var endTime: Time24 {
+        let endDate = Date(time24: startTime).addingTimeInterval(TimeInterval(duration * 60))
+        return Time24(from: endDate)
+    }
+}
+
+private func sortedIndicesByStart(_ periods: [UUID: Times.Period]) -> [UUID] {
+    periods.keys.sorted { lhs, rhs in
+        guard let l = periods[lhs], let r = periods[rhs] else { return lhs < rhs }
+        return l.startTime < r.startTime
+    }
+}
+
+private func hasOverlap(in periods: [UUID: Times.Period]) -> Bool {
+    let sorted = sortedIndicesByStart(periods)
+    for (prevIdx, nextIdx) in zip(sorted, sorted.dropFirst()) {
+        guard let prev = periods[prevIdx], let next = periods[nextIdx] else { continue }
+        if prev.endTime > next.startTime { return true }
+    }
+    return false
+}
+
+private func overlapsNeighbors(index: UUID, period: Times.Period, in periods: [UUID: Times.Period]) -> Bool {
+    let sorted = sortedIndicesByStart(periods)
+    guard let pos = sorted.firstIndex(of: index) else { return false }
+    // Previous neighbor
+    if pos > 0 {
+        let prevKey = sorted[pos - 1]
+        if let prev = periods[prevKey] {
+            if prev.endTime > period.startTime { return true }
+        }
+    }
+    // Next neighbor
+    if pos < sorted.count - 1 {
+        let nextKey = sorted[pos + 1]
+        if let next = periods[nextKey] {
+            if period.endTime > next.startTime { return true }
+        }
+    }
+    return false
+}
+
 
 
 //MARK: NewPeriodView
@@ -103,13 +147,20 @@ fileprivate struct TimesSheetView: View {
 	var parent: Binding<Times.Period>
 	@State var period: Times.Period
 
+	var allTimes: Binding<Times>?
+	var editingSet: Times.TimingSet?
+	var periodIndex: UUID?
+
 	@Environment(\.dismiss) var dismiss
 
-	init(period: Binding<Times.Period>) {
+	init(period: Binding<Times.Period>, allTimes: Binding<Times>? = nil, editingSet: Times.TimingSet? = nil, periodIndex: UUID? = nil) {
 		//self.startBinding = startBinding
 		//self.durationBinding = durationBinding
 		self.parent = period
 		self.period = period.wrappedValue
+		self.allTimes = allTimes
+		self.editingSet = editingSet
+		self.periodIndex = periodIndex
 	}
 
 	var body: some View {
@@ -134,10 +185,23 @@ fileprivate struct TimesSheetView: View {
 							period.startTime = Time24(from: newDate)
 						}
 					)
+
+		let showsOverlapWarning: Bool = {
+			guard let allTimes, let editingSet, let idx = periodIndex else { return false }
+			var candidate: [UUID: Times.Period] = {
+				switch editingSet {
+				case .standard: return allTimes.wrappedValue.standard
+				case .variant(let key): return allTimes.wrappedValue.variants[key]?.variant ?? [:]
+				}
+			}()
+			candidate[idx] = period
+			return overlapsNeighbors(index: idx, period: period, in: candidate)
+		}()
+
 		NavigationStack {
 			VStack {
 
-
+				if showsOverlapWarning { HStack(spacing: 8) { Image(systemName: "exclamationmark.triangle.fill"); Text("This period overlaps another."); Spacer() }.foregroundStyle(.yellow) }
 
 				HStack(spacing: 12) {
 					/*let apmFormatter = DateFormatter()
@@ -239,8 +303,8 @@ fileprivate struct TimesSheetView: View {
 //MARK: TimesRowView
 fileprivate struct TimesRowView: View {
 	var localTimes: Binding<Times>
-	let editing: Times.Set
-	let index: Int
+	let editing: Times.TimingSet
+	let index: UUID
 	var period: Binding<Times.Period>
 
 	@State private var sheet = false
@@ -258,49 +322,31 @@ fileprivate struct TimesRowView: View {
 	*/
 
 	var body: some View {
-		let startBinding = Binding<Date>(
-						get: {
-							Date(time24: period.wrappedValue.startTime)
-						},
-						set: { newDate in
-							let newValue = Time24(from: newDate)
-							switch editing {
-							case .standard:
-								if index < localTimes.wrappedValue.standard.count {
-									localTimes.wrappedValue.standard[index]!.startTime = newValue
-								}
-							case .variant(let target):
-								if var arr = localTimes.wrappedValue.variants[target]?.variant {
-									arr[index]!.startTime = newValue
-									localTimes.wrappedValue.variants[target]!.variant = arr
-								}
-							}
-						}
-					)
+		let startDate = Date(time24: period.wrappedValue.startTime)
 
-	/*	let durationBinding = Binding<Date>(
-			get: {
-				Date(time24: (period.wrappedValue.duration/60*100 + period.wrappedValue.duration%60) )
-			},
-			set: {
-				let t24 = Time24(from: $0)
-				let mins = t24%100
-				let hours = t24/100
-				period.wrappedValue.duration = mins+hours*60
+		let timeset: [UUID: Times.Period] = {
+			switch editing {
+			case .standard: return localTimes.wrappedValue.standard
+			case .variant(let key): return localTimes.wrappedValue.variants[key]?.variant ?? [:]
 			}
-		)
-*/
-		
+		}()
+		let isOverlapping: Bool = {
+			var candidate = timeset
+			candidate[index] = period.wrappedValue
+			return overlapsNeighbors(index: index, period: period.wrappedValue, in: candidate)
+		}()
+
 		Button {
 			sheet.toggle()
 		} label: {
 			HStack {
+				if isOverlapping { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.yellow) }
 				if Float(period.wrappedValue.name) != nil {
 					Text("Pd.").foregroundStyle(.secondary)
 				}
 				Text(period.wrappedValue.name)
 				Spacer()
-				Text("\(startBinding.wrappedValue.formatted(Date.FormatStyle().hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)))")
+				Text("\(startDate.formatted(Date.FormatStyle().hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)))")
 					.foregroundStyle(.secondary)
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
@@ -309,7 +355,7 @@ fileprivate struct TimesRowView: View {
 		.buttonStyle(.plain)
 
 		.sheet(isPresented: $sheet) {
-			TimesSheetView(period: period)
+			TimesSheetView(period: period, allTimes: localTimes, editingSet: editing, periodIndex: index)
 				.presentationDetents([.height(250.0)])
 		}//sheet
 	}
@@ -337,7 +383,7 @@ fileprivate struct TimesVariantEditor: View {
 	//Standard setup
 	let tblIndex: Int
 	@State var localTimes: Times
-	@State var editing: Times.Set
+	@State var editing: Times.TimingSet
 //	@State var sheetNo: Int = -1
 
 	//New Period
@@ -348,13 +394,15 @@ fileprivate struct TimesVariantEditor: View {
 //	@State private var showingAlert = false
 	//Changes/UI
 	@State private var hasPendingChanges = false
+	
+	@Environment(\.dismiss) private var dismiss
 
 	private func syncPendingFlag() {
 		hasPendingChanges = (localTimes != store.timetables[tblIndex].times)
 	}
 
 	/// Edit existing variant
-	init(_ editing: Times.Set, tblIndex: Int = 0) {
+	init(_ editing: Times.TimingSet, tblIndex: Int = 0) {
 		self.tblIndex = tblIndex
 		self.editing = editing
 		self.localTimes = Storage.shared.timetables[tblIndex].times
@@ -367,23 +415,30 @@ fileprivate struct TimesVariantEditor: View {
 
 	private var isNewVariant: Bool = false
 	private var originalNew: Times.Variant? = nil
-	private var newIndex: Int? = nil
+	private var newIndex: UUID? = nil
 
-	enum NewVariantError: Error { case couldntGetNextKey(keys: Dictionary<Int, Times.Variant>.Keys, attempt: Int) }
+	enum NewVariantError: Error { case couldntGetNextKey(keys: Dictionary<Int, Times.Variant>.Keys, attempt: [Int]) }
 
 	/// New variant
-	init(blank fromBlank: Bool = true, tblIndex: Int = 0) {
+	init(blank fromBlank: Bool = true, tblIndex: Int = 0) throws {
 
 		self.tblIndex = tblIndex
 		self.isNewVariant = true
 
 		var tobelocaltimes = Storage.shared.timetables[tblIndex].times
-
-
-		let nextKey: Int = (tobelocaltimes.variants.keys.max() ?? 0) + 1
-		guard tobelocaltimes.variants[nextKey] == nil else {
-			fatalError("Couldn't find empty value in \(tobelocaltimes.variants.keys) for key \(nextKey)")
-			#warning("TODO fatalError not good idea in long run. Will suffice for quick test.")
+/*
+		var attempts: [Int] = []
+		var nextKey: Int = (tobelocaltimes.variants.keys.max() ?? 0) + 1
+		var loopedTimes = 0
+		while tobelocaltimes.variants[nextKey] != nil && loopedTimes <= 5 {
+			attempts.append(nextKey)
+			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys) for key \(nextKey). Trying again with \(nextKey+1)...")
+			nextKey += 1
+			loopedTimes += 1
+		}
+		if loopedTimes >= 5 {
+			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys) in five tries.")
+			throw NewVariantError.couldntGetNextKey(keys: tobelocaltimes.variants.keys, attempt: attempts)
 		}
 
 		if fromBlank {
@@ -392,11 +447,11 @@ fileprivate struct TimesVariantEditor: View {
 		} else {
 			tobelocaltimes.variants[nextKey] = Times.Variant("Variant", variant: tobelocaltimes.standard)
 		}
-
-		self.editing = .variant(nextKey)
+*/		let newkey = UUID()
+		self.editing = .variant(newkey)
 		self.localTimes = tobelocaltimes
-		self.originalNew = tobelocaltimes.variants[nextKey]
-		self.newIndex = nextKey
+		self.originalNew = tobelocaltimes.variants[newkey]
+		self.newIndex = newkey
 		self.debugID = if fromBlank { "New from Blank" } else { "New from Standard" }
 
 		let tempSelf = self
@@ -412,15 +467,15 @@ fileprivate struct TimesVariantEditor: View {
 		var changes: [Change] = []
 
 		if isNewVariant {
-			let key = switch editing {
-			case .standard: {Logger.editTimes.fault("Desync between editing=\(String(reflecting: editing)) and isNewVariant=\(isNewVariant)"); return -1}()
+			guard let key: UUID = switch editing {
+			case .standard: { Logger.editTimes.fault("Desync between editing=\(String(reflecting: editing)) and isNewVariant=\(isNewVariant)"); return nil }()
 			case .variant(let vkey): vkey
-			}
-			guard key != -1 else { return [] }
+			} else { return [] }
+			//guard key != -1 else { return [] }
 			return [.times_variants_add(key: key, localTimes.variants[key]!, timetable: tblIndex)]
 		}
 
-		func theloop(local AnyLocal: Any, original AnyOrigin: Any, for timeschange: Times.Set ) {
+		func theloop(local AnyLocal: Any, original AnyOrigin: Any, for timeschange: Times.TimingSet ) {
 
 		//				Local/Origin Existence & Value combinations:
 		//
@@ -428,14 +483,22 @@ fileprivate struct TimesVariantEditor: View {
 		// Origin value || A  B  ~ | ~  ~    A  B | B  A
 		//      Handler ||..none...|..#1..  ..#3..|..#2..
 
-			let local = switch timeschange {
-					case .standard: AnyLocal as! [Int: Times.Period]
-					default: (AnyLocal as! Times.Variant).variant
+			let local: [UUID: Times.Period] = {
+				switch timeschange {
+				case .standard:
+					return AnyLocal as! [UUID: Times.Period]
+				case .variant:
+					return (AnyLocal as! Times.Variant).variant
 				}
-			let origin = switch timeschange {
-					case .standard: AnyOrigin as! [Int: Times.Period]
-					default: (AnyOrigin as! Times.Variant).variant
+			}()
+			let origin: [UUID: Times.Period] = {
+				switch timeschange {
+				case .standard:
+					return AnyOrigin as! [UUID: Times.Period]
+				case .variant:
+					return (AnyOrigin as! Times.Variant).variant
 				}
+			}()
 
 			guard type(of: local) == type(of: origin) else {
 				Logger.editTimes.fault("compiler theloop input types do not match. local: \(type(of: local)), origin: \(type(of: origin))")
@@ -528,7 +591,7 @@ fileprivate struct TimesVariantEditor: View {
 
 
 		//	Precompute the timesets for the current editing selection
-			let timesets: [Int: Times.Period] = {
+			let timesets: [UUID: Times.Period] = {
 				switch editing {
 					case .standard: return localTimes.standard
 					case .variant(let key):
@@ -538,19 +601,19 @@ fileprivate struct TimesVariantEditor: View {
 
 			let starttimesortedTimeset = Array(timesets.keys).sorted(by: { timesets[$0]!.startTime < timesets[$1]!.startTime } )
 
-
-
-
+			let invalidOrderingOrOverlap: Bool = { let set = timesets; return hasOverlap(in: set) }()
 
 
 			List {
+
+				if invalidOrderingOrOverlap { HStack(spacing: 8) { Image(systemName: "exclamationmark.triangle.fill"); Text("Periods overlap. Adjust start times or durations."); Spacer() }.foregroundStyle(.yellow).listRowBackground(Color.yellow.opacity(0.15)) }
 
 				Section {
 					if editing != .standard {
 						let namebinding = Binding<String>(get: {
 							switch editing {
 							case .standard:
-								fatalError("Variant \(debugID) [get] Editing changed values between 'if' and 'switch' switch returned standard inside if editing != .standard")
+								fatalError("Variant \(debugID) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
 							case .variant(let key):
 								guard let variant = localTimes.variants[key] else {
 									Logger.editTimes.fault("Variant \(debugID) Given variant key \(key) not available in local times [TimesVariantEditor]")
@@ -561,7 +624,7 @@ fileprivate struct TimesVariantEditor: View {
 						}, set: { name in
 							switch editing {
 							case .standard:
-								fatalError("Variant \(debugID) [set] Editing changed values between 'if' and 'switch' switch returned standard inside if editing != .standard")
+								fatalError("Variant \(debugID) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
 							case .variant(let key):
 								guard localTimes.variants[key] != nil else {
 									Logger.editTimes.fault("Variant \(debugID) Given variant key not available in local times")
@@ -620,13 +683,13 @@ fileprivate struct TimesVariantEditor: View {
 
 			//	MARK: New Period
 				HStack {
-					if !timesets.isEmpty {
-						Text("End: \( Time24( from: Date(time24: timesets.sorted { $0.value.startTime < $1.value.startTime }.last?.value.startTime ?? 0900).addingTimeInterval(TimeInterval((timesets.sorted { $0.value.startTime < $1.value.startTime }.last?.value.duration ?? 0) * 60 )) ).display() )").foregroundStyle(.secondary)
+					if let lastKey = sortedIndicesByStart(timesets).last, let last = timesets[lastKey] {
+						Text("End: \(last.endTime.display())").foregroundStyle(.secondary)
 						Spacer()
 					}
 					Button("Add Period", systemImage: "plus") {
 						///**	Calculate new period template from existing ones
-						let lastPeriod = timesets.sorted { $0.key < $1.key }.last?.value
+						let lastPeriod = timesets.sorted { $0.value.startTime < $1.value.startTime }.last?.value
 						let existingEnd = Date(time24: lastPeriod?.startTime ?? 0900) //fetch start time of last period
 						let templateStart = existingEnd.addingTimeInterval(TimeInterval((lastPeriod?.duration ?? 0) * 60 )) // calculate end time of last period; use end time as default starttime for next period
 						newPeriod.startTime = Time24(from: templateStart)
@@ -658,10 +721,11 @@ fileprivate struct TimesVariantEditor: View {
 									Button("Save", systemImage: "checkmark") {
 										switch editing {
 										case .standard:
-											localTimes.standard.updateValue(newPeriod, forKey: localTimes.standard.count)
+											let newID = UUID()
+											localTimes.standard.updateValue(newPeriod, forKey: newID)
 										case .variant(let key):
-											let nextIndex = (localTimes.variants[key]?.variant.keys.max() ?? -1) + 1
-											localTimes.variants[key]!.variant.updateValue(newPeriod, forKey: nextIndex)
+											let newID = UUID()
+											localTimes.variants[key]!.variant.updateValue(newPeriod, forKey: newID)
 										}
 										newPeriodSheet = false
 									}
@@ -740,8 +804,7 @@ fileprivate struct TimesVariantEditor: View {
 				 */
 
 				ToolbarItem(placement: .confirmationAction) {
-					if hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) ||
-						isNewVariant && localTimes.variants[newIndex!] != originalNew {
+					if (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || (isNewVariant && localTimes.variants[newIndex!] != originalNew)) {
 						Button("Save", systemImage: "checkmark") {
 							let changes = compileChanges()
 							do {
@@ -754,15 +817,36 @@ fileprivate struct TimesVariantEditor: View {
 							localTimes = store.timetables[tblIndex].times
 							hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
 							syncPendingFlag()
-						}
+						}.disabled(invalidOrderingOrOverlap)
 					}
 
+				}
+
+				ToolbarItem(placement: .topBarLeading) {
+					Button("Discard", systemImage: "chevron.left") {
+						if (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || (isNewVariant && localTimes.variants[newIndex!] != originalNew)) {
+							if isNewVariant {
+								dismiss()
+							} else {
+								localTimes = store.timetables[tblIndex].times
+							}
+							syncPendingFlag()
+						} else {
+							dismiss()
+						}
+					}.if( (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || isNewVariant) ) {
+						$0.labelStyle(.titleOnly)
+					}
+					.if( !(hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || isNewVariant) ) {
+						$0.labelStyle(.iconOnly)
+					}
 				}
 
 			}.navigationTitle({switch editing {
 				case .standard: "Standard Timing"
 				case .variant(_): "Timing Variant"
 			}}())
+			.navigationBarBackButtonHidden(true)
 
 
 		}// NavigationStack
@@ -804,17 +888,55 @@ struct TimesEditor: View {
 				}
 
 				Section {
-					let variantKeys: [Int] = Array(times.variants.keys)
+					let variantKeys: [UUID] = Array(times.variants.keys)
 					ForEach(variantKeys, id: \.self) { vKey in
 						NavigationLink(times.variants[vKey]!.name) { TimesVariantEditor(.variant(vKey), tblIndex: tblIndex) }
 					}
 
 					Menu {
 						NavigationLink("From Standard...") {
-							TimesVariantEditor(blank: false, tblIndex: 0)
+							{
+								do {
+									return try AnyView( TimesVariantEditor(blank: false, tblIndex: 0) )
+								} catch TimesVariantEditor.NewVariantError.couldntGetNextKey(keys: let keys, attempt: let attempts) {
+									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys). Tried \(attempts)")
+									return AnyView( VStack {
+										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
+										Text("Error \(#line)").bold()
+										Text(String(describing: keys))
+										Text(String(describing: attempts))
+									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
+								} catch {
+									Logger.editTimes.fault("TimesVariantEditor threw other than TimesVariantEditor.NewVariantError.couldntGetNextKeys")
+									return AnyView( VStack {
+										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
+										Text("Catastrophic Error (\(#line))").bold()
+										Text("Variant editor threw other than .couldntGetNextKeys")
+									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
+								}
+							}()
 						}
 						NavigationLink("Blank...") {
-							TimesVariantEditor(blank: true, tblIndex: 0)
+							{
+								do {
+									return try AnyView( TimesVariantEditor(blank: true, tblIndex: 0) )
+								} catch TimesVariantEditor.NewVariantError.couldntGetNextKey(keys: let keys, attempt: let attempts) {
+									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys). Tried \(attempts)")
+									return AnyView( VStack {
+										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
+										Text("Error \(#line)").bold()
+										Text(String(describing: keys))
+										Text(String(describing: attempts))
+									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
+								} catch {
+									Logger.editTimes.fault("TimesVariantEditor threw other than TimesVariantEditor.NewVariantError.couldntGetNextKeys")
+									return AnyView( VStack {
+										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
+										Text("Catastrophic Error (\(#line))").bold()
+										Text("Variant editor threw other than .couldntGetNextKeys")
+									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
+								}
+							}()
 						}
 					} label: {
 						HStack {
@@ -881,13 +1003,10 @@ struct TimesMapping: View {
 		var changes: [Change] = []
 
 		for wkd in 2...6 {
-			if let loc = local[wkd] {
-				if loc != -1 &&//not standard
-					origin[wkd] != loc  {
-					changes.append( .times_variant_key(weekday: wkd, variant: loc,	timetable: tblIndex) )
-				} else if loc == -1 && origin[wkd] != nil && origin[wkd] != -1 {
-					changes.append( .times_variant_key(weekday: wkd, variant: nil,	timetable: tblIndex) )
-				}
+			let loc = local[wkd]
+			let orig = origin[wkd]
+			if loc != orig {
+				changes.append(.times_variant_key(weekday: wkd, variant: loc,	timetable: tblIndex))
 			}
 		}
 		
@@ -896,30 +1015,32 @@ struct TimesMapping: View {
 		return changes
 	}
 
-	let week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+	let week_days = [2: "Monday", 3: "Tuesday", 4: "Wednesday", 5: "Thursday", 6: "Friday"]
 
 	var body: some View {
 		NavigationStack {
 			List {
 
-				ForEach(week_days, id: \.self) { day in
+				ForEach(Array(week_days.keys.sorted()), id: \.self) { day in
 
-					let key = Int(week_days.firstIndex(of: day)!) + 2
-					Picker(day, selection: Binding<Int>(
-						get: { localTimes.mapping[key] ?? -1 },
+					Picker(week_days[day]!, selection: Binding<UUID?>(
+						get: {
+							switch localTimes.mapping[day] {
+								case .variant(let key): return key
+								case .standard: return nil
+								case .none: return nil
+							} },
 						set: { new in
-							if new == -1 {
-								localTimes.mapping[key] = nil
-							} else {
-								localTimes.mapping[key] = new
-							}
+							if let newID = new {
+								localTimes.mapping[day] = .variant(newID)
+							} else { localTimes.mapping[day] = .standard }
 							bool_pendingChanges = (localTimes != origin)
 						}
 					)) {
-						Text("Standard times").tag(-1)
+						Text("Standard times").tag(UUID?.none)
 						Divider()
 						ForEach(Array(localTimes.variants.keys), id: \.self) { variantKey in
-							Text(localTimes.variants[variantKey]!.name).tag(variantKey)
+							Text(localTimes.variants[variantKey]!.name).tag(UUID?.some(variantKey))
 						}
 					}
 

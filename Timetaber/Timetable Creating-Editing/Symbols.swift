@@ -9,86 +9,54 @@
 let sfsymbols = [
 
 	//General school symbols
-	"graduationcap",
-	"backpack",
-	"highlighter",
-	"text.document",
-	"checklist",
+	"graduationcap", "backpack", "highlighter", "text.document",
+					 "checklist", "face.smiling",
 
 	//English
-	"book",
-	"book.closed",
-	"text.quote",
-	"book.pages",
+	"book", "book.closed", "text.quote", "book.pages",
 
-	//HSIE
-	"building.columns",
-	"globe.asia.australia",
-	"map",
+	//HSIE														//Lote
+	"building.columns", "globe.asia.australia", "map", 		"character.bubble",
+	//Commerce
+	"banknote", "chart.line.uptrend.xyaxis", "briefcase",	"globe",
+
+//	HSIE other
 //	"hourglass",
 //	"location",
 
-	//Commerce
-	"banknote",
-	"chart.line.uptrend.xyaxis",
-	"briefcase",
-
-	//Lote
-	"character.bubble",
-	"globe",
 
 	//Science
-	"flask",
-	"atom",
-	"gyroscope",
-	"testtube.2",
+
+	"flask", "atom", "gyroscope", "testtube.2",
 
 	//Math
-	"function",
-	"number",
-	"compass.drawing",
-	"graph.2d",
+	"function", "number", "compass.drawing", "graph.2d",
 
 	//Tech/ICT
-	"pc",
+	"pc", "cpu", "network", "scroll",
 //	"laptopcomputer",
-	"cpu",
-	"network",
-	"scroll",
 
 	//Design/Engineering
-	"hammer",
-//	"level",
-	"cube",
-	"graph.3d",
+	"hammer", "cube", "graph.3d", "level",
 
 	//PDHPE/Sport
-	"figure.run",
-	"sportscourt",
-	"basketball",
-	"dumbbell",
+	"figure.run", "sportscourt", "basketball", "dumbbell",
 
 	//Creative Art
-	"paintbrush.pointed",
-	"paintpalette",
+	"paintbrush.pointed", "paintpalette", "photo.artframe", "theatermask.and.paintbrush",
 //	"eyedropper",
-	"photo.artframe",
-	"theatermask.and.paintbrush",
+
+
 
 	//Dance, Drama, CRI
-	"theatermasks",
-	"movieclapper", // (going here for want of better spot)
+	"theatermasks", "movieclapper", "headset", "figure.dance",
 //	"music.microphone",
-	"headset",
 //	"pluto.350.custom"
-	"figure.dance",
+
 
 	//Music
-	"music.note",
+	"music.note", "pianokeys", "apple.classical.pages", "flag.filled.and.flag.crossed",
 //	"metronome",
-	"pianokeys",
-	"apple.classical.pages",
-	"flag.filled.and,flag.crossed",
 
 
 ]

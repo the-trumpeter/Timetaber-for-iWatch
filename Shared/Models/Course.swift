@@ -5,18 +5,6 @@
 //  Created by Gill Palmer on 31/12/2025.
 //
 
-///A position in the timetable
-///
-///Used by UI to determine which course is to be displayed as 'current'.
-///
-///If we were to query `someCourse == currentCourse` to determine which course is the one we're in right now, it would become problematic if there were two of the same course in a day; both would be shown as 'current'. Instead, we use a by-time setup, querying `someTime == currentTime` to avoid duplicatory mixup.
-struct Timeslot: Codable, Equatable {
-	let week: WeekAB
-	let day: Int //1=Sun, 2=Mon, ...7=Sat
-	let time: Time24
-	//let Timetable: Int
-}
-
 enum CourseType: Codable, Equatable {
 	case standard
 	case noSchool(TimeCase)

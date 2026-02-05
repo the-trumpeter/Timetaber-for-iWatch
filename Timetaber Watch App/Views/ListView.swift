@@ -6,44 +6,28 @@
 //
 
 import SwiftUI
+import OSLog
 
 
 //MARK: - Template
 struct listTemplate: View {
     
-    let listedCourse: Course2
-    let timeslotIdentifier: Timeslot
-    
-    private let day: [Int: [Int]]
-    private let courses: [Int: Course2]
-    private let room: String
-    private let properties: [Int]
+    let course: DisplayCourse
+	let timeslot: Timeslot
 
-
-    init(
-        timetableDay: [Int: [Int] ],
-        timeslot: Timeslot,
-        courses: [Int : Course2],
-    )
-    {
-        self.day = timetableDay
-        self.timeslotIdentifier = timeslot
-        self.courses = courses
-        
-        let key: Int = timeslot.time
-        self.properties = day[key]!
-        self.listedCourse = courses[ day[key]![0] ]!
-        self.room = listedCourse.rooms[properties[1]]!
-    }
+	//private let day: [UUID: Times.Period.Contents]
+    //private let courses: [UUID: Course2]
+	//let room: String
+	//private let properties: Times.Period.Contents
     
     var body: some View {
 
-        let image = Image(systemName: listedCourse.listIcon)
+        let image = Image(systemName: course.listIcon)
         HStack{
             
             image
                 .resizable()
-                .foregroundStyle(Colour(listedCourse.colour))
+                .foregroundStyle(Colour(course.colour))
                 .frame(maxWidth: 25, maxHeight: 25)
                 .aspectRatio(contentMode: .fit)
                 .padding(.leading, 2)
@@ -51,19 +35,19 @@ struct listTemplate: View {
             
             VStack {
                 HStack {
-                    Text(listedCourse.listName ?? listedCourse.name)
+                    Text(course.listName)
                         .bold()
                     Spacer()
                     
                 }
                 HStack {
                     
-                    Text( String(timeslotIdentifier.time) )
+					Text( timeslot.time.display() )
                         .foregroundStyle(.secondary)
-                    
-                    Text(room).bold()
-                        .foregroundStyle(.secondary)
-                    
+					if let room = course.room {
+						Text(room).bold()
+							.foregroundStyle(.secondary)
+					}
                     Spacer()
                 }
             }
@@ -75,20 +59,25 @@ struct listTemplate: View {
 
 //MARK: - Day
 struct listedDay: View {
-    
-    var day: [Int: [Int]]
-    var courses: [Int: Course2]
+	let timetable: Timetable
+	var day: [UUID: Times.Period.Contents]
+    var courses: [UUID: Course2]
     var week: WeekAB
     var weekday: Int
+	let timePairs: [(Time24, UUID?)]
     @EnvironmentObject var data: LocalData
     
     init(timetable: Timetable,
          week _week: WeekAB? = nil,
-         day _day: Int? = nil
+         day _day: Int? = nil,
+		 times: [(Time24, UUID?)],
     ) {
         let wkday = _day ?? weekdayNumber(.now)
         let wk = _week ?? { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }()
-        
+
+		self.timetable = timetable
+		self.timePairs = times
+
         self.weekday = wkday
         self.week = wk
 
@@ -96,22 +85,47 @@ struct listedDay: View {
 
         self.courses = timetable.courses
     }
-    
+
     var body: some View {
-        let dayKeys = Array(day.keys).sorted(by: <).dropLast()
-        List {
-            ForEach(dayKeys, id: \.self) { key in
-                
-                
-                let entry = listTemplate(timetableDay: day, timeslot: Timeslot(week: week, day: weekday, time: key), courses: courses)
-                let bG: Colour? = (data.currentTime==entry.timeslotIdentifier) ? Colour(entry.listedCourse.colour): nil
-                entry
-                    .listRowBackground(
-                        bG
-                            .opacity(0.2)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                    )
-    
+		if timePairs.isEmpty {
+			Text("No school today.\nThe day's classes will be displayed here.")
+				.multilineTextAlignment(.center)
+				.foregroundStyle(.gray)
+				.font(.system(size: 13))
+        } else {
+            List {
+                ForEach(timePairs, id: \.0) { pair in
+                    let time = pair.0
+                    let uuid = pair.1 //period UUID
+
+					let ts = Timeslot(week: week, day: weekday, time: time)
+					if
+						let periodContents = (try? timetable.periodContentsFromTimeslot(ts).1),
+						let course2 = timetable.courses[periodContents.courseID]
+					{
+						if let room = course2.rooms[periodContents.roomIndex] {
+							let displayCourse: DisplayCourse = DisplayCourse(course2, room: room)
+
+							let rowView = listTemplate(course: displayCourse, timeslot: ts)
+
+							let isCurrent: Bool = (data.currentTime == ts)
+							let bg: Colour? = isCurrent ? Colour(displayCourse.colour) : nil
+
+							rowView
+								.listRowBackground(
+									(bg ?? .clear)
+										.opacity(0.2)
+										.clipShape(RoundedRectangle(cornerRadius: 10))
+								)
+						} else {
+							Text("Error \(#line)") //course2 missing room referenced in period contents
+						}
+
+					} else {
+						Text("Error \(#line)") //error getting timeslot
+					}
+
+                }
             }
         }
     }
@@ -123,19 +137,28 @@ struct listedDay: View {
 struct ListView: View {
     @ObservedObject var data = Storage.shared
     var body: some View {
-        
-        
-        
-        //MARK: IF
+
         if data.termRunningGB && weekdayNumber(.now) > 1 && weekdayNumber(.now) < 7 {
             
             let wk = getIfWeekIsA_FromDateAndGhost(originDate: data.startDateGB, ghostWeek: data.ghostWeekGB)
-            let day = getTimetableDay2(isWeekA: wk, weekDay: weekdayNumber(.now), timetable: chaos)
-            
-            if Array(day.keys).sorted(by: <).last! >= Time24() { //if not after last class of day
+			let day = getTimetableDay2(isWeekA: wk, weekDay: weekdayNumber(.now), timetable: data.timetables[data.ActiveTimetable])
+			let times: [(Time24, UUID?)] = {
+				do {
+					let timing = try findTimes(weekdayNumber(.now), data.timetables[data.ActiveTimetable])
+					return timing
+				} catch findTimesError.invalidMapping(let failDisplayCourse){
+					Logger.views.fault("findTimes threw invalid mapping: \(String(reflecting: failDisplayCourse.room) )")
+					return []
+				} catch {
+					Logger.views.fault("findTimes threw other than invalidMapping")
+					return []
+				}
+			}()
+			if times.last?.0 ?? 2400 >= Time24() { //if not after last class of day
                 listedDay(timetable: chaos,
                           week: {if wk {.a}else{.b}}(),
-                          day: weekdayNumber(.now)
+                          day: weekdayNumber(.now),
+						  times: times
                 )
                     .environmentObject(LocalData.shared)
             } else {
@@ -166,3 +189,4 @@ struct ListView: View {
     ListView()
         .environmentObject(LocalData.shared)
 }
+

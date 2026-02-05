@@ -15,27 +15,27 @@ import OSLog
 struct Times: Codable, Equatable {
 
 	///Default times for the timetable
-	var standard: [Int: Period]
+	var standard: [UUID: Period]
 
 	///Timing variations set by the user
-	var variants: [Int: Variant]
+	var variants: [UUID: Variant]
 
 	///The weekday:timing mapping of days and timing
-	var mapping: [Int: Int]
+	var mapping: [Weekday: Times.TimingSet]
 
 
 
 
-	init(standard: [Period], variants: [Int: Variant], mapping: [Int: String]) {
-		self.standard = Dictionary(uniqueKeysWithValues: standard.enumerated().map { ($0.offset, $0.element) })
+	init(standard: [UUID: Period], variants: [UUID: Variant], mapping: [Weekday: String]) {
+		self.standard = standard
 		self.variants = variants
 		self.mapping = {
-			var newmap: [Int: Int] = [:]
+			var newmap: [Weekday: Times.TimingSet] = [:]
 			for (k, v) in mapping {
 				if v == "Standard" {
-					newmap[k] = -1
+					newmap[k] = .standard
 				} else if let match = variants.first(where: {$1.name == v}) {
-					newmap[k] = match.key
+					newmap[k] = .variant(match.key)
 				}
 			}
 			Logger.general.debug("Initialised mapping from [Int: String] to: \(newmap)")
@@ -45,7 +45,7 @@ struct Times: Codable, Equatable {
 
 
 
-	init(standard: [Int: Period], variants: [Int: Variant], mapping: [Int: Int]) {
+	init(standard: [UUID: Period], variants: [UUID: Variant], mapping: [Weekday: Times.TimingSet]) {
 		self.standard = standard
 		self.variants = variants
 		self.mapping = mapping
@@ -57,13 +57,10 @@ struct Times: Codable, Equatable {
 
 	struct Variant: Codable, Equatable {
 		var name: String
-		var variant: [Int: Period]
-		init (_ name: String, variant: [Period]) {
-			self.name = name
-			self.variant = Dictionary(uniqueKeysWithValues: variant.enumerated().map { ($0.offset, $0.element) })
-		}
-		init(_ name: String, variant: [Int: Period]) { self.name = name; self.variant = variant }
-		init(name: String,   variant: [Int: Period]) { self.name = name; self.variant = variant }
+		var variant: [UUID: Period]
+
+		init(_ name: String, variant: [UUID: Period]) { self.name = name; self.variant = variant }
+		init(name: String,   variant: [UUID: Period]) { self.name = name; self.variant = variant }
 	}
 
 
@@ -83,21 +80,50 @@ struct Times: Codable, Equatable {
 			self.duration = dur
 		}
 
+		public struct Contents: Codable {
+			var courseID: UUID
+			var roomIndex: Int
+		}
+
 	}
 
 
 
 	///A time set, either the standard set or a user variation
-	enum Set: Codable, Equatable {
+	enum TimingSet: Codable, Equatable {
 		///The standard timing set
 		case standard
 		///A variation timing set
-		case variant(_ key: Int)
+		case variant(_ key: UUID)
 	}
 
 }
 
 
+
+///A position in the timetable
+///
+///Used by UI to determine which course is to be displayed as 'current'.
+///
+///If we were to query `someCourse == currentCourse` to determine which course is the one we're in right now, it would become problematic if there were two of the same course in a day; both would be shown as 'current'. Instead, we use a by-time setup, querying `someTime == currentTime` to avoid duplicatory mixup.
+struct Timeslot: Codable, Equatable {
+	let week: WeekAB
+	let day: Weekday //1=Sun, 2=Mon, ...7=Sat
+	let time: Time24
+	//let Timetable: Int
+}
+enum TimeslotError: Error {
+	case invalidWeekday
+	case noSchoolToday(noSchoolTodayReason)
+	case invalidTime
+	case noWeekB
+	case invalidPeriod
+
+	enum noSchoolTodayReason {
+		case weekend
+		case emptyTimes
+	}
+}
 
 
 
@@ -111,7 +137,7 @@ class Timetable: Codable {
 	var formatProtocol: String = "0.0.3"
 
 	///All courses used in the timetable are stored in an array, with their index being a unique identifier (for use *within the timetable*, not on the frontend) for that course.
-	var courses: [Int : Course2]
+	var courses: [UUID : Course2]
 
 	///The timing of school days, i.e. when each period is and if/what are the variations for some weekdays (e.g, extended 'sport period' on Wednesdays)
 	var times: Times ///I don't like this...
@@ -122,17 +148,77 @@ class Timetable: Codable {
 
 	///The mapping between periods, courses, and the rooms within those courses, for each day.
 	///
-	///Format as follows: `[ (Start time): [(Course index), (Room index in course)] ]
+//	///Format as follows: `[ (Period UUID): [(Course UUID), (Room index in course)] ]
 	struct TimetabledWeek: Codable {
-		var monday:			[ Time24: [Int] ]
-		var tuesday:		[ Time24: [Int] ]
-		var wednesday:		[ Time24: [Int] ]
-		var thursday:		[ Time24: [Int] ]
-		var friday:			[ Time24: [Int] ]
+		var monday, tuesday, wednesday, thursday, friday: [ UUID: Times.Period.Contents ]
+		subscript(index: Int) -> [ UUID: Times.Period.Contents ]? {
+			switch index {
+				case 2: return monday
+				case 3: return tuesday
+				case 4: return wednesday
+				case 5: return thursday
+				case 6:	return friday
+				default: return nil
+			}
+		}
 	}
 
 
-	init(_ name: String, icon: String, courses: [Int: Course2], times: Times, timetable: [Timetable.TimetabledWeek] ) {
+	//MARK: Period Contents from Timeslot
+	func periodContentsFromTimeslot(_ timeslot: Timeslot) throws -> (UUID, Times.Period.Contents) {
+		let week: TimetabledWeek = try {
+			switch timeslot.week {
+            case .a:
+                return self.timetable[0]
+            case .b:
+                // Ensure there is a second week available
+                guard self.timetable.count > 1 else {
+                    Logger.dateTime.fault("Timeslot contained invalid week: \(String(reflecting: timeslot.week) ) Timetable only contains 1 week.")
+                    throw TimeslotError.noWeekB
+                }
+                return self.timetable[1]
+            }
+		}()
+
+		guard let day = week[timeslot.day] else {
+			Logger.dateTime.fault("Invalid weekday when getting period from timeslot")
+			throw TimeslotError.invalidWeekday
+		}
+		guard let times = try? findTimes(timeslot.time, self).dropLast() else {
+			Logger.dateTime.fault("Given timeslot, but enclosed day has no classes")
+			throw TimeslotError.noSchoolToday(.emptyTimes)
+		}
+
+		guard let periodID = times.first(where: {$0.0 == timeslot.time})?.1 else {
+			Logger.dateTime.fault("Invalid Time24 when getting period from timeslot")
+			throw TimeslotError.invalidTime
+		}
+
+		guard let contents = day[periodID] else {
+			Logger.dateTime.fault("Invalid period—could not find periodID in day")
+			throw TimeslotError.invalidPeriod
+		}
+
+		return (periodID, contents)
+	}
+
+	func periodFromUUID(_ uuid: UUID) -> Times.Period? {
+		if let period = times.standard[uuid] {
+			return period
+		}
+		for (_, variation) in times.variants {
+			if let period = variation.variant[uuid] {
+				return period
+			}
+		}
+		Logger.dateTime.fault("UUID didn't correspond to period.")
+		return nil
+	}
+
+
+
+
+	init(_ name: String, icon: String, courses: [UUID: Course2], times: Times, timetable: [Timetable.TimetabledWeek] ) {
 		self.name = name
 		self.icon = icon
 		self.courses = courses
@@ -144,7 +230,11 @@ class Timetable: Codable {
 		self.name = "Timetable"
 		self.icon = "backpack.badge.clock"
 		self.courses = [:]
-		self.times = Times(standard: [:], variants: [:], mapping: [:])
+		self.times = Times(
+			standard: [:] as [UUID: Times.Period],
+			variants: [:] as [UUID: Times.Variant],
+			mapping: [:] as [Weekday: Times.TimingSet]
+		)
 		self.timetable = [
 			TimetabledWeek(
 				monday:		[:],
@@ -178,7 +268,7 @@ class Timetable: Codable {
 			switch change {
 
 				case .course_create(index: let index, let value, timetable: _):
-					self.courses.updateValue(value, forKey: index ?? self.courses.count)
+					self.courses.updateValue(value, forKey:  index )
 				successChanges.append(change)
 
 				case .course_delete(index: let index, timetable: _):
@@ -197,7 +287,7 @@ class Timetable: Codable {
 
 				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: _):
 					guard let variant else {
-						self.times.mapping.removeValue(forKey: wkday)
+						self.times.mapping.updateValue(.standard, forKey: wkday)
 						break
 					}
 					self.times.mapping.updateValue(variant, forKey: wkday)
@@ -251,13 +341,13 @@ class Timetable: Codable {
 					self.timetable.insert(week, at: pos)
 				successChanges.append(change)
 
-				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, time: let time, let data, timetable: _):
+				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, period: let period, let data, timetable: _):
 					switch wkday {
-						case 2: self.timetable[wkIndex].monday[time] = data
-						case 3: self.timetable[wkIndex].tuesday[time] = data
-						case 4: self.timetable[wkIndex].wednesday[time] = data
-						case 5: self.timetable[wkIndex].thursday[time] = data
-						case 6: self.timetable[wkIndex].friday[time] = data
+						case 2: self.timetable[wkIndex].monday 	[period] 	= data
+						case 3: self.timetable[wkIndex].tuesday	[period] 	= data
+						case 4: self.timetable[wkIndex].wednesday	[period]	= data
+						case 5: self.timetable[wkIndex].thursday	[period]	= data
+						case 6: self.timetable[wkIndex].friday 	[period] 	= data
 						default: failChanges.append(change); continue
 					}
 					successChanges.append(change)
@@ -319,12 +409,13 @@ enum Change: Codable {
 		case rooms([Int: String])
 	}
 
+	
 		/// Create a `Course2` inside the timetable
-	case	course_create(index: Int? = nil, Course2, timetable: Int)
+	case	course_create(index: UUID, Course2, timetable: Int)
 		/// Modify a course using a `Course2Change`
-	case	course_modify(index: Int, Course2Change, timetable: Int)
+	case	course_modify(index: UUID, Course2Change, timetable: Int)
 		/// Delete a course
-	case	course_delete(index: Int, timetable: Int)
+	case	course_delete(index: UUID, timetable: Int)
 
 
 
@@ -332,7 +423,7 @@ enum Change: Codable {
 		/// Add a week to the timetable
 	case	week_add(Timetable.TimetabledWeek, position: Int, timetable: Int)
 		/// Modify an entry in a week of the timetable
-	case	week_modifyEntry(weekIndex: Int, weekday: Int, time: Time24, [Int], timetable: Int)
+	case	week_modifyEntry(weekIndex: Int, weekday: Weekday, period: UUID, Times.Period.Contents, timetable: Int)
 		/// Remove a timetabled week
 	case	week_remove(Int, timetable: Int)
 
@@ -344,19 +435,19 @@ enum Change: Codable {
 		/// Rename a variation of day-period timing
 		case rename(_ to: String)
 		/// Change a `Period` in a variation of day-period timing
-		case modifyEntry(_ entry: Int, to: Times.Period)
+		case modifyEntry(_ entry: UUID, to: Times.Period)
 		/// Delete a `Period` **in** a variation of day-period timing
-		case deleteEntry(_ entry: Int)
+		case deleteEntry(_ entry: UUID)
 	}
 
 		/// Add a variation of period times
-	case	times_variants_add(key: Int, Times.Variant, timetable: Int)
+	case	times_variants_add(key: UUID, Times.Variant, timetable: Int)
 		///	Modify a variation of day-period timing
-	case	times_variant_modify(target: Times.Set, _ change: TimesVariantChange, timetable: Int)
+	case	times_variant_modify(target: Times.TimingSet, _ change: TimesVariantChange, timetable: Int)
 		/// Delete **a** variation of period times. Not to be confused with `times_variants_deleteEntry`
-	case 	times_variants_delete(_ key: Int, timetable: Int)
+	case 	times_variants_delete(_ key: UUID, timetable: Int)
 		/// Change the  period-times variation mapping for a day
-	case	times_variant_key(weekday: Int, variant: Int?, timetable: Int)
+	case	times_variant_key(weekday: Weekday, variant: Times.TimingSet?, timetable: Int)
 
 }
 
