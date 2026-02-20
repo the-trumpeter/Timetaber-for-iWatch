@@ -59,53 +59,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>72</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>71</string>
-					<key>Timestamp</key>
-					<string>789368499.51485</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Storage.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>		self.timetable = chaos //[_][self.ActiveTimetable]
-</string>
-				<key>leading</key>
-				<string>
-		self.timetables = [chaos]//[]
-</string>
-				<key>trailing</key>
-				<string>	}
-
-	///Apply a set of changes to stored data
-</string>
-			</dict>
-			<key>title</key>
-			<string>How to compute this?</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>57</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -182,7 +135,7 @@
 	//Ease-of-access variables for current/active timetable
 </string>
 				<key>trailing</key>
-				<string>	@Published var timetable: Timetable
+				<string>	//@Published var timetable: Timetable
 
 
 </string>
@@ -235,7 +188,7 @@
 </string>
 			</dict>
 			<key>title</key>
-			<string>1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
+			<string>PLAUNCH 1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -283,6 +236,100 @@
 			</dict>
 			<key>title</key>
 			<string>Watch app crash on boot (not on Saturday, susp. to be weekdays)</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>161</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>160</string>
+					<key>Timestamp</key>
+					<string>792046670.6817189</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Models/Timetable.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>		var monday, tuesday, wednesday, thursday, friday: [ UUID: Times.Period.Contents ]
+</string>
+				<key>leading</key>
+				<string>	struct TimetabledWeek: Codable {
+
+</string>
+				<key>trailing</key>
+				<string>
+		subscript(index: Weekday) -&gt; [ UUID: Times.Period.Contents ]? {
+			switch index {
+</string>
+			</dict>
+			<key>title</key>
+			<string>PRIORITY Make Contents optional, default unwrap to free period</string>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>28</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>27</string>
+					<key>Timestamp</key>
+					<string>792384366.51436</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string>					Button(symbol, systemImage: symbol) {
+</string>
+				<key>leading</key>
+				<string>			) {
+				ForEach(sfsymbols, id: \.self) { symbol in
+</string>
+				<key>trailing</key>
+				<string>						course.icon = symbol
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {dismiss()} )
+
+</string>
+			</dict>
+			<key>title</key>
+			<string>TODO: Button triggered if scroll started&amp;ended on it</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

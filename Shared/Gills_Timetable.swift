@@ -33,6 +33,8 @@ var chaos: Timetable = {
 	let theatreCrewID = 	UUID()
 	let visualArtsID = 		UUID()
 	let yearAssemblyID = 	UUID()
+	let travelID = 			UUID()
+	let gdgID = 			UUID()
 	let uniID = 			UUID()
 
 	let courses = [
@@ -46,7 +48,7 @@ var chaos: Timetable = {
 		musicLessonID: Course2("Music Lesson", icon: "music.note",                                             colour: "Graphite"),
 		multimediaID: Course2("Multimedia",     icon: "movieclapper",                rooms: ["GG2"],                 colour: "Blueberry"),
 		marchingBandID: Course2("Marching Band",icon: "flag.filled.and.flag.crossed",                                 colour: "Cherry",    listName:"Marching Bd.",    listIcon: "flag.2.crossed.circle.fill", iOSListIcon: "flag"),
-		crixID: Course2("Creative Ind.",     icon: "theatremasks",                    rooms: ["GG3"],    colour: "Blueberry"),
+		crixID: Course2("Creative Ind.",     icon: "theatermasks",                    rooms: ["GG3"],    colour: "Blueberry"),
 		pdhpeID: Course2("PDHPE",         icon: "figure.run",                 rooms: ["PRAC", "THEORY"],        colour: "Lime"),
 		recessID: Course2("Recess",         icon: "fork.knife",                                                 colour: "Graphite"),
 		seniorCBID: Course2("Senior C.B.",     icon: "music.note",                                                 colour: "Cherry"),
@@ -55,7 +57,9 @@ var chaos: Timetable = {
 		iStemID: Course2("iSTEM",             icon: "cpu",                     rooms: ["FT4"],                 colour: "Blueberry"),
 		theatreCrewID: Course2("Theatre Crew", icon: "headset",                                                 colour: "Peach"),
 		yearAssemblyID: Course2("Year Assembly",icon: "megaphone",                                                 colour: "Graphite",    listName: "Assembly",        listIcon: "person.2.circle.fill"),
-		uniID: Course2("UoN OOP", 				icon: "graduationcap", rooms: ["TBD", "Enroute"], colour: "graphite")
+		travelID: Course2("Travel", 				icon: "bus.fill", colour: "graphite"),
+		gdgID: Course2("GDGs", 				icon: "book.closed", rooms: [], colour: "graphite"),
+		uniID: Course2("Law @ UoN", 				icon: "graduationcap", rooms: ["X502"], colour: "black")
 	]
 
 	// Standard period IDs
@@ -140,7 +144,7 @@ var chaos: Timetable = {
 				   v930_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
 				   v930_P1a: Times.Period ("1",		startTime: 0910,	duration: 50),
 				   v930_ML: Times.Period ("ML",		startTime: 1000,	duration: 30),
-				   v930_P2: Times.Period ("2",		startTime: 1020,	duration: 50),
+				   v930_P2: Times.Period ("2",		startTime: 1030,	duration: 40),
 				   v930_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
 				   v930_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
 				   v930_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
@@ -265,8 +269,8 @@ var chaos: Timetable = {
 					vFri_P3: Contents(courseID: mathsID, roomIndex: 0),
 					vFri_P4: Contents(courseID: crixID, roomIndex: 0),
 					vFri_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					vFri_P4: Contents(courseID: englishID, roomIndex: 0),
-					vFri_travel: Contents(courseID: uniID, roomIndex: 1),
+					vFri_P5: Contents(courseID: englishID, roomIndex: 0),
+					vFri_travel: Contents(courseID: travelID, roomIndex: -1),
 					vFri_uni: Contents(courseID: uniID, roomIndex: 0)
 					//UUID(): Contents(course: 21, variant: 0)
 				]
@@ -330,7 +334,7 @@ var chaos: Timetable = {
 					vFri_P4: Contents(courseID: mathsID, roomIndex: 0),
 					vFri_Lunch: Contents(courseID: lunchID, roomIndex: 0),
 					vFri_P5: Contents(courseID: multimediaID, roomIndex: 0),
-					vFri_travel: Contents(courseID: uniID, roomIndex: 1),
+					vFri_travel: Contents(courseID: travelID, roomIndex: -1),
 					vFri_uni: Contents(courseID: uniID, roomIndex: 0)
 					//UUID(): Contents(course: 21, variant: 0)
 				]

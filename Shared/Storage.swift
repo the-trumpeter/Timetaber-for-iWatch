@@ -58,7 +58,7 @@ class Storage: ObservableObject {
 
 	//Ease-of-access variables for current/active timetable
 	var ActiveTimetable: Int = 0
-	@Published var timetable: Timetable
+	//@Published var timetable: Timetable
 
 
 
@@ -69,7 +69,7 @@ class Storage: ObservableObject {
 		self.ActiveTimetable = 0
 
 		self.timetables = [chaos]//[]
-		self.timetable = chaos //[_][self.ActiveTimetable]
+		//self.timetable = chaos //[_][self.ActiveTimetable]
 	}
 
 	///Apply a set of changes to stored data

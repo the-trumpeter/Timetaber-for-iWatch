@@ -11,10 +11,10 @@ import SwiftUI
 import OSLog
 
 
-
-
 ///White text against these colours is illegible; use black for them instead.
-let coloursNeedBlackForeground = ["Peach", "Lemon", "Ice", "Lime"]
+let coloursNeedBlackForeground = ["peach", "lemon", "ice", "lime"]
+///Black text against these colours (e.g. in ForEach and other non-Home views) is illegible; use white for them instead.
+let coloursNeedWhiteForeground = ["black", "blueberry"]
 
 
 @main

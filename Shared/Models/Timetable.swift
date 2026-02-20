@@ -82,7 +82,7 @@ struct Times: Codable, Equatable {
 
 		public struct Contents: Codable {
 			var courseID: UUID
-			var roomIndex: Int
+			var roomIndex: Int //TODO: Make this optional instead of using '-1'
 		}
 
 	}
@@ -125,7 +125,14 @@ enum TimeslotError: Error {
 	}
 }
 
-
+extension Array where Element == Timetable.TimetabledWeek {
+	subscript(index: WeekAB) -> Element? {
+		switch index {
+			case .a: return self[0]
+			case .b: return self[1]
+		}
+	}
+}
 
 //MARK: Timetable
 ///Contains all data of a user's timetable.
@@ -150,8 +157,10 @@ class Timetable: Codable {
 	///
 //	///Format as follows: `[ (Period UUID): [(Course UUID), (Room index in course)] ]
 	struct TimetabledWeek: Codable {
+
 		var monday, tuesday, wednesday, thursday, friday: [ UUID: Times.Period.Contents ]
-		subscript(index: Int) -> [ UUID: Times.Period.Contents ]? {
+
+		subscript(index: Weekday) -> [ UUID: Times.Period.Contents ]? {
 			switch index {
 				case 2: return monday
 				case 3: return tuesday
@@ -166,19 +175,10 @@ class Timetable: Codable {
 
 	//MARK: Period Contents from Timeslot
 	func periodContentsFromTimeslot(_ timeslot: Timeslot) throws -> (UUID, Times.Period.Contents) {
-		let week: TimetabledWeek = try {
-			switch timeslot.week {
-            case .a:
-                return self.timetable[0]
-            case .b:
-                // Ensure there is a second week available
-                guard self.timetable.count > 1 else {
-                    Logger.dateTime.fault("Timeslot contained invalid week: \(String(reflecting: timeslot.week) ) Timetable only contains 1 week.")
-                    throw TimeslotError.noWeekB
-                }
-                return self.timetable[1]
-            }
-		}()
+		guard let week: TimetabledWeek = self.timetable[timeslot.week] else {
+			Logger.dateTime.fault("Timeslot contained invalid week: \(String(reflecting: timeslot.week) ) Timetable only contains 1 week.")
+			throw TimeslotError.noWeekB
+		}
 
 		guard let day = week[timeslot.day] else {
 			Logger.dateTime.fault("Invalid weekday when getting period from timeslot")

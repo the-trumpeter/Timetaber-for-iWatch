@@ -16,7 +16,7 @@ enum TimeCase: Codable, Equatable {
 	case noTimetable
 	case beforeClass(startTime: Time24)
 	case afterClass
-//	case freePeriod
+	case freePeriod
 }
 
 
@@ -30,11 +30,11 @@ func noSchool(_ key: TimeCase? = nil) -> DisplayCourse {
 		case .noTimetable: "No timetable available."
 		case .beforeClass(let startTime): "First class at \(startTime.display())."
 		case .afterClass: "School's out for today!"
-	//	case .freePeriod: "No class right now"
+		case .freePeriod: "Study... or run to Maccas"
 		default: "Not yet, anyway..."
 	}
 	let name: String = switch key {
-	//	case .freePeriod: "Free Period"
+		case .freePeriod: "Free Period"
 		default: "No School"
 	}
 

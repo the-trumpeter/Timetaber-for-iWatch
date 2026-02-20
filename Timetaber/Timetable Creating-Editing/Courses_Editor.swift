@@ -71,8 +71,8 @@ fileprivate struct courseEdit: View {
 	@State private var coloursSheet = false
 	@State private var iconSheetPopover = false
 
-	let colours = ["Graphite", "Peach", "Lemon", "Rees1", "Apricot",
-				   "Lime", "Ice", "Blueberry", "Rose", "Cherry"]
+	let colours = ["graphite", "peach", "lemon", "rees1", "apricot",
+				   "lime", "ice", "blueberry", "rose", "cherry"]
 
 	@Environment(\.dismiss) var dismiss
 	@FocusState private var nameFieldIsFocused: Bool
@@ -120,7 +120,7 @@ fileprivate struct courseEdit: View {
 					.multilineTextAlignment(.leading)
 
 
-
+				//ICON
 				Button { iconSheetPopover.toggle() } label: {
 					//let colour = Colour(course.colour)
 					Image(systemName: course.icon)
@@ -133,7 +133,7 @@ fileprivate struct courseEdit: View {
 				}.sheet(isPresented: $iconSheetPopover) {
 					symbolchooser(course: $course, )//debugDelayDismiss: $debugSymbolDismissDelay)
 				}
-
+				//COLOURS
 				Button { coloursSheet.toggle() } label: {
 					let colour = Colour(course.colour)
 					Circle()
@@ -144,12 +144,13 @@ fileprivate struct courseEdit: View {
 								.stroke(colour.adjust(brightness: -0.2), lineWidth: 2)
 						}
 						.padding(5)
+
 				}.sheet(isPresented: $coloursSheet) {
 					HStack {
 						Image(systemName: course.icon.lowercased()).font(.title)
 						Text(course.name).font(.title)
 					}.padding(5)
-						.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(Colour(course.colour)) }//.secondary) }
+						.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(Colour(course.colour.lowercased())) }//.secondary) }
 
 
 					Grid {
@@ -158,11 +159,11 @@ fileprivate struct courseEdit: View {
 								let colour = colours[index]
 								Button { course.colour = colour } label: {
 									Circle()
-										.fill(Colour(colour))
+										.fill(Colour(colour.lowercased()))
 										.frame(width: 30, height: 30)
 										.overlay {
 											Circle()
-												.stroke(Colour(colour).adjust(brightness: -0.2), lineWidth: 2)
+												.stroke(Colour(colour.lowercased()).adjust(brightness: -0.2), lineWidth: 2)
 										}
 										.padding(5)
 										.overlay {
@@ -217,7 +218,7 @@ fileprivate struct courseEdit: View {
 				)
 				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled(); #warning("TODO Create SF Symbol chooser")
 				 */
-			}//.padding(.leading) // icon
+			}//.padding(.leading) // icon old
 
 			List {
 				ForEach(Array(course.rooms.keys), id: \.self) { roomKey in
@@ -264,6 +265,7 @@ fileprivate struct courseEdit: View {
 					}
 				}
 			} // save/cancel
+			.navigationBarTitleDisplayMode(.inline)
 
 		}//.padding()
 
@@ -334,6 +336,7 @@ fileprivate struct coursebutton: View {
 		.sheet(isPresented: $showingSheet) {
 			courseEdit(tblIndex: tblIndex, pos: pos, isNewCourse: isNewCourse, parentCourse: course, course: course.wrappedValue, pendingChanges: pendingChanges)
 				.presentationDetents([.medium])
+				.interactiveDismissDisabled()
 		}
 		.onChange(of: courseExists) { _, exists in
 			if !exists {
@@ -378,6 +381,11 @@ struct CoursesEditor: View {
                 ForEach(sortedCourses, id: \.id) { entry in
                     let index = entry.id
                     coursebutton(localCourses: $localCourses, tblIndex: tblIndex, pos: index, pendingChanges: $pendingChanges)
+						.swipeActions(edge: .trailing) {
+							Button("Delete", role: .destructive) {
+								pendingChanges = [Change.course_delete(index: index, timetable: tblIndex)] + (pendingChanges ?? [])
+							}
+						}
 				}
 
 				Button("Add Course", systemImage: "plus") {
@@ -400,7 +408,8 @@ struct CoursesEditor: View {
 
 
 
-			}.toolbar {
+			}
+			.toolbar {
 				ToolbarItem(placement: .confirmationAction) {
 					if !(pendingChanges?.isEmpty ?? true) {
 						Button("Save", systemImage: "checkmark") {
@@ -409,10 +418,11 @@ struct CoursesEditor: View {
 
 							store.applyChanges(pendingChanges!)
 
-							pendingChanges = nil
 						}
 					}
+
 				}
+
 			}
 
 			.onAppear {
@@ -434,9 +444,13 @@ struct CoursesEditor: View {
 			}
 			Button("Cancel", role: .cancel) {}
 		}.navigationTitle("All Courses")
-			.onAppear {
-				Logger.editCourses.log("Started editing courses")
-			}
+		.onAppear {
+			Logger.editCourses.log("Started editing courses")
+		}
+		.navigationBarTitleDisplayMode(.inline)
 	}
 }
 
+#Preview {
+	CoursesEditor(tblIndex: 0)
+}

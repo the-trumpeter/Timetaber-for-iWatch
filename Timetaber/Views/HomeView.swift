@@ -107,7 +107,8 @@ struct HomeView: View {
 				coloursNeedBlackForeground.contains(course.colour) ?
 					Colour.black : .primary
 			)
-			.if(!coloursNeedBlackForeground.contains(course.colour)) { $0.colorInvert() }
+			.if(!coloursNeedBlackForeground.contains(course.colour)) { $0.colorInvert()
+			}
 
 			.padding()
 		}

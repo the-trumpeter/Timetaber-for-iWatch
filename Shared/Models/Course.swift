@@ -40,7 +40,7 @@ struct Course2: Codable, Equatable {
 		self.name = name
 		self.icon = icon
 		self.rooms = Dictionary(uniqueKeysWithValues: zip(rooms.indices, rooms))
-		self.colour = colour
+		self.colour = colour.lowercased()
 
 		self.listName = listName
 		self.listIcon = listIcon ?? (icon+".circle.fill")
@@ -56,7 +56,7 @@ struct Course2: Codable, Equatable {
 		self.name = course.name
 		self.icon = course.icon
 		self.rooms = if course.room != nil { [0: course.room!] } else { [:] }
-		self.colour = course.colour
+		self.colour = course.colour.lowercased()
 		self.listName = course.listName
 		self.listIcon = course.listIcon
 		self.joke = course.joke
@@ -95,7 +95,7 @@ struct DisplayCourse {
 		self.name = name
 		self.icon = icon
 		self.room = room
-		self.colour = colour
+		self.colour = colour.lowercased()
 
 		self.listName = listName ?? name
 		self.listIcon = listIcon ?? (icon+".circle.fill")
@@ -109,7 +109,7 @@ struct DisplayCourse {
 		self.name = course2.name
 		self.icon = course2.icon
 		self.room = room
-		self.colour = course2.colour
+		self.colour = course2.colour.lowercased()
 		self.listName = course2.listName ?? name
 		self.listIcon = course2.listIcon
 		self.joke = course2.joke

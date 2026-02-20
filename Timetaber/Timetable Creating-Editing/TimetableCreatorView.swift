@@ -174,7 +174,7 @@ fileprivate struct timetableOptions: View {
 
 				NavigationLink {
 					EditTimetableView()
-				} label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.red); Text("Timetable").foregroundStyle(.primary); Spacer(); Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary) } }; #warning("Revert label to initialiser (remove Image and HStack) at completion of timetable editor")
+				} label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.yellow); Text("Timetable").foregroundStyle(.primary); Spacer(); Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary) } }; #warning("Revert label to initialiser (remove Image and HStack) at completion of timetable editor")
 
 				// Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) { }
 

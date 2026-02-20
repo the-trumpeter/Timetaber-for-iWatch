@@ -362,7 +362,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 	}
 
 
-	guard (2...6).contains(todayWeekday) else {
+	guard todayWeekday >= 2, todayWeekday <= 6 else {
 		Logger.dateTime.info("Got current class. There's no school at the moment. [weekend]")
 		return (
 			current: noSchool(.weekend),

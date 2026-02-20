@@ -64,7 +64,7 @@ struct NewTermSheet: View {
 					.foregroundStyle(.gray)
 					.font(.system(size: 13))
 				
-			}.background(Colour("NoCol"))
+			}.background(Colour.clear)
 		}
 	}
 	

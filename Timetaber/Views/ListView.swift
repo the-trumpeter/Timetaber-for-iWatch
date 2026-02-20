@@ -122,7 +122,9 @@ struct TimetableView: View {
 		self.weekday = wkday
 		self.week = wk
 
-		self.day = getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: tbl)
+		self.day = if wkday >= 2 && wkday <= 6 {
+			getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: tbl)
+		} else { [:] }
 
 		self.courses = Binding(get: {
 			Storage.shared.timetables[tblIndex].courses
@@ -195,12 +197,13 @@ struct TimetableView: View {
 				Image(systemName: "exclamationmark.triangle").foregroundStyle(.secondary).font(.title).bold(false)
 				Text("Error \(#line)").foregroundStyle(.secondary).multilineTextAlignment(.center).bold()
 				Text(String(describing: fail?.room)).foregroundStyle(.secondary).multilineTextAlignment(.center)
-			} else if Storage.shared.termRunningGB == false {
+			/*} else if Storage.shared.termRunningGB == false {
 				//Text("No school right now.\nIt's the holidays.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
 				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
 			} else if weekdayNumber(.now) != 1 || weekdayNumber(.now) != 7 {
 				//Text("No school right now.\nIt's the weekend.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
 				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
+			 */
 			} else {
 				//Text("No school right now.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
 				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
