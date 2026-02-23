@@ -278,7 +278,7 @@ fileprivate struct TimesSheetView: View {
 				ToolbarItem(placement: .confirmationAction) {
 					Button("Save", systemImage: "checkmark") {
 						parent.wrappedValue = period
-						Logger.editTimes.log("Saved changes to UI period")
+						Logger.editTimes.log("Saved changes to times sheet")
 						dismiss()
 					}
 				}

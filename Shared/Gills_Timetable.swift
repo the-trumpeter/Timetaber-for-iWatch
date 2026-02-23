@@ -151,8 +151,7 @@ var chaos: Timetable = {
 				   v930_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
 				   v930_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
 				   v930_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
-				   v930_GDG: Times.Period("GDGs", startTime: 1510,		duration: 105)
-
+				   v930_GDG: Times.Period("GDGs", startTime: 1510,		duration: 145)
 			   ]),
 			   UUID():	Times.Variant("tue", 		variant: [
 				   v5pm_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),

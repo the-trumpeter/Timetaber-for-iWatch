@@ -6,6 +6,9 @@
 //
 //  This file (and Storage.swift) also contain general stuff for all targets, e.g. typealias, logging
 
+//	zsh to count lines of code in proj
+//		cloc --include-lang=swift --not-match-d=Local,Old ~/Documents/GitHub/Timetaber
+
 import Foundation
 import SwiftUI
 import OSLog

@@ -54,7 +54,7 @@ class Storage: ObservableObject {
 	///All timetables that the user has created.
 	///
 	///The iOS app is the source of truth.
-	@Published var timetables: [Timetable]
+	@Published var timetables: [Timetable] = []
 
 	//Ease-of-access variables for current/active timetable
 	var ActiveTimetable: Int = 0
@@ -68,8 +68,36 @@ class Storage: ObservableObject {
 
 		self.ActiveTimetable = 0
 
-		self.timetables = [chaos]//[]
-		//self.timetable = chaos //[_][self.ActiveTimetable]
+        if let loaded = try? loadTimetables(), !loaded.isEmpty {
+            self.timetables = loaded
+            Logger.general.debug("Loaded timetables from persistence: count=\(loaded.count)")
+        } else {
+            self.timetables = [chaos]
+			Logger.general.warning("Could not load timetables, applying default timetable 'chaos' (Gill's timetable)")
+            do {
+                try saveTimetables()
+            } catch {
+                Logger.general.fault("Initial save failed: \(String(describing: error))")
+            }
+            Logger.general.debug("Initialized default timetables and saved")
+        }
+	}
+
+	private let timetablesStorageKey = "timetaber.userdefaults.timetables"
+
+	private func saveTimetables() throws {
+		let encoder = JSONEncoder()
+		// If Timetable/contained types use non-JSON-friendly keys, ensure Codable conformance matches
+		let data = try encoder.encode(timetables)
+		UserDefaults.standard.set(data, forKey: timetablesStorageKey)
+	}
+
+	private func loadTimetables() throws -> [Timetable] {
+		guard let data = UserDefaults.standard.data(forKey: timetablesStorageKey) else {
+			return []
+		}
+		let decoder = JSONDecoder()
+		return try decoder.decode([Timetable].self, from: data)
 	}
 
 	///Apply a set of changes to stored data
@@ -177,7 +205,7 @@ class Storage: ObservableObject {
 					var timetable = self.timetables[tblIndex]
 					var week = timetable.timetable[wkIndex]
 					switch wkday {
-						case 2: week.tuesday[time] = data
+						case 2: week.monday[time] = data
 						case 3: week.tuesday[time] = data
 						case 4: week.wednesday[time] = data
 						case 5: week.thursday[time] = data
@@ -217,6 +245,12 @@ class Storage: ObservableObject {
 
 		}//for each
 		Logger.timetableChanges.info("Successfully applied changes to stored data:\n\t\(changes)")
+		do {
+			try saveTimetables()
+			Logger.general.debug("Saved timetables after applyChanges")
+		} catch {
+			Logger.general.fault("Failed to save timetables after applyChanges: \(String(describing: error))")
+		}
 		reload()
 	}//func applyChanges(_)
 
@@ -250,7 +284,7 @@ class Storage: ObservableObject {
 }
 
 func reload() -> Void {
-	let now = getCurrentClass2(date: .now, timetable: chaos)
+	let now = getCurrentClass2(date: .now, timetable: Storage.shared.timetables[Storage.shared.ActiveTimetable])
 	LocalData.shared.currentCourse = now.0
 	LocalData.shared.nextCourse = now.1
 	LocalData.shared.currentTime = now.2
