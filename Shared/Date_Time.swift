@@ -247,7 +247,7 @@ enum findTimesError: Error {
 	case invalidMapping(_ fail: DisplayCourse)
 }
 
-func findTimes(_ wkday: Int, _ timetable: Timetable) throws -> [ (Time24, Optional<UUID>) ] {
+func findTimes(_ wkday: Int, _ timetable: Timetable, includeFinishTime: Bool = true) throws -> [ (Time24, Optional<UUID>) ] {
 	if let mapKey = timetable.times.mapping[wkday] {
 
 		//Logger.dateTime.debug("findTimes got map key \(mapKey)")
@@ -265,11 +265,14 @@ func findTimes(_ wkday: Int, _ timetable: Timetable) throws -> [ (Time24, Option
 
 		var times: [(Time24, UUID?)] = variant.map { ($1.startTime, $0 as UUID?) }.sorted(by: { $0.0 < $1.0 })
 
-		let lastPeriod = variant.sorted { $0.value.startTime < $1.value.startTime }.last?.value
-		let existingStart = Date(time24: lastPeriod?.startTime ?? 0900) //fetch start time of last period
-		let end = existingStart.addingTimeInterval(TimeInterval((lastPeriod?.duration ?? 0) * 60 ))
+		if includeFinishTime {
 
-		times.append( (Time24(from: end), nil) )
+			let lastPeriod = variant.sorted { $0.value.startTime < $1.value.startTime }.last?.value
+			let existingStart = Date(time24: lastPeriod?.startTime ?? 0900) //fetch start time of last period
+			let end = existingStart.addingTimeInterval(TimeInterval((lastPeriod?.duration ?? 0) * 60 ))
+
+			times.append( (Time24(from: end), nil) )
+		}
 
 		return times
 	}
@@ -298,8 +301,8 @@ func findClassFromTimeWeekDayAndIfWeekIsA_2(timetable: Timetable, period periodI
 
 	// Expecting `[courseId, roomIndex]` at this time key
 	guard let pair = timetableDay?[periodID] else {
-		Logger.dateTime.fault("Time \(periodID) not found in timetableDay, or weekday \(weekDay) is invalid")
-		return failCourse(feedback: "Error D\(#line)")
+		Logger.dateTime.warning("Time \(periodID) not found in timetableDay (probably a free period), or weekday \(weekDay) is invalid")
+		return noSchool(.freePeriod)//failCourse(feedback: "Error D\(#line)")
 	}
 	/* (from the brief days when it was an array)
 	// Ensure the pair has at least two integers

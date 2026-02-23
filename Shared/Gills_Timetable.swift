@@ -54,7 +54,7 @@ var chaos: Timetable = {
 		seniorCBID: Course2("Senior C.B.",     icon: "music.note",                                                 colour: "Cherry"),
 		scienceID: Course2("Science",         icon: "flask",                         rooms: ["FT10"],                 colour: "Ice",                                    listIcon: "flame.circle.fill"),
 		stageBandID: Course2("Stage Band",    icon: "music.note",                                                 colour: "Cherry",     listName: "Senior S.B."),
-		iStemID: Course2("iSTEM",             icon: "cpu",                     rooms: ["FT4"],                 colour: "Blueberry"),
+		iStemID: Course2("iSTEM",             icon: "cpu",                     rooms: ["GG2"],                 colour: "Blueberry"),
 		theatreCrewID: Course2("Theatre Crew", icon: "headset",                                                 colour: "Peach"),
 		yearAssemblyID: Course2("Year Assembly",icon: "megaphone",                                                 colour: "Graphite",    listName: "Assembly",        listIcon: "person.2.circle.fill"),
 		travelID: Course2("Travel", 				icon: "bus.fill", colour: "graphite"),
@@ -83,6 +83,7 @@ var chaos: Timetable = {
 	let v930_P4 = UUID()
 	let v930_Lunch = UUID()
 	let v930_P5 = UUID()
+	let v930_GDG = UUID()
 
 	// Variant: Band til 5pm
 	let v5pm_CheckIn = UUID()
@@ -142,14 +143,16 @@ var chaos: Timetable = {
 		   variants: [
 			   UUID():	Times.Variant("mon",	variant: [
 				   v930_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
-				   v930_P1a: Times.Period ("1",		startTime: 0910,	duration: 50),
-				   v930_ML: Times.Period ("ML",		startTime: 1000,	duration: 30),
-				   v930_P2: Times.Period ("2",		startTime: 1030,	duration: 40),
+				   v930_P1a: Times.Period ("1",		startTime: 0910,	duration: 35),
+				   v930_ML: Times.Period ("ML",		startTime: 945,		duration: 30),
+				   v930_P2: Times.Period ("2",		startTime: 1015,	duration: 55),
 				   v930_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
 				   v930_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
 				   v930_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
 				   v930_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
-				   v930_P5: Times.Period ("5",		startTime: 1410,	duration: 60)
+				   v930_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
+				   v930_GDG: Times.Period("GDGs", startTime: 1510,		duration: 105)
+
 			   ]),
 			   UUID():	Times.Variant("tue", 		variant: [
 				   v5pm_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
@@ -224,6 +227,7 @@ var chaos: Timetable = {
 					v930_P4: Contents(courseID: pdhpeID,		roomIndex: 0),
 					v930_Lunch: Contents(courseID: jrStageID,	roomIndex: 0),
 					v930_P5: Contents(courseID: iStemID,		roomIndex: 0),
+					v930_GDG: Contents(courseID: gdgID, 		roomIndex: 0)
 					//UUID(): Contents(course: 21, variant: 0)
 				],
 				tuesday: [
@@ -280,14 +284,16 @@ var chaos: Timetable = {
 			Timetable.TimetabledWeek(
 				monday: [
 					v930_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
-					v930_P1a: Contents(courseID: multimediaID, roomIndex: 0),
-					v930_ML: Contents(courseID: musicLessonID, roomIndex: 0),
-					v930_P2: Contents(courseID: mathsID, roomIndex: 1),
-					v930_Recess: Contents(courseID: recessID, roomIndex: 0),
-					v930_P3: Contents(courseID: iStemID, roomIndex: 0),
-					v930_P4: Contents(courseID: jrStageID, roomIndex: 0),
-					v930_Lunch: Contents(courseID: pdhpeID, roomIndex: 1),
-					//UUID(): Contents(course: 21, variant: 0)
+					v930_P1a: Contents(courseID: multimediaID, 	roomIndex: 0),
+					v930_ML: Contents(courseID: musicLessonID, 	roomIndex: 0),
+					v930_P2: Contents(courseID: mathsID, 		roomIndex: 1),
+					v930_Recess: Contents(courseID: recessID, 	roomIndex: 0),
+					v930_P3: Contents(courseID: iStemID, 		roomIndex: 0),
+					v930_P4: Contents(courseID: crixID, 		roomIndex: 0),
+					v930_Lunch: Contents(courseID: jrStageID, 	roomIndex: 0),
+					v930_P5: Contents(courseID: pdhpeID, 		roomIndex: 1),
+					v930_GDG: Contents(courseID: gdgID, 		roomIndex: 0)
+					//UUID(): Contents(course: 21, variant: 0)x
 				],
 				tuesday: [
 					v5pm_CheckIn: Contents(courseID: checkInID, roomIndex: 0),

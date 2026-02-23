@@ -82,55 +82,70 @@ class Storage: ObservableObject {
 			switch change {
 
 				case .course_create(index: let index, let value, timetable: let tblIndex):
-				self.timetables[tblIndex].courses.updateValue(value, forKey:  index )
+					var timetable = self.timetables[tblIndex]
+					timetable.courses.updateValue(value, forKey:  index )
+					self.timetables[tblIndex] = timetable
 
 				case .course_delete(index: let index, timetable: let tblIndex):
-					self.timetables[tblIndex].courses.removeValue(forKey: index)
+					var timetable = self.timetables[tblIndex]
+					timetable.courses.removeValue(forKey: index)
+					self.timetables[tblIndex] = timetable
 
 				case .course_modify(index: let index, let coursechange, timetable: let tblIndex):
+					var timetable = self.timetables[tblIndex]
 					switch coursechange {
-						case .colour(let new):	self.timetables[tblIndex].courses[index]?.colour = new
-						case .rooms	(let new):	self.timetables[tblIndex].courses[index]?.rooms	 = new
-						case .icon	(let new):	self.timetables[tblIndex].courses[index]?.icon	 = new
-						case .name	(let new):	self.timetables[tblIndex].courses[index]?.name	 = new
+						case .colour(let new):	timetable.courses[index]?.colour = new
+						case .rooms	(let new):	timetable.courses[index]?.rooms	 = new
+						case .icon	(let new):	timetable.courses[index]?.icon	 = new
+						case .name	(let new):	timetable.courses[index]?.name	 = new
 					}
+					self.timetables[tblIndex] = timetable
 
 
 				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: let tblIndex):
+					var timetable = self.timetables[tblIndex]
 					guard let variant else {
-						self.timetables[tblIndex].times.mapping.removeValue(forKey: wkday)
+						timetable.times.mapping.removeValue(forKey: wkday)
+						self.timetables[tblIndex] = timetable
 						break
 					}
-					self.timetables[tblIndex].times.mapping.updateValue(variant, forKey: wkday)
+					timetable.times.mapping.updateValue(variant, forKey: wkday)
+					self.timetables[tblIndex] = timetable
 
 				case .times_variants_add(key: let key, let variant, timetable: let tblIndex):
-					self.timetables[tblIndex].times.variants.updateValue(variant, forKey: key)
+					var timetable = self.timetables[tblIndex]
+					timetable.times.variants.updateValue(variant, forKey: key)
+					self.timetables[tblIndex] = timetable
 
 				case .times_variant_modify(target: let target, let variantChange, timetable: let tblIndex):
+					var timetable = self.timetables[tblIndex]
 					switch variantChange {
 
 						case .rename(let name):
 							switch target {
 							case .standard: Logger.timetableChanges.fault("Can't rename Standard times! variantChange: \(String(reflecting: variantChange))"); continue
 							case .variant(let key):
-								self.timetables[tblIndex].times.variants[key]?.name = name
+								timetable.times.variants[key]?.name = name
 							}
 
 						case .modifyEntry(let setIdx, to: let value):
 							switch target {
-								case .standard: self.timetables[tblIndex].times.standard[setIdx] = value
-								case .variant(let key): self.timetables[tblIndex].times.variants[key]?.variant[setIdx] = value
+								case .standard: timetable.times.standard[setIdx] = value
+								case .variant(let key): timetable.times.variants[key]?.variant[setIdx] = value
 							}
 
 						case .deleteEntry(let deletee):
 							switch target {
-								case .standard: self.timetables[tblIndex].times.standard.removeValue(forKey: deletee)
-								case .variant(let key): self.timetables[tblIndex].times.variants[key]?.variant.removeValue(forKey: deletee)
+								case .standard: timetable.times.standard.removeValue(forKey: deletee)
+								case .variant(let key): timetable.times.variants[key]?.variant.removeValue(forKey: deletee)
 							}
 					}
+					self.timetables[tblIndex] = timetable
 
 				case .times_variants_delete(let del, timetable: let tblIndex):
-					self.timetables[tblIndex].times.variants.removeValue(forKey: del)
+					var timetable = self.timetables[tblIndex]
+					timetable.times.variants.removeValue(forKey: del)
+					self.timetables[tblIndex] = timetable
 
 
 				case .timetable_create(let value, index: let idx):
@@ -140,30 +155,63 @@ class Storage: ObservableObject {
 					self.timetables.remove(at: idx)
 
 				case .timetable_icon(let icon, timetable: let tblIndex):
-					self.timetables[tblIndex].icon = icon
+					var timetable = self.timetables[tblIndex]
+					timetable.icon = icon
+					self.timetables[tblIndex] = timetable
 
 				case .timetable_name(let name, timetable: let tblIndex):
-					self.timetables[tblIndex].name = name
+					var timetable = self.timetables[tblIndex]
+					timetable.name = name
+					self.timetables[tblIndex] = timetable
 
 
 				case .week_add(let week, position: let pos, timetable: let tblIndex):
 					guard self.timetables[tblIndex].timetable.count < 2 else {
 						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#fileID):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
 					}
-					self.timetables[tblIndex].timetable.insert(week, at: pos)
+					var timetable = self.timetables[tblIndex]
+					timetable.timetable.insert(week, at: pos)
+					self.timetables[tblIndex] = timetable
 
 				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, period: let time, let data, timetable: let tblIndex):
+					var timetable = self.timetables[tblIndex]
+					var week = timetable.timetable[wkIndex]
 					switch wkday {
-						case 2: self.timetables[tblIndex].timetable[wkIndex].tuesday[time] = data
-						case 3: self.timetables[tblIndex].timetable[wkIndex].tuesday[time] = data
-						case 4: self.timetables[tblIndex].timetable[wkIndex].wednesday[time] = data
-						case 5: self.timetables[tblIndex].timetable[wkIndex].thursday[time] = data
-						case 6: self.timetables[tblIndex].timetable[wkIndex].friday[time] = data
+						case 2: week.tuesday[time] = data
+						case 3: week.tuesday[time] = data
+						case 4: week.wednesday[time] = data
+						case 5: week.thursday[time] = data
+						case 6: week.friday[time] = data
 						default: break
 					}
+					timetable.timetable[wkIndex] = week
+					self.timetables[tblIndex] = timetable
+
+			case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: let tblIndex):
+				let weekIndex: Int = (wkIndex == .a) ? 0 : 1
+				guard self.timetables[tblIndex].timetable.indices.contains(weekIndex) else {
+					Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(reflecting: wkIndex))")
+					continue
+				}
+				var timetable = self.timetables[tblIndex]
+				var week = timetable.timetable[weekIndex]
+				switch wkday {
+					case 2: week.monday[pd]	= nil
+					case 3: week.tuesday[pd]	= nil
+					case 4: week.wednesday[pd] = nil
+					case 5: week.thursday[pd]	= nil
+					case 6: week.friday[pd]	= nil
+					default:
+						Logger.timetableChanges.fault("Invalid weekday \(wkday)")
+						continue
+				}
+				timetable.timetable[weekIndex] = week
+				self.timetables[tblIndex] = timetable
 
 				case .week_remove(let wkIndex, timetable: let tblIndex):
-					self.timetables[tblIndex].timetable.remove(at: wkIndex)
+					var timetable = self.timetables[tblIndex]
+					timetable.timetable.remove(at: wkIndex)
+					self.timetables[tblIndex] = timetable
 
 			}//switch
 

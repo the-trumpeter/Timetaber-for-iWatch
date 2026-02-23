@@ -36,7 +36,7 @@ fileprivate struct DisplayEntry: View {
 		self.timeslotIdentifier = timeslot
         self.courses = courses
 		
-		let key: Int = timeslot.time
+		// let key: Int = timeslot.time
 
 
 		guard let tP = timesPair.1 else {
@@ -219,10 +219,10 @@ struct TimetableView: View {
 			}*/
 		}.onAppear {
 			do {
-				times = try findTimes(weekday, storage.timetables[tblIndex])//.map({$0.0})
-			} catch findTimesError.invalidMapping(let faily) {
+				times = try findTimes(weekday, storage.timetables[tblIndex], includeFinishTime: false)//.map({$0.0})
+			} catch findTimesError.invalidMapping(let failDisp) {
 				error = true
-				fail = faily
+				fail = failDisp
 			} catch {
 				fatalError("findTimes threw other than findTimesError.invalidMapping")
 			}

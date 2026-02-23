@@ -12,7 +12,7 @@ import OSLog
 I'm gonna plan this well
 
 
-MARK: - EditTimetableView
+MARK: - Routing Weekday/WeekAB
 • Navigate timetable view
 	• 2WEEKS LEVEL 1
 	• master view for editing timetable
@@ -77,7 +77,7 @@ struct EditTimetableView: View {
 	}//end var body
 }// end struct EditTimetableView
 
-//MARK: TimetablePeriodRow
+//MARK: Period Row / Button
 /// Row displaying a single period in the day editor.
 /// Now takes a Binding to the period contents so edits can propagate.
 fileprivate struct TimetablePeriodRow: View {
@@ -223,7 +223,7 @@ fileprivate struct TimetablePeriodRow: View {
 }
 
 /*
-MARK: - EditTimetableDayView
+MARK: - Edit day view
 • Day view
 	• 1DAY LEVEL 2
 	• SAVE CHANGES FROM HERE
@@ -236,12 +236,18 @@ fileprivate struct EditTimetableDayView: View {
 	let tblIndex: Int
 
 	let timesVariation: (set: Times.TimingSet, variant: [UUID: Times.Period], name: String?)
-	@State var day: [ UUID: Times.Period.Contents? ]
+	let timingDetails: (weekab: WeekAB, weekday: Weekday)
+
+
+	@State var day: [ UUID: Times.Period.Contents? ] //THIS IS WHAT WE'RE EDITING
 
 	var pendingChanges: [Change] = []
+	@State var isPendingChanges = false
 
 	init(tblIndex: Int, week: WeekAB, day: Weekday) {
 		let store = Storage.shared
+
+		self.timingDetails = (week, day)
 
 		//note if timetable doesn't have specified week before crashing. that's a Testflight Me probem.
 		if !store.timetables.indices.contains(tblIndex) {
@@ -276,35 +282,137 @@ fileprivate struct EditTimetableDayView: View {
 	}
 
 
+    func compileChanges() -> [Change] {
+        // Original snapshot for this week/day from storage (non-optional contents)
+        guard let originalDay = origin.timetables[tblIndex]
+            .timetable[timingDetails.weekab]?[timingDetails.weekday] else {
+            Logger.editTimetable.fault("Couldn't load original day for week/day \(String(reflecting: timingDetails))")
+            return []
+        }
+
+        var changes: [Change] = []
+
+        // Union of keys between original (non-optional) and edited (optional) dictionaries
+        let allKeys = Set(originalDay.keys).union(day.keys)
+
+        for periodID in allKeys {
+            let originalValue: Times.Period.Contents? = originalDay[periodID]
+            let editedValue: Times.Period.Contents?? = day[periodID] // outer optional: key existence; inner optional: free period
+
+            switch (originalValue, editedValue) {
+            case (nil, nil):
+                // Neither had a value (unlikely because original is non-optional, but safe to ignore)
+                break
+
+            case (nil, .some(let maybeNew)):
+                // Newly assigned contents where there wasn't one before
+                if let newValue = maybeNew {
+                    changes.append(
+                        .week_modifyEntry(
+                            weekIndex: (timingDetails.weekab == .a ? 0 : 1),
+                            weekday: timingDetails.weekday,
+                            period: periodID,
+                            newValue,
+                            timetable: tblIndex
+                        )
+                    )
+                } else {
+					changes.append(
+						.week_makeFreeEntry(
+							weekab: timingDetails.weekab,
+							weekday: timingDetails.weekday,
+							period: periodID,
+							timetable: tblIndex
+						)
+					)
+                }
+
+            case (.some(let old), .some(let maybeNew)):
+                // Had a value before; may be updated or cleared now
+                if let newValue = maybeNew {
+                    if old.courseID != newValue.courseID || old.roomIndex != newValue.roomIndex {
+                        changes.append(
+                            .week_modifyEntry(
+                                weekIndex: (timingDetails.weekab == .a ? 0 : 1),
+                                weekday: timingDetails.weekday,
+                                period: periodID,
+                                newValue,
+                                timetable: tblIndex
+                            )
+                        )
+                    }
+                } else {
+					changes.append(
+						.week_makeFreeEntry(
+							weekab: timingDetails.weekab,
+							weekday: timingDetails.weekday,
+							period: periodID,
+							timetable: tblIndex
+						)
+					)
+                }
+
+            case (.some, nil):
+                // Previous value existed, key now missing: treat as free period
+                changes.append(
+                    .week_makeFreeEntry(
+                        weekab: timingDetails.weekab,
+                        weekday: timingDetails.weekday,
+                        period: periodID,
+                        timetable: tblIndex
+                    )
+                )
+            }
+        }
+
+        return changes
+    }
+
+
 	var body: some View {
+		NavigationStack {
+			List {
+				//list entry
+				let courses = origin.timetables[tblIndex].courses
+				ForEach(timesVariation.variant.sorted {$0.value.startTime<$1.value.startTime}, id: \.key
+				) { (pdID, period) in
 
-		List {
-			//list entry
-			let courses = origin.timetables[tblIndex].courses
-            ForEach(timesVariation.variant.sorted {$0.value.startTime<$1.value.startTime}, id: \.key
-			) { (pdID, period) in
-
-				/*
-				 MARK: - Period List Entry View
-				 Do I really need this? It's just a HStack
-				• Period list item day
-					• EXTRACTED TEMPLATE
-					• LIST TEMPLATE VIEW used multiple times by parent view
-					• Reuseable template for Day view (used in the list of periods
-				 */
-				TimetablePeriodRow(
-					period: period,
-					contents: Binding(
-						get: { day[pdID] ?? nil },
-						set: { day[pdID] = $0 }
-					),
-					courses: courses
-				)
-				.listRowInsets(EdgeInsets())
+					TimetablePeriodRow(
+						period: period,
+						contents: Binding(
+							get: { day[pdID] ?? nil },
+							set: { day[pdID] = $0 }
+						),
+						courses: courses
+					)
+					.listRowInsets(EdgeInsets())
 
 
-			}//foreach
-		}//list
+				}//foreach
+			}//list
+			.toolbar {
+				ToolbarItem(placement: .confirmationAction) {
+					if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
+
+						Button("Save changes", systemImage: "checkmark") {
+							let changes = compileChanges()
+							Logger.editTimetable.log("Saving \(changes.count) Changes to timetable.")
+							do {
+								try origin.distributeChanges(changes)
+
+							} catch {
+//								Logger.editTimetable.fault("Could not distrubute changes: \n\(changes)")
+								return
+							}
+							origin.applyChanges(changes)
+							Logger.editTimetable.log("Saved changes?")
+							// Reset local `day` to match the updated model so Save button disappears
+							day = origin.timetables[tblIndex].timetable[timingDetails.weekab]![timingDetails.weekday]!
+						}.tint(.blue)
+					}
+				}
+			}
+		}
 
 	}//body
 }
@@ -313,14 +421,7 @@ fileprivate struct EditTimetableDayView: View {
 
 
 
-/*
 
-• Edit period sheet
-	• 1PERIOD LEVEL 3
-	• Base editing view; edit the course in a period and the room of that course
-	• Also can: Clear period (free period)
-
- */
 
 
 

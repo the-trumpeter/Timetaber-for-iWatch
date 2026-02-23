@@ -80,7 +80,7 @@ struct Times: Codable, Equatable {
 			self.duration = dur
 		}
 
-		public struct Contents: Codable {
+		public struct Contents: Codable, Equatable {
 			var courseID: UUID
 			var roomIndex: Int //TODO: Make this optional instead of using '-1'
 		}
@@ -125,18 +125,21 @@ enum TimeslotError: Error {
 	}
 }
 
-extension Array where Element == Timetable.TimetabledWeek {
+extension Array where Element == Timetable.TimetabledWeek  {
+
 	subscript(index: WeekAB) -> Element? {
 		switch index {
 			case .a: return self[0]
 			case .b: return self[1]
 		}
 	}
+
 }
+
 
 //MARK: Timetable
 ///Contains all data of a user's timetable.
-class Timetable: Codable {
+struct Timetable: Codable {
 	var name: String
 	var icon: String
 
@@ -260,7 +263,8 @@ class Timetable: Codable {
 
 	 Do not run `applyChanges` unless you have first successfully sent those changes to a user's Apple Watch via `distrubuteChanges`. If no Apple Watch is present, `distributeChanges` will return success.
 	 */
-	func applyChanges(_ changes: [Change] ) {
+	mutating func applyChanges(_ changes: [Change] ) {
+		let name = self.name
 		var successChanges: [Change] = []
 		var failChanges: [Change] = []
 		for change in changes {
@@ -352,18 +356,37 @@ class Timetable: Codable {
 					}
 					successChanges.append(change)
 
+				case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: _):
+					let weekIndex: Int = (wkIndex == .a) ? 0 : 1
+					guard self.timetable.indices.contains(weekIndex) else {
+						Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(reflecting: wkIndex))")
+						failChanges.append(change)
+						continue
+					}
+					switch wkday {
+						case 2: self.timetable[weekIndex].monday[pd] = nil
+						case 3: self.timetable[weekIndex].tuesday[pd] = nil
+						case 4: self.timetable[weekIndex].wednesday[pd] = nil
+						case 5: self.timetable[weekIndex].thursday[pd] = nil
+						case 6: self.timetable[weekIndex].friday[pd] = nil
+						default:
+							failChanges.append(change)
+							continue
+					}
+					successChanges.append(change)
+
 				case .week_remove(let wkIndex, timetable: _):
 					self.timetable.remove(at: wkIndex)
 					successChanges.append(change)
 
 				default:
-				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change)) to timetable \(self.name)")
+				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change)) to timetable \(name)")
 
 			}//switch
 
 		}//for each
 
-		Logger.timetableChanges.info("Successfully applied changes to timetable \(self.name): \n\t\(successChanges)")
+		Logger.timetableChanges.info("Successfully applied changes to timetable \(name): \n\t\(successChanges)")
 		if !failChanges.isEmpty { Logger.timetableChanges.error("Couldn't apply changes:\n\t\t\(failChanges)") }
 	}//func applyChanges(_)
 
@@ -424,6 +447,8 @@ enum Change: Codable {
 	case	week_add(Timetable.TimetabledWeek, position: Int, timetable: Int)
 		/// Modify an entry in a week of the timetable
 	case	week_modifyEntry(weekIndex: Int, weekday: Weekday, period: UUID, Times.Period.Contents, timetable: Int)
+		///	Clear an entry of a week; make it a free period
+	case 	week_makeFreeEntry(weekab: WeekAB, weekday: Weekday, period: UUID, timetable: Int)
 		/// Remove a timetabled week
 	case	week_remove(Int, timetable: Int)
 
