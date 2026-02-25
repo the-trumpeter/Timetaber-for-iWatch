@@ -155,13 +155,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>972</string>
+					<string>981</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>971</string>
+					<string>980</string>
 					<key>Timestamp</key>
-					<string>791967628.960945</string>
+					<string>793600153.629297</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -180,17 +180,17 @@
 				<string>struct TimesMapping: View {
 </string>
 				<key>leading</key>
-				<string>//MARK: - TimesMapping
+				<string>//MARK:   TimesMapping
 ///Edit the structure of each week.
 </string>
 				<key>trailing</key>
-				<string>	
-	@ObservedObject var store = Storage.shared
-	var tblIndex: Int
+				<string>
+	@Environment(\.dismiss) var dismiss
+
 </string>
 			</dict>
 			<key>title</key>
-			<string>PLAUNCH 1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
+			<string>PoLAUNCH 1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -315,6 +315,8 @@
 					</dict>
 				</dict>
 			</dict>
+			<key>is-complete</key>
+			<true/>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
@@ -332,53 +334,6 @@
 			</dict>
 			<key>title</key>
 			<string>TODO: Button triggered if scroll started&amp;ended on it</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>398</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>397</string>
-					<key>Timestamp</key>
-					<string>793397526.096754</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Timetable_Editor_New.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>							let changes = compileChanges()
-</string>
-				<key>leading</key>
-				<string>
-						Button("Save changes", systemImage: "checkmark") {
-</string>
-				<key>trailing</key>
-				<string>							Logger.editTimetable.log("Saving \(changes.count) Changes to timetable.")
-							do {
-								try origin.distributeChanges(changes)
-</string>
-			</dict>
-			<key>title</key>
-			<string>TODO: Save changes</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

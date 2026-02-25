@@ -131,13 +131,63 @@ class Storage: ObservableObject {
 
 
 				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: let tblIndex):
+					// Remap timetable day data to match the new variant's periods by name.
 					var timetable = self.timetables[tblIndex]
-					guard let variant else {
-						timetable.times.mapping.removeValue(forKey: wkday)
-						self.timetables[tblIndex] = timetable
-						break
+					// Capture old periods for this weekday (before mapping change)
+					let oldVariant: [UUID: Times.Period] = {
+						if let existingVariant = timetable.times.mapping[wkday] {
+							switch existingVariant {
+								case .standard: return timetable.times.standard
+								case .variant(let key): return timetable.times.variants[key]?.variant ?? [:]
+							}
+						} else {
+							return timetable.times.standard
+						}
+					}()
+					let oldPeriodsByName = Dictionary(uniqueKeysWithValues: oldVariant.map { ($0.value.name, $0.key) })
+					let newVariant: [UUID: Times.Period] = switch variant {
+						case .standard: timetable.times.standard
+						case .variant(let key): timetable.times.variants[key]?.variant ?? [:]
+						case .none: timetable.times.standard
 					}
-					timetable.times.mapping.updateValue(variant, forKey: wkday)
+					// For each week, remap periods for this day
+					for weekIdx in timetable.timetable.indices {
+						var week = timetable.timetable[weekIdx]
+						// Get the old period assignments for this weekday as [UUID: Times.Period.Contents]
+						let oldAssignments: [UUID: Times.Period.Contents]? = switch wkday {
+							case 2: week.monday
+							case 3: week.tuesday
+							case 4: week.wednesday
+							case 5: week.thursday
+							case 6: week.friday
+							default: nil
+						}
+						guard let oldAssigns = oldAssignments else { continue }
+						// Remap new dictionary
+						var newAssignments: [UUID: Times.Period.Contents] = [:]
+						for (newUUID, newPeriod) in newVariant {
+							if let oldUUID = oldPeriodsByName[newPeriod.name], let contents = oldAssigns[oldUUID] {
+								newAssignments[newUUID] = contents
+							}
+							// If no match, leave unassigned for a free period
+						}
+						// Write back
+						switch wkday {
+							case 2: week.monday = newAssignments
+							case 3: week.tuesday = newAssignments
+							case 4: week.wednesday = newAssignments
+							case 5: week.thursday = newAssignments
+							case 6: week.friday = newAssignments
+							default: break
+						}
+						timetable.timetable[weekIdx] = week
+					}
+					// Update the mapping
+					if let variant {
+						timetable.times.mapping.updateValue(variant, forKey: wkday)
+					} else {
+						timetable.times.mapping.removeValue(forKey: wkday)
+					}
 					self.timetables[tblIndex] = timetable
 
 				case .times_variants_add(key: let key, let variant, timetable: let tblIndex):
@@ -218,7 +268,7 @@ class Storage: ObservableObject {
 			case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: let tblIndex):
 				let weekIndex: Int = (wkIndex == .a) ? 0 : 1
 				guard self.timetables[tblIndex].timetable.indices.contains(weekIndex) else {
-					Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(reflecting: wkIndex))")
+					Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(describing: wkIndex))")
 					continue
 				}
 				var timetable = self.timetables[tblIndex]

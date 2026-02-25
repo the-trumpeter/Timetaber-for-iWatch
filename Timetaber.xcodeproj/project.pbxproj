@@ -56,6 +56,13 @@
 			);
 			target = AE09C37D2E4D8A680032E777 /* Timetaber */;
 		};
+		AED478DE2F4D205B00EFBE35 /* Exceptions for "Timetaber" folder in "Timetaber" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Timetable Creating-Editing/Timetable_Editor_OLD.swift",
+			);
+			target = AE09C37D2E4D8A680032E777 /* Timetaber */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -66,6 +73,9 @@
 		};
 		AE1E65552EFF94E2006B238C /* Timetaber */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AED478DE2F4D205B00EFBE35 /* Exceptions for "Timetaber" folder in "Timetaber" target */,
+			);
 			path = Timetaber;
 			sourceTree = "<group>";
 		};

@@ -204,6 +204,7 @@ fileprivate struct courseEdit: View {
 			}//.padding(.leading).padding(.bottom, 2)
 			.padding()
 
+			// OLD ICON (sf symbol slug)
 			HStack {
 				/*Image(systemName:
 						UIImage(systemName: course.icon.lowercased()) != nil ?
@@ -218,8 +219,9 @@ fileprivate struct courseEdit: View {
 				)
 				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled(); #warning("TODO Create SF Symbol chooser")
 				 */
-			}//.padding(.leading) // icon old
+			}//.padding(.leading)
 
+			// ROOMS
 			List {
 				ForEach(Array(course.rooms.keys), id: \.self) { roomKey in
 					Text(course.rooms[roomKey]!)
@@ -247,24 +249,25 @@ fileprivate struct courseEdit: View {
 				}
 				//Toggle("Symbols delay dismiss", systemImage: "stethoscope", isOn: $debugSymbolDismissDelay)
 			}.scrollContentBackground(.hidden)
-			// rooms
 
 			.toolbar {
-				ToolbarItem(placement: .cancellationAction) {
+				/*ToolbarItem(placement: .cancellationAction) {
 					Button("Cancel", systemImage: "xmark") {
 						dismiss()
 					}
-				} 
+				}*/
 				ToolbarItem(placement: .confirmationAction) {
 					Button("Save", systemImage: "checkmark") {
 						let changes = compileChanges()
-						pendingChanges = changes + (pendingChanges ?? [])
-						parentCourse = course
+						withAnimation {
+							pendingChanges = changes + (pendingChanges ?? [])
+							parentCourse = course
+						}
 						Logger.editCourses.debug("parent course is now \(String(reflecting: parentCourse) )")
 						dismiss()
 					}
 				}
-			} // save/cancel
+			}
 			.navigationBarTitleDisplayMode(.inline)
 
 		}//.padding()
@@ -336,6 +339,7 @@ fileprivate struct coursebutton: View {
 		.sheet(isPresented: $showingSheet) {
 			courseEdit(tblIndex: tblIndex, pos: pos, isNewCourse: isNewCourse, parentCourse: course, course: course.wrappedValue, pendingChanges: pendingChanges)
 				.presentationDetents([.medium])
+				//INTERACTIVE DISMISS
 				.interactiveDismissDisabled()
 		}
 		.onChange(of: courseExists) { _, exists in
@@ -346,7 +350,7 @@ fileprivate struct coursebutton: View {
 	}
 }
 
-//MARK: TimetablesListEditor/timetableOptions/CoursesEditor
+//MARK: Public access Courses editor
 
 ///Edit courses.
 struct CoursesEditor: View {
@@ -354,7 +358,6 @@ struct CoursesEditor: View {
 	let tblIndex: Int
 
 	@State var pendingChanges: [Change]? = nil
-
 	@State var localCourses: [UUID: Course2]
 
 	@State var newCourseSheet = false
@@ -368,14 +371,18 @@ struct CoursesEditor: View {
 		self.tblIndex = tblIndex
 		self.localCourses = Storage.shared.timetables[tblIndex].courses
 	}
+
+	@State var discardConfirmation = false
+	@Environment(\.dismiss) var dismiss
+
 	var body: some View {
 		NavigationStack {
 			List {
                 // Precompute a stable, type-explicit sorted list to help the type-checker
                 let sortedCourses: [(id: UUID, course: Course2)] = localCourses
                     .map { ($0.key, $0.value) }
-                    .sorted { lhs, rhs in
-                        lhs.1.name.localizedCaseInsensitiveCompare(rhs.1.name) == .orderedDescending
+                    .sorted {
+						$0.1.name < $1.1.name
                     }
 
                 ForEach(sortedCourses, id: \.id) { entry in
@@ -423,8 +430,35 @@ struct CoursesEditor: View {
 
 				}
 
-			}
+				ToolbarItem(placement: .topBarLeading) {
+					Button {
+						if !(pendingChanges?.isEmpty ?? true) {
+							discardConfirmation = true
+						} else {
+							dismiss()
+						}
+					} label: {
+						if !(pendingChanges?.isEmpty ?? true) {
+							Text("Discard")
+						} else {
+							Label("Back", systemImage: "chevron.left")
+						}
+					}
+				}
 
+			}
+			.alert("Discard changes?", isPresented: $discardConfirmation) {
+				Button("Discard", role: .destructive) {
+					withAnimation {
+						localCourses = store.timetables[tblIndex].courses
+						pendingChanges = []
+					}
+				}
+				Button("Cancel", role: .cancel) {
+					discardConfirmation = false
+				}
+			}
+			.navigationBarBackButtonHidden(true)
 			.onAppear {
 				localCourses = store.timetables[tblIndex].courses
 			}

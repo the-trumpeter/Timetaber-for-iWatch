@@ -157,6 +157,7 @@ fileprivate struct timetableOptions: View {
 						.toolbar(.hidden, for: .tabBar)
 				} label: {
 					HStack {
+						Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
 						Text("Courses").foregroundStyle(.primary); Spacer();
 						Text(String(timetable.courses.count)).foregroundStyle(.secondary) }
 				}
@@ -164,9 +165,15 @@ fileprivate struct timetableOptions: View {
 				NavigationLink {
 					TimesEditor(tblIndex: tblIndex)
 						.toolbar(.hidden, for: .tabBar)
-				} label: { HStack {Text("Day Structure").foregroundStyle(.primary); Spacer(); Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary) }
+				} label: {
+					HStack {
+
+						Text("Day Structure").foregroundStyle(.primary); Spacer()
+						Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary)
+					}
 				}.buttonStyle(.plain)
 				NavigationLink("Week Structure") {
+					Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
 					TimesMapping(tblIndex: tblIndex)
 						.toolbar(.hidden, for: .tabBar)
 				}
@@ -174,7 +181,14 @@ fileprivate struct timetableOptions: View {
 
 				NavigationLink {
 					EditTimetableView()
-				} label: { HStack { Image(systemName: "xmark.square.fill").foregroundStyle(.yellow); Text("Timetable").foregroundStyle(.primary); Spacer(); Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary) } }; #warning("Revert label to initialiser (remove Image and HStack) at completion of timetable editor")
+						.toolbar(.hidden, for: .tabBar)
+				} label: {
+					HStack {
+						Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
+						Text("Timetable").foregroundStyle(.primary); Spacer();
+						Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
+					}
+				}
 
 				// Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) { }
 

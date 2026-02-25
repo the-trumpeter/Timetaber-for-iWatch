@@ -54,7 +54,7 @@ private func overlapsNeighbors(index: UUID, period: Times.Period, in periods: [U
 
 
 
-//MARK: NewPeriodView
+//MARK: - New Period view
 fileprivate struct NewPeriodView: View {
 	@Binding var period: Times.Period
 	var body: some View {
@@ -139,7 +139,7 @@ fileprivate struct NewPeriodView: View {
 
 
 
-//MARK: TimesSheetView
+//MARK: - Edit Period sheet
 fileprivate struct TimesSheetView: View {
 	//var startBinding: Binding<Date>
 	//var durationBinding: Binding<Date>
@@ -300,7 +300,7 @@ fileprivate struct TimesSheetView: View {
 
 
 
-//MARK: TimesRowView
+//MARK: - Period row template
 fileprivate struct TimesRowView: View {
 	var localTimes: Binding<Times>
 	let editing: Times.TimingSet
@@ -372,7 +372,7 @@ fileprivate struct TimesRowView: View {
 
 
 
-//MARK: TimesVariantEditor
+//MARK: - Edit Variant
 ///Edit the structure of a timing set.
 fileprivate struct TimesVariantEditor: View {
 
@@ -425,7 +425,7 @@ fileprivate struct TimesVariantEditor: View {
 		self.tblIndex = tblIndex
 		self.isNewVariant = true
 
-		var tobelocaltimes = Storage.shared.timetables[tblIndex].times
+		let tobelocaltimes = Storage.shared.timetables[tblIndex].times
 /*
 		var attempts: [Int] = []
 		var nextKey: Int = (tobelocaltimes.variants.keys.max() ?? 0) + 1
@@ -584,7 +584,7 @@ fileprivate struct TimesVariantEditor: View {
 
 
 
-	//MARK: TimesVariantEditor.body
+	//MARK: Edit Variant body
 	var body: some View {
 		NavigationStack {
 
@@ -730,11 +730,12 @@ fileprivate struct TimesVariantEditor: View {
 										newPeriodSheet = false
 									}
 								}
-								ToolbarItem(placement: .cancellationAction) {
+								/*ToolbarItem(placement: .cancellationAction) {
 									Button("Cancel", systemImage: "xmark") {
 										newPeriodSheet = false
 									}
-								}
+								}*/
+
 							}// sheet toolbar
 					}// sheet NavStack
 
@@ -875,7 +876,7 @@ fileprivate struct TimesVariantEditor: View {
 
 
 
-
+//MARK: Public access TimesEditor
 struct TimesEditor: View {
 	@ObservedObject var store = Storage.shared
 	let tblIndex: Int
@@ -967,10 +968,20 @@ struct TimesEditor: View {
 
 
 
-//MARK: - TimesMapping
+
+
+//MARK: -
+//MARK: -
+
+
+
+
+//MARK:   TimesMapping
 ///Edit the structure of each week.
 struct TimesMapping: View {
-	
+
+	@Environment(\.dismiss) var dismiss
+
 	@ObservedObject var store = Storage.shared
 	var tblIndex: Int
 
@@ -978,6 +989,7 @@ struct TimesMapping: View {
 	@State var origin: Times
 
 	@State var bool_pendingChanges = false
+	@State var discardConfirmation = false
 
 	init(tblIndex: Int = 0) {
 		self.tblIndex 	= tblIndex
@@ -1044,7 +1056,7 @@ struct TimesMapping: View {
 						}
 					}
 
-				}.onChange(of: localTimes) { old, new in
+				}.onChange(of: localTimes) { _, _ in
 					if localTimes != origin {
 						bool_pendingChanges = true
 					} else {
@@ -1072,11 +1084,43 @@ struct TimesMapping: View {
 						}
 
 						store.applyChanges(changes)
-						let t = store.timetables[tblIndex].times; localTimes = t; origin = t
+						withAnimation {
+							let t = store.timetables[tblIndex].times
+							localTimes = t; origin = t
+						}
 					}
 				}
 			}
+			ToolbarItem(placement: .topBarLeading) {
+				Button {
+					if bool_pendingChanges {
+						discardConfirmation = true
+					} else {
+						dismiss()
+					}
+				} label: {
+					if bool_pendingChanges {
+						Text("Discard")
+					} else {
+						Label("Back", systemImage: "chevron.left")
+					}
+				}
+			}
+
 		}
+		.alert("Discard changes?", isPresented: $discardConfirmation) {
+			Button("Discard", role: .destructive) {
+				withAnimation {
+					localTimes = store.timetables[tblIndex].times
+					origin = store.timetables[tblIndex].times
+					bool_pendingChanges = false
+				}
+			}
+			Button("Cancel", role: .cancel) {
+				discardConfirmation = false
+			}
+		}
+		.navigationBarBackButtonHidden(true)
 
 	}
 }

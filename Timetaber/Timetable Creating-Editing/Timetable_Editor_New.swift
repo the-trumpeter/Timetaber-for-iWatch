@@ -12,13 +12,73 @@ import OSLog
 I'm gonna plan this well
 
 
-MARK: - Routing Weekday/WeekAB
+MARK: - Public access editor
+Routing Weekday/WeekAB
 • Navigate timetable view
 	• 2WEEKS LEVEL 1
 	• master view for editing timetable
 	• from here,  select a weekday (weekb/a as well) to edit.
 		i.e. List of NavigationLinks, sections for Weeks A/B
 */
+
+fileprivate struct dayLink: View {
+	@ObservedObject var storage = Storage.shared
+	var tblIndex: Int = 0
+	var wkAB: WeekAB = .a
+	var day: Weekday = 2
+
+	init(tblIndex: Int, wkAB: WeekAB, day: Weekday) {
+		self.tblIndex = tblIndex
+		self.wkAB = wkAB
+		self.day = day
+	}
+
+	var body: some View {
+
+		@State var isToday = if Int(Calendar.current.component(.weekday, from: Date.now)) == day && storage.termRunningGB {
+
+			if (
+				(Calendar.current.component(.weekOfYear, from: storage.startDateGB) % 2) != 0
+			) == (
+				(Calendar.current.component(.weekOfYear, from: Date.now) % 2) != 0
+			) {
+				//they match, so currentWeek is same week a/b as originWeek
+				if !storage.ghostWeekGB {
+					wkAB == .a
+				} else {
+					wkAB == .b
+				}
+			} else {
+				if !storage.ghostWeekGB {
+					wkAB == .b
+				} else {
+					wkAB == .a
+				}
+			}
+			
+		} else {
+			false
+		}
+
+		let dayString = ["Monday","Tuesday","Wednesday","Thursday","Friday"][day-2]
+		NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: wkAB, day: day)) {
+			/*
+			let isToday = Int(Calendar.current.component(.weekday, from: Date.now)) == day
+			let isWeekA = getIfWeekIsA_FromDateAndGhost(originDate: storage.startDateGB, ghostWeek: storage.ghostWeekGB)
+			let isActiveWeek = isWeekA == (wkAB == .a ? true : false)
+			let shouldBold = isToday && storage.termRunningGB && isActiveWeek
+			 */
+			HStack {
+				Text(dayString)
+				Spacer()
+				if isToday{
+					Text("Today").foregroundStyle(.secondary)
+				}
+			}
+		}
+	}
+}
+
 struct EditTimetableView: View {
 	@ObservedObject var store = Storage.shared
 	let tblIndex: Int
@@ -30,46 +90,23 @@ struct EditTimetableView: View {
 	var body: some View {
 		NavigationStack {
 			List {
+				
 				let sectA = if weekAOnly { "" } else { "Week A" }
 				Section(sectA) { // Week A days
 					//let suffix = if weekAOnly { "" } else { "A" } //if only one week, don't show A/B
-					NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .a, day: 2)) {
-						Text("Monday")
-					}
-					NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .a, day: 3)) {
-						Text("Tuesday")
-					}
-					NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .a, day: 4)) {
-						Text("Wednesday")
-					}
-					NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .a, day: 5)) {
-						Text("Thursday")
-					}
-					NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .a, day: 6)) {
-						Text("Friday")
+					ForEach(2...6, id: \.self) { wkday in
+						dayLink(tblIndex: tblIndex, wkAB: .a, day: wkday)
 					}
 				}
 
 				if !weekAOnly {
 					Section("Week B") { // Week B days
-						NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .b, day: 2)) {
-							Text("Monday")
-						}
-						NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .b, day: 3)) {
-							Text("Tuesday")
-						}
-						NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .b, day: 4)) {
-							Text("Wednesday")
-						}
-						NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .b, day: 5)) {
-							Text("Thursday")
-						}
-						NavigationLink(destination: EditTimetableDayView(tblIndex: tblIndex, week: .b, day: 6)) {
-							Text("Friday")
+						ForEach(2...6, id: \.self) { wkday in
+							dayLink(tblIndex: tblIndex, wkAB: .b, day: wkday)
 						}
 					}
 
-				}//end if
+				}//end if wkAonly
 
 			}//end List
 
@@ -182,19 +219,13 @@ fileprivate struct TimetablePeriodRow: View {
 
 		.sheet(isPresented: $isSheetPresented) {
 			//MARK: Period contents editor
-			VStack {
-				HStack {
-					if Int(period.name) != nil {
-						Text("Period")
-					}
-					Text(period.name)
-						.bold()
-				}
-				HStack {
+			NavigationStack {
+
+				HStack(alignment: .center) {
 					Picker(selection: selectedCourseIDBinding) {
 						Text("Free period").tag(Optional<UUID>.none)
 						Divider()
-						ForEach(courses.map {(id: $0, course: $1)}.sorted(by: {$0.course.name > $1.course.name}), id: \.0) { entry in
+						ForEach(courses.map {(id: $0, course: $1)}.sorted(by: {$0.course.name < $1.course.name}), id: \.0) { entry in
 							Label(entry.course.name, systemImage: entry.course.icon).tag(entry.id)
 						}
 
@@ -213,11 +244,34 @@ fileprivate struct TimetablePeriodRow: View {
 						}
 					}
 				}
+				Spacer().frame(height: 20)
 
+				.toolbar {
+					ToolbarItem(placement: .confirmationAction) {
+						Button("Save", systemImage: "checkmark") {
+							isSheetPresented = false
+						}
+					}
+
+					ToolbarItem(placement: .title) {
+						if let intPdNm = Int(period.name) {
+							HStack {
+								Text("Period").foregroundStyle(.secondary)
+								Text(String(intPdNm)).bold()
+							}
+						} else {
+							Text(period.name).bold()
+						}
+					}
+
+				}
+				.toolbarTitleDisplayMode(.inline)
 			}
 
-			.presentationDetents([.height(200.0)])
+			.interactiveDismissDisabled()
+			.presentationDetents([.height(160)])
 		}
+
 
 	}
 }
@@ -243,6 +297,9 @@ fileprivate struct EditTimetableDayView: View {
 
 	var pendingChanges: [Change] = []
 	@State var isPendingChanges = false
+
+	@State var discardConfirmation = false
+	@Environment(\.dismiss) var dismiss
 
 	init(tblIndex: Int, week: WeekAB, day: Weekday) {
 		let store = Storage.shared
@@ -411,7 +468,42 @@ fileprivate struct EditTimetableDayView: View {
 						}.tint(.blue)
 					}
 				}
+				ToolbarItem(placement: .topBarLeading) {
+					Button {
+						if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
+							discardConfirmation = true
+						} else {
+							dismiss()
+						}
+					} label: {
+						if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
+							Text("Discard")
+						} else {
+							Label("Back", systemImage: "chevron.left")
+						}
+					}
+				}
+
 			}
+			.alert("Discard changes?", isPresented: $discardConfirmation) {
+				Button("Discard", role: .destructive) {
+					withAnimation {
+						guard let week = origin.timetables[tblIndex].timetable[timingDetails.weekab] else {
+							Logger.editTimetable.fault("Week \(String(reflecting: timingDetails.weekab) ) invalid, cannot discard changes.")
+							return
+						}
+						guard let d = week[timingDetails.weekday] else {
+							Logger.editTimetable.fault("Weekday \(timingDetails.weekday) invalid")
+							return
+						}
+						day = d
+					}
+				}
+				Button("Cancel", role: .cancel) {
+					discardConfirmation = false
+				}
+			}
+			.navigationBarBackButtonHidden(true)
 		}
 
 	}//body
