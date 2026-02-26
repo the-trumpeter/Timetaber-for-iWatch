@@ -155,13 +155,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>981</string>
+					<string>993</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>980</string>
+					<string>992</string>
 					<key>Timestamp</key>
-					<string>793600153.629297</string>
+					<string>793767711.490793</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -180,7 +180,7 @@
 				<string>struct TimesMapping: View {
 </string>
 				<key>leading</key>
-				<string>//MARK:   TimesMapping
+				<string>//MARK: Public access mapping editor
 ///Edit the structure of each week.
 </string>
 				<key>trailing</key>

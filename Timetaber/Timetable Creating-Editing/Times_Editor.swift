@@ -277,16 +277,20 @@ fileprivate struct TimesSheetView: View {
 			.toolbar {
 				ToolbarItem(placement: .confirmationAction) {
 					Button("Save", systemImage: "checkmark") {
-						parent.wrappedValue = period
-						Logger.editTimes.log("Saved changes to times sheet")
-						dismiss()
+						withAnimation {
+							parent.wrappedValue = period
+							Logger.editTimes.log("Saved changes to times sheet")
+							dismiss()
+						}
 					}
 				}
+				/*
 				ToolbarItem(placement: .cancellationAction) {
 					Button("Cancel", systemImage: "xmark") {
 						dismiss()
 					}
 				}
+				 */
 			}
 		}
 	}
@@ -356,6 +360,7 @@ fileprivate struct TimesRowView: View {
 
 		.sheet(isPresented: $sheet) {
 			TimesSheetView(period: period, allTimes: localTimes, editingSet: editing, periodIndex: index)
+				.interactiveDismissDisabled()
 				.presentationDetents([.height(250.0)])
 		}//sheet
 	}
@@ -394,7 +399,9 @@ fileprivate struct TimesVariantEditor: View {
 //	@State private var showingAlert = false
 	//Changes/UI
 	@State private var hasPendingChanges = false
-	
+	@State private var discardConfirmation = false
+
+
 	@Environment(\.dismiss) private var dismiss
 
 	private func syncPendingFlag() {
@@ -824,29 +831,34 @@ fileprivate struct TimesVariantEditor: View {
 				}
 
 				ToolbarItem(placement: .topBarLeading) {
-					Button("Discard", systemImage: "chevron.left") {
+					Button {
 						if (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || (isNewVariant && localTimes.variants[newIndex!] != originalNew)) {
-							if isNewVariant {
-								dismiss()
-							} else {
-								localTimes = store.timetables[tblIndex].times
-							}
-							syncPendingFlag()
+							discardConfirmation = true
 						} else {
 							dismiss()
 						}
-					}.if( (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || isNewVariant) ) {
-						$0.labelStyle(.titleOnly)
-					}
-					.if( !(hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || isNewVariant) ) {
-						$0.labelStyle(.iconOnly)
+					} label: {
+						if (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || (isNewVariant && localTimes.variants[newIndex!] != originalNew)) {
+							Text("Discard")
+						} else {
+							Label("Back", systemImage: "chevron.left")
+						}
 					}
 				}
 
-			}.navigationTitle({switch editing {
-				case .standard: "Standard Timing"
-				case .variant(_): "Timing Variant"
-			}}())
+			}
+			.alert("Discard changes?", isPresented: $discardConfirmation) {
+				Button("Discard", role: .destructive) {
+					withAnimation {
+						localTimes = store.timetables[tblIndex].times
+						hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
+						syncPendingFlag()
+					}
+				}
+				Button("Cancel", role: .cancel) {
+					discardConfirmation = false
+				}
+			}
 			.navigationBarBackButtonHidden(true)
 
 
@@ -876,7 +888,7 @@ fileprivate struct TimesVariantEditor: View {
 
 
 
-//MARK: Public access TimesEditor
+//MARK: Public access variant editor
 struct TimesEditor: View {
 	@ObservedObject var store = Storage.shared
 	let tblIndex: Int
@@ -965,18 +977,18 @@ struct TimesEditor: View {
 
 
 
-
-
-
-
-
 //MARK: -
 //MARK: -
 
 
 
 
-//MARK:   TimesMapping
+
+
+
+
+
+//MARK: Public access mapping editor
 ///Edit the structure of each week.
 struct TimesMapping: View {
 

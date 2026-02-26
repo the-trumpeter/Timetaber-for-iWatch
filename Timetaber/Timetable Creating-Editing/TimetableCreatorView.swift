@@ -157,7 +157,6 @@ fileprivate struct timetableOptions: View {
 						.toolbar(.hidden, for: .tabBar)
 				} label: {
 					HStack {
-						Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
 						Text("Courses").foregroundStyle(.primary); Spacer();
 						Text(String(timetable.courses.count)).foregroundStyle(.secondary) }
 				}
@@ -172,10 +171,11 @@ fileprivate struct timetableOptions: View {
 						Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary)
 					}
 				}.buttonStyle(.plain)
-				NavigationLink("Week Structure") {
-					Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
+				NavigationLink {
 					TimesMapping(tblIndex: tblIndex)
 						.toolbar(.hidden, for: .tabBar)
+				} label: {
+					Text("Week Structure")
 				}
 
 
@@ -184,7 +184,6 @@ fileprivate struct timetableOptions: View {
 						.toolbar(.hidden, for: .tabBar)
 				} label: {
 					HStack {
-						Image(systemName: "checkmark.seal.fill").foregroundStyle(.green)
 						Text("Timetable").foregroundStyle(.primary); Spacer();
 						Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
 					}
