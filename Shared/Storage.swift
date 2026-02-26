@@ -333,12 +333,16 @@ class Storage: ObservableObject {
 
 }
 
-func reload() -> Void {
+func reload() {
+
 	let now = getCurrentClass2(date: .now, timetable: Storage.shared.timetables[Storage.shared.ActiveTimetable])
-	LocalData.shared.currentCourse = now.0
-	LocalData.shared.nextCourse = now.1
-	LocalData.shared.currentTime = now.2
-	
+
+	withAnimation {
+		LocalData.shared.currentCourse = now.0
+		LocalData.shared.nextCourse = now.1
+		LocalData.shared.currentTime = now.2
+	}
+
 	Logger.general.log("Reloaded")
 	log()
 }

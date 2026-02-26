@@ -47,10 +47,10 @@ struct NewTermSheet: View {
 				Button("Start") {
 					do {
 						try startTermProcess(ghostWeek: isGhostWeek)
-						Logger.term.log("Started term")
+						Logger.general.log("Started term")
 						reload()
 					} catch {
-						Logger.term.fault("Couldn't start term!")
+						Logger.general.fault("Couldn't start term!")
 					}
 					
 					dismiss()

@@ -54,12 +54,12 @@ fileprivate struct NewTermSheet: View {
 				Button("Start") {
 					do {
 						try startTermProcess(ghostWeek: isGhostWeek)
-						Logger.term.log("Started term")
+						Logger.general.log("Started term")
 						reload()
 						
 					} catch {
 						//call an error if function returns error
-						Logger.term.fault("startTermProcess threw unexpected error")
+						Logger.general.fault("startTermProcess threw unexpected error")
 					}
 					
 					dismiss()
@@ -89,6 +89,7 @@ struct SettingsView: View {
 	@State var showingSheet = false
 //	@State var isTermRunning: Bool = false
 	@State private var alerting = false
+	@State private var alertingFail: Optional<Int> = nil
 
 
 	var body: some View {
@@ -114,19 +115,79 @@ struct SettingsView: View {
 
 			Spacer()
 
+
+
+			//TODO: Start/stop term
+			Button {
+				alerting = true
+			} label: {
+				if data.termRunningGB {
+					Label("End Term", systemImage: "pause.circle")
+				} else {
+					Label("Start Term", systemImage: "play.circle")
+				}
+
+			}
+			.font(.title3)
+			.if(data.termRunningGB) { $0.buttonStyle(.bordered			) }
+			.if(!data.termRunningGB){ $0.buttonStyle(.borderedProminent	) }
+
+			.alert(data.termRunningGB ? "End the term?" : "Start a term?", isPresented: $alerting) {
+				if !data.termRunningGB {
+					Button("Start Week A") {
+						withAnimation {
+							do {
+								try startTermProcess(ghostWeek: false)
+							} catch {
+								alerting = false
+								alertingFail = #line
+							}
+						}
+					}
+					Button("Start Week B") {
+						withAnimation {
+							do {
+								try startTermProcess(ghostWeek: false)
+							} catch {
+								alerting = false
+								alertingFail = #line
+							}
+						}
+					}
+				} else {
+					Button("End Term", role: .destructive) {
+						withAnimation {
+							do {
+								try endTermProcess()
+							} catch {
+								alerting = false
+								alertingFail = #line
+							}
+						}
+					}
+				}
+				Button("Cancel", role: .cancel) { }
+			} message: {
+				Text(data.termRunningGB ? "Make it holidays" : "Start a term of classes")
+			}
+			.alert(data.termRunningGB ? "Couldn't end term" : "Couldn't start term", isPresented: Binding(get:{alertingFail != nil},set:{_,_ in}) ) {
+				Button("OK") {
+					alertingFail = nil
+				}
+			} message: {
+				Text("Error \(#line)")
+			}
+
+			.padding(.bottom, 30)
+
+
+
+			ExportView().padding(.bottom, 15)
+
+
 			Link(destination: URL(string: "https://github.com/the-trumpeter/Timetaber-for-iWatch")!, label: {
 				Label("GitHub Repository", systemImage: "arrowshape.turn.up.right")
-			}).padding()
-
-			/*
-			NavigationLink {
-
-			} label: { Text("Edit Timetable").padding(5) }
-			.foregroundStyle(.primary)
-			.font(.title2)
-			.buttonStyle(.bordered)
-			 */
-			//Spacer()
+			})
 
 			VStack {
 				Label("Certified 100% Digitech Didn't Help", systemImage: "checkmark.seal")

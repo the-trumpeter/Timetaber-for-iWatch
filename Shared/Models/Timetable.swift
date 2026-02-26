@@ -219,8 +219,6 @@ struct Timetable: Codable {
 	}
 
 
-
-
 	init(_ name: String, icon: String, courses: [UUID: Course2], times: Times, timetable: [Timetable.TimetabledWeek] ) {
 		self.name = name
 		self.icon = icon

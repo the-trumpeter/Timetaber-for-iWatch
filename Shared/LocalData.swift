@@ -24,14 +24,14 @@ extension Logger {
 	static let editTimetable = Logger(subsystem: bID, category: "Timetable Edit Timetable")
 	static let timetableChanges = Logger(subsystem: bID, category: "Timetable Changes")
 
-	static let updateTimer = Logger(subsystem: bID, category: "Update Timer")
+	static let updateTimer = Logger(subsystem: bID, category: "Refresh Timer")
 	static let dateTime = Logger(subsystem: bID, category: "Date/Time Computation")
 
 	static let general = Logger(subsystem: bID, category: "General")
-
-	static let term = Logger(subsystem: bID, category: "Term")
 	
 	static let views = Logger(subsystem: bID, category: "Views")
+
+	static let files = Logger(subsystem: bID, category: "Export/Import JSON")
 }
 
 
