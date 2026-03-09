@@ -17,7 +17,7 @@ import OSLog
 
 
 func log() {
-	Logger.general.info("""
+	Logger.general.notice("""
 		Current course: \(LocalData.shared.currentCourse.name), Next course: \(LocalData.shared.nextCourse.name)
 		Term running: \(String(describing: Storage.shared.termRunningGB)), Ghost week: \(String(describing: Storage.shared.ghostWeekGB))
 		Is it week A?: \(String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: Storage.shared.ghostWeekGB) ))
@@ -68,19 +68,19 @@ class Storage: ObservableObject {
 
 		self.ActiveTimetable = 0
 
-        if let loaded = try? loadTimetables(), !loaded.isEmpty {
-            self.timetables = loaded
-            Logger.general.debug("Loaded timetables from persistence: count=\(loaded.count)")
-        } else {
-            self.timetables = [chaos]
-			Logger.general.warning("Could not load timetables, applying default timetable 'chaos' (Gill's timetable)")
-            do {
-                try saveTimetables()
-            } catch {
-                Logger.general.fault("Initial save failed: \(String(describing: error))")
-            }
-            Logger.general.debug("Initialized default timetables and saved")
-        }
+		if let loaded = try? loadTimetables(), !loaded.isEmpty {
+			self.timetables = loaded
+			Logger.general.trace("Loaded timetables from persistence: count=\(loaded.count)")
+		} else {
+			self.timetables = [chaos]
+			Logger.general.critical("Could not load timetables, applying default timetable 'chaos' (Gill's timetable)")
+			do {
+				try saveTimetables()
+			} catch {
+				Logger.general.fault("Initial save failed: \(String(describing: error))")
+			}
+			Logger.general.trace("Initialized default timetables and saved")
+		}
 	}
 
 	private let timetablesStorageKey = "timetaber.userdefaults.timetables"
@@ -109,161 +109,161 @@ class Storage: ObservableObject {
 
 			switch change {
 
-				case .course_create(index: let index, let value, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					timetable.courses.updateValue(value, forKey:  index )
-					self.timetables[tblIndex] = timetable
+			case .course_create(index: let index, let value, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				timetable.courses.updateValue(value, forKey:  index )
+				self.timetables[tblIndex] = timetable
 
-				case .course_delete(index: let index, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					timetable.courses.removeValue(forKey: index)
-					self.timetables[tblIndex] = timetable
+			case .course_delete(index: let index, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				timetable.courses.removeValue(forKey: index)
+				self.timetables[tblIndex] = timetable
 
-				case .course_modify(index: let index, let coursechange, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					switch coursechange {
-						case .colour(let new):	timetable.courses[index]?.colour = new
-						case .rooms	(let new):	timetable.courses[index]?.rooms	 = new
-						case .icon	(let new):	timetable.courses[index]?.icon	 = new
-						case .name	(let new):	timetable.courses[index]?.name	 = new
-					}
-					self.timetables[tblIndex] = timetable
+			case .course_modify(index: let index, let coursechange, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				switch coursechange {
+				case .colour(let new):	timetable.courses[index]?.colour = new
+				case .rooms	(let new):	timetable.courses[index]?.rooms	 = new
+				case .icon	(let new):	timetable.courses[index]?.icon	 = new
+				case .name	(let new):	timetable.courses[index]?.name	 = new
+				}
+				self.timetables[tblIndex] = timetable
 
 
-				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: let tblIndex):
-					// Remap timetable day data to match the new variant's periods by name.
-					var timetable = self.timetables[tblIndex]
-					// Capture old periods for this weekday (before mapping change)
-					let oldVariant: [UUID: Times.Period] = {
-						if let existingVariant = timetable.times.mapping[wkday] {
-							switch existingVariant {
-								case .standard: return timetable.times.standard
-								case .variant(let key): return timetable.times.variants[key]?.variant ?? [:]
-							}
-						} else {
-							return timetable.times.standard
+			case .times_variant_key(weekday: let wkday, variant: let variant, timetable: let tblIndex):
+				// Remap timetable day data to match the new variant's periods by name.
+				var timetable = self.timetables[tblIndex]
+				// Capture old periods for this weekday (before mapping change)
+				let oldVariant: [UUID: Times.Period] = {
+					if let existingVariant = timetable.times.mapping[wkday] {
+						switch existingVariant {
+						case .standard: return timetable.times.standard
+						case .variant(let key): return timetable.times.variants[key]?.variant ?? [:]
 						}
-					}()
-					let oldPeriodsByName = Dictionary(uniqueKeysWithValues: oldVariant.map { ($0.value.name, $0.key) })
-					let newVariant: [UUID: Times.Period] = switch variant {
-						case .standard: timetable.times.standard
-						case .variant(let key): timetable.times.variants[key]?.variant ?? [:]
-						case .none: timetable.times.standard
-					}
-					// For each week, remap periods for this day
-					for weekIdx in timetable.timetable.indices {
-						var week = timetable.timetable[weekIdx]
-						// Get the old period assignments for this weekday as [UUID: Times.Period.Contents]
-						let oldAssignments: [UUID: Times.Period.Contents]? = switch wkday {
-							case 2: week.monday
-							case 3: week.tuesday
-							case 4: week.wednesday
-							case 5: week.thursday
-							case 6: week.friday
-							default: nil
-						}
-						guard let oldAssigns = oldAssignments else { continue }
-						// Remap new dictionary
-						var newAssignments: [UUID: Times.Period.Contents] = [:]
-						for (newUUID, newPeriod) in newVariant {
-							if let oldUUID = oldPeriodsByName[newPeriod.name], let contents = oldAssigns[oldUUID] {
-								newAssignments[newUUID] = contents
-							}
-							// If no match, leave unassigned for a free period
-						}
-						// Write back
-						switch wkday {
-							case 2: week.monday = newAssignments
-							case 3: week.tuesday = newAssignments
-							case 4: week.wednesday = newAssignments
-							case 5: week.thursday = newAssignments
-							case 6: week.friday = newAssignments
-							default: break
-						}
-						timetable.timetable[weekIdx] = week
-					}
-					// Update the mapping
-					if let variant {
-						timetable.times.mapping.updateValue(variant, forKey: wkday)
 					} else {
-						timetable.times.mapping.removeValue(forKey: wkday)
+						return timetable.times.standard
 					}
-					self.timetables[tblIndex] = timetable
-
-				case .times_variants_add(key: let key, let variant, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					timetable.times.variants.updateValue(variant, forKey: key)
-					self.timetables[tblIndex] = timetable
-
-				case .times_variant_modify(target: let target, let variantChange, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					switch variantChange {
-
-						case .rename(let name):
-							switch target {
-							case .standard: Logger.timetableChanges.fault("Can't rename Standard times! variantChange: \(String(reflecting: variantChange))"); continue
-							case .variant(let key):
-								timetable.times.variants[key]?.name = name
-							}
-
-						case .modifyEntry(let setIdx, to: let value):
-							switch target {
-								case .standard: timetable.times.standard[setIdx] = value
-								case .variant(let key): timetable.times.variants[key]?.variant[setIdx] = value
-							}
-
-						case .deleteEntry(let deletee):
-							switch target {
-								case .standard: timetable.times.standard.removeValue(forKey: deletee)
-								case .variant(let key): timetable.times.variants[key]?.variant.removeValue(forKey: deletee)
-							}
+				}()
+				let oldPeriodsByName = Dictionary(uniqueKeysWithValues: oldVariant.map { ($0.value.name, $0.key) })
+				let newVariant: [UUID: Times.Period] = switch variant {
+				case .standard: timetable.times.standard
+				case .variant(let key): timetable.times.variants[key]?.variant ?? [:]
+				case .none: timetable.times.standard
+				}
+				// For each week, remap periods for this day
+				for weekIdx in timetable.timetable.indices {
+					var week = timetable.timetable[weekIdx]
+					// Get the old period assignments for this weekday as [UUID: Times.Period.Contents]
+					let oldAssignments: [UUID: Times.Period.Contents]? = switch wkday {
+					case 2: week.monday
+					case 3: week.tuesday
+					case 4: week.wednesday
+					case 5: week.thursday
+					case 6: week.friday
+					default: nil
 					}
-					self.timetables[tblIndex] = timetable
-
-				case .times_variants_delete(let del, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					timetable.times.variants.removeValue(forKey: del)
-					self.timetables[tblIndex] = timetable
-
-
-				case .timetable_create(let value, index: let idx):
-					self.timetables.insert(value, at: idx)
-
-				case .timetable_delete(index: let idx):
-					self.timetables.remove(at: idx)
-
-				case .timetable_icon(let icon, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					timetable.icon = icon
-					self.timetables[tblIndex] = timetable
-
-				case .timetable_name(let name, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					timetable.name = name
-					self.timetables[tblIndex] = timetable
-
-
-				case .week_add(let week, position: let pos, timetable: let tblIndex):
-					guard self.timetables[tblIndex].timetable.count < 2 else {
-						fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#fileID):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
+					guard let oldAssigns = oldAssignments else { continue }
+					// Remap new dictionary
+					var newAssignments: [UUID: Times.Period.Contents] = [:]
+					for (newUUID, newPeriod) in newVariant {
+						if let oldUUID = oldPeriodsByName[newPeriod.name], let contents = oldAssigns[oldUUID] {
+							newAssignments[newUUID] = contents
+						}
+						// If no match, leave unassigned for a free period
 					}
-					var timetable = self.timetables[tblIndex]
-					timetable.timetable.insert(week, at: pos)
-					self.timetables[tblIndex] = timetable
-
-				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, period: let time, let data, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					var week = timetable.timetable[wkIndex]
+					// Write back
 					switch wkday {
-						case 2: week.monday[time] = data
-						case 3: week.tuesday[time] = data
-						case 4: week.wednesday[time] = data
-						case 5: week.thursday[time] = data
-						case 6: week.friday[time] = data
-						default: break
+					case 2: week.monday = newAssignments
+					case 3: week.tuesday = newAssignments
+					case 4: week.wednesday = newAssignments
+					case 5: week.thursday = newAssignments
+					case 6: week.friday = newAssignments
+					default: break
 					}
-					timetable.timetable[wkIndex] = week
-					self.timetables[tblIndex] = timetable
+					timetable.timetable[weekIdx] = week
+				}
+				// Update the mapping
+				if let variant {
+					timetable.times.mapping.updateValue(variant, forKey: wkday)
+				} else {
+					timetable.times.mapping.removeValue(forKey: wkday)
+				}
+				self.timetables[tblIndex] = timetable
+
+			case .times_variants_add(key: let key, let variant, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				timetable.times.variants.updateValue(variant, forKey: key)
+				self.timetables[tblIndex] = timetable
+
+			case .times_variant_modify(target: let target, let variantChange, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				switch variantChange {
+
+				case .rename(let name):
+					switch target {
+					case .standard: Logger.timetableChanges.fault("Can't rename Standard times! variantChange: \(String(reflecting: variantChange))"); continue
+					case .variant(let key):
+						timetable.times.variants[key]?.name = name
+					}
+
+				case .modifyEntry(let setIdx, to: let value):
+					switch target {
+					case .standard: timetable.times.standard[setIdx] = value
+					case .variant(let key): timetable.times.variants[key]?.variant[setIdx] = value
+					}
+
+				case .deleteEntry(let deletee):
+					switch target {
+					case .standard: timetable.times.standard.removeValue(forKey: deletee)
+					case .variant(let key): timetable.times.variants[key]?.variant.removeValue(forKey: deletee)
+					}
+				}
+				self.timetables[tblIndex] = timetable
+
+			case .times_variants_delete(let del, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				timetable.times.variants.removeValue(forKey: del)
+				self.timetables[tblIndex] = timetable
+
+
+			case .timetable_create(let value, index: let idx):
+				self.timetables.insert(value, at: idx)
+
+			case .timetable_delete(index: let idx):
+				self.timetables.remove(at: idx)
+
+			case .timetable_icon(let icon, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				timetable.icon = icon
+				self.timetables[tblIndex] = timetable
+
+			case .timetable_name(let name, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				timetable.name = name
+				self.timetables[tblIndex] = timetable
+
+
+			case .week_add(let week, position: let pos, timetable: let tblIndex):
+				guard self.timetables[tblIndex].timetable.count < 2 else {
+					fatalError("\(Date.now.formatted(date: .numeric, time: .complete))\(#fileID):\(#line)\n\tTimetable cannot have more than 2 alternating weeks due to current beta limitations\n\tAttempted to insert:\n\t\(week)\n\tat position <\(pos)>")
+				}
+				var timetable = self.timetables[tblIndex]
+				timetable.timetable.insert(week, at: pos)
+				self.timetables[tblIndex] = timetable
+
+			case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, period: let time, let data, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				var week = timetable.timetable[wkIndex]
+				switch wkday {
+				case 2: week.monday[time] = data
+				case 3: week.tuesday[time] = data
+				case 4: week.wednesday[time] = data
+				case 5: week.thursday[time] = data
+				case 6: week.friday[time] = data
+				default: break
+				}
+				timetable.timetable[wkIndex] = week
+				self.timetables[tblIndex] = timetable
 
 			case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: let tblIndex):
 				let weekIndex: Int = (wkIndex == .a) ? 0 : 1
@@ -274,62 +274,47 @@ class Storage: ObservableObject {
 				var timetable = self.timetables[tblIndex]
 				var week = timetable.timetable[weekIndex]
 				switch wkday {
-					case 2: week.monday[pd]	= nil
-					case 3: week.tuesday[pd]	= nil
-					case 4: week.wednesday[pd] = nil
-					case 5: week.thursday[pd]	= nil
-					case 6: week.friday[pd]	= nil
-					default:
-						Logger.timetableChanges.fault("Invalid weekday \(wkday)")
-						continue
+				case 2: week.monday[pd]	= nil
+				case 3: week.tuesday[pd]	= nil
+				case 4: week.wednesday[pd] = nil
+				case 5: week.thursday[pd]	= nil
+				case 6: week.friday[pd]	= nil
+				default:
+					Logger.timetableChanges.fault("Invalid weekday \(wkday)")
+					continue
 				}
 				timetable.timetable[weekIndex] = week
 				self.timetables[tblIndex] = timetable
 
-				case .week_remove(let wkIndex, timetable: let tblIndex):
-					var timetable = self.timetables[tblIndex]
-					timetable.timetable.remove(at: wkIndex)
-					self.timetables[tblIndex] = timetable
+			case .week_remove(let wkIndex, timetable: let tblIndex):
+				var timetable = self.timetables[tblIndex]
+				timetable.timetable.remove(at: wkIndex)
+				self.timetables[tblIndex] = timetable
 
 			}//switch
 
 		}//for each
-		Logger.timetableChanges.info("Successfully applied changes to stored data:\n\t\(changes)")
+		Logger.timetableChanges.notice("Successfully applied changes to stored data:\n\t\(changes)")
 		do {
 			try saveTimetables()
-			Logger.general.debug("Saved timetables after applyChanges")
+			Logger.general.trace("Saved timetables after applyChanges")
 		} catch {
 			Logger.general.fault("Failed to save timetables after applyChanges: \(String(describing: error))")
 		}
 		reload()
 	}//func applyChanges(_)
 
+
 	#if os(iOS)
-	enum ConnectivityError: Error {
-		case couldntDistribute([Change])
-	}
-
-	///Send a set of `Change`s to a connected Apple Watch.
-	///
-	///Do not apply changes via `applyChanges` unless `distributeChanges` has first successfully sent them to the Apple Watch.
-	///
-	///If no Apple Watch is connected to the iPhone, `distributeChanges` will return success.
-	///
-	///In the case that the changes cannot be sent to the watch and `ConnectivityError.couldntDistribute` is thrown, give the user a choice to send those changes to a sort of waiting-list timetable (yet to be implemented)
-	func distributeChanges(_ changes: [Change]) throws {
-		///send changes to watch here
-		///if we can't get it to the watch, maybe offer to save it to another timetable instead of desyncing the two
-
-	//	throw ConnectivityError.couldntDistribute(changes)
+	@Published var WCManager = WatchConnectivityManager_iOS()
+	func distributeChanges(_ changes: [Change]) {
+		WCManager.queueChanges(changes)
 	}
 	#endif
 
 	#if os(watchOS)
-	func pingPhone() {
-
-	}
+	var WCManager = WatchConnectivityManager_watchOS()
 	#endif
-
 
 }
 
@@ -337,11 +322,11 @@ func reload() {
 
 	let now = getCurrentClass2(date: .now, timetable: Storage.shared.timetables[Storage.shared.ActiveTimetable])
 
-	withAnimation {
+	//withAnimation {
 		LocalData.shared.currentCourse = now.0
 		LocalData.shared.nextCourse = now.1
 		LocalData.shared.currentTime = now.2
-	}
+	//}
 
 	Logger.general.log("Reloaded")
 	log()

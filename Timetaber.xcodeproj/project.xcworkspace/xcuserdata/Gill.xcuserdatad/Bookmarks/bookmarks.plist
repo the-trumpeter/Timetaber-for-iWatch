@@ -59,109 +59,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>57</string>
+					<string>990</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>56</string>
+					<string>989</string>
 					<key>Timestamp</key>
-					<string>789368499.514858</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Storage.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>is-complete</key>
-			<true/>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>	@Published var timetables: [Timetable] = []
-</string>
-				<key>leading</key>
-				<string>	///
-	///The iOS app is the source of truth.
-</string>
-				<key>trailing</key>
-				<string>
-	//Ease-of-access variables for current/active timetable
-	var ActiveTimetable: Int = 0
-</string>
-			</dict>
-			<key>title</key>
-			<string>Add to UserDefaults</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>60</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>59</string>
-					<key>Timestamp</key>
-					<string>793529931.264905</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Storage.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>	var ActiveTimetable: Int = 0
-</string>
-				<key>leading</key>
-				<string>
-	//Ease-of-access variables for current/active timetable
-</string>
-				<key>trailing</key>
-				<string>	//@Published var timetable: Timetable
-
-
-</string>
-			</dict>
-			<key>title</key>
-			<string>Add to UserDefaults</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>993</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>992</string>
-					<key>Timestamp</key>
-					<string>793767711.490793</string>
+					<string>794202788.162411</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -191,53 +95,6 @@
 			</dict>
 			<key>title</key>
 			<string>PoLAUNCH 1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>12</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>11</string>
-					<key>Timestamp</key>
-					<string>789717528.47834</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber Watch App/TimetaberApp.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>struct Timetaber_Watch_AppApp: App {
-</string>
-				<key>leading</key>
-				<string>@main
-
-</string>
-				<key>trailing</key>
-				<string>    @Environment(\.scenePhase) private var scenePhase
-    init() {
-		//TODO: update from phone here
-</string>
-			</dict>
-			<key>title</key>
-			<string>Watch app crash on boot (not on Saturday, susp. to be weekdays)</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

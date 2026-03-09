@@ -53,7 +53,7 @@ struct HomeView: View {
 
     var body: some View {
 
-		let current = data.currentCourse
+		let current = data.currentCourse //DisplayCourse("LongName", icon: "clock", room: "AB1", colour: "blueberry")
 		let next = if current.name != "Error" { data.nextCourse } else { current }
 
         VStack {
@@ -63,22 +63,26 @@ struct HomeView: View {
 			Image(systemName: current.icon)//data.currentCourse.icon)
 				.foregroundStyle(Colour(current.colour))
                 .imageScale(.large)
-                .font(.system(size: 25).weight(.semibold))
-            
+                .font(.system(size: 27).weight(.semibold))
+
 				  Text(current.name)//data.currentCourse.name)
-                .font(.system(size:23).weight(.bold))
+                .font(.system(size:25).weight(.bold))
 				.foregroundStyle(Colour(current.colour))
-                .padding(.bottom, 0.1)
+                .padding(
+					EdgeInsets(top: 0, leading: 0, bottom: (current.room != nil) ? -6 : 0, trailing: 0)
+				)
             
             // ROOM
             Text(roomOrBlank(current) ?? "")
+				.frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
-                .font(.system(size: 15))
-                
+                .font(.system(size: 18))
+
+			Spacer()
+
 			switch next.type {
 				case .noSchool(.beforeClass(startTime: _)), .standard:
-				//	Spacer()
 					// NEXT CLASS
 					Text(nextPrefix(next))
 						.font(.system(size: 15))
@@ -93,7 +97,6 @@ struct HomeView: View {
             }
 			Spacer()
         }
-        .padding()
         //.onAppear() { Logger.<#logger#>.<#action#>("HomeView Updated") }
     }
     

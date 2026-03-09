@@ -7,17 +7,6 @@
 import SwiftUI
 import OSLog
 
-extension View {
-	@ViewBuilder
-	func `if`(_ condition: Bool, transform: (Self) -> some View) -> some View {
-		if condition {
-			transform(self)
-		} else {
-			self
-		}
-	}
-}
-
 extension Color {
 	func adjust(hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, opacity: CGFloat = 1) -> Color {
 		let color = UIColor(self)
@@ -112,7 +101,7 @@ extension Times {
 			}
 
 		}
-		Logger.editTimes.info("Applied changes \(changes) to a (instance of) Times")
+		Logger.editTimes.notice("Applied changes \(changes) to a (instance of) Times")
 	}
 }
 
@@ -190,6 +179,10 @@ fileprivate struct timetableOptions: View {
 				}
 
 				// Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) { }
+
+
+				ExportView()
+
 
 			}.listStyle(.inset)
 			.navigationTitle("Settings")

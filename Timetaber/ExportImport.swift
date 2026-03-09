@@ -44,6 +44,7 @@ extension Timetable {
 }
 
 
+
 struct ExportView: View {
 	@ObservedObject var store = Storage.shared
 
@@ -53,15 +54,30 @@ struct ExportView: View {
 	@State private var exportFailed = false
 
 	@State private var importing = false
+	@State private var importFailed: FileImportError? = nil
+	@State private var importSuccess: Timetable? = nil
+
+	private enum FileImportError {
+		case decodeFailed
+		case fileImportFailed
+		case couldntRead
+	}
+
+
+	enum ImportStatus { case replace, add, ignore }
+	@State var importOptions: (courses: ImportStatus, timingVariants: ImportStatus, wkAndTimetable: ImportStatus) = (.replace, .replace, .replace)
+	@State var import_ReplaceAll = false
+
 
 
 
 	var body: some View {
-		VStack {
+		Menu("Export/Import...") {
 
 
-
+			//MARK: Export
 			Button("Export Timetable...", systemImage: "square.and.arrow.up") {
+				Logger.files.notice("Importing timetable...")
 				do { exportData = JsonDocument(
 						json:
 							try store.timetables[store.ActiveTimetable].encode()
@@ -83,6 +99,7 @@ struct ExportView: View {
 				}
 			)
 
+			//MARK: Export Failed
 			.alert("Couldn't export timetable", isPresented: $exportFailed) {
 				Button("OK", role: .cancel) { exportFailed = false }
 			} message: {
@@ -92,36 +109,131 @@ struct ExportView: View {
 
 
 
-
+			//MARK: Import
 			Button("Import Timetable...", systemImage: "square.and.arrow.down") {
+				Logger.files.notice("Importing timetable...")
 				importing = true
 			}
 			.fileImporter(
-						isPresented: $importing,
-						allowedContentTypes: [.json],
-						onCompletion: { result in
+				isPresented: $importing,
+				allowedContentTypes: [.json],
+				onCompletion: { result in
 
-							guard
-								// 1.
-								let url = try? result.get(),
-								// 2.
-								url.startAccessingSecurityScopedResource()
-							else { return }
+					guard
+						let url = try? result.get(),
+						url.startAccessingSecurityScopedResource()
+					else { return }
 
-							defer { url.stopAccessingSecurityScopedResource() }
+					defer { url.stopAccessingSecurityScopedResource() }
 
-							// 3.
-							if let jsonData = try? Data(contentsOf: url),
-							   let json = try? JSONSerialization.jsonObject(with: jsonData) {
-								//MARK: TODO: Decode JSON
-							}
-
-							// 4.
-							if let jsonString = try? String(contentsOf: url, encoding: .utf8) {
-								//MARK: TODO: Decode JSON
-							}
+					if let jsonData = try? Data(contentsOf: url) {
+						//let json = try? JSONSerialization.jsonObject(with: jsonData) {
+						let decoder = JSONDecoder()
+						do {
+							let decoded = try decoder.decode(Timetable.self, from: jsonData)
+							importSuccess = decoded
+						} catch {
+							importFailed = .decodeFailed
 						}
+					}
+
+				//	if let jsonString = try? String(contentsOf: url, encoding: .utf8) { }
+
+				}
+			)
+				//MARK: Import Failed
+			.alert("Importing failed", isPresented: Binding(get: {importFailed != nil},set:{_ in} ) ) {
+				Button("OK", role: .cancel) { importFailed = nil }
+			} message: {
+				switch importFailed {
+					case .decodeFailed: Text("Couldn't decode the file. Is it in a valid format?\nIf you think something is wrong, please upload the file in a TestFlight report.")
+					case .fileImportFailed: Text("Failed to retrieve the file.\nTry moving it to a different location.")
+					case .couldntRead: Text("Couldn't read the file.\nIf you think something is wrong, please upload the file in a TestFlight report.")
+					default: Text("Something went wrong with this alert.\nError \(#line)")
+				}
+			}
+
+			//MARK: Import Success
+			.alert("Import timetable", isPresented: Binding(get:{importSuccess != nil},set:{_ in}) ) {
+				/*
+				 Picker("Import...", selection: Binding(
+					get: { import_ReplaceAll									},
+					set: { new in withAnimation { import_ReplaceAll = new }	}
+				) ) {
+					Text("Replace All").tag(true)
+					Text("Custom...")	.tag(false)
+				}
+
+				if !import_ReplaceAll {
+					Picker("Courses", selection: Binding(get: {importOptions.courses}, set:{importOptions.courses=$0}) ) {
+						Text("Replace")		.tag(ImportStatus.replace)
+						Text("Add")				.tag(ImportStatus.add)
+						Text("Don't Import")	.tag(ImportStatus.ignore)
+					}
+					Picker("Timing Variants", selection: Binding(get: {importOptions.timingVariants}, set:{importOptions.timingVariants=$0}) ) {
+						Text("Replace")		.tag(ImportStatus.replace)
+						Text("Add")				.tag(ImportStatus.add)
+						Text("Don't Import")	.tag(ImportStatus.ignore)
+					}
+
+					Picker("Week Structure & Timetable", selection: Binding(get: {importOptions.wkAndTimetable}, set:{importOptions.wkAndTimetable=$0}) ) {
+						Text("Replace")		.tag(ImportStatus.replace)
+						//Text("Add")				.tag(ImportStatus.add)
+						Text("Don't Import")	.tag(ImportStatus.ignore)
+					}
+					.disabled(
+						importOptions.courses != ImportStatus.ignore
+							&&
+						importOptions.timingVariants != ImportStatus.ignore
 					)
+					.onChange(of: importOptions.courses) { _, new in
+						if !(
+							importOptions.courses != ImportStatus.ignore && importOptions.courses != ImportStatus.ignore
+						) {
+							importOptions.wkAndTimetable = .ignore
+						}
+					}
+					.onChange(of: importOptions.timingVariants) { _, new in
+						if !(
+							importOptions.courses != ImportStatus.ignore && importOptions.courses != ImportStatus.ignore
+						) {
+							importOptions.wkAndTimetable = .ignore
+						}
+					}
+				}
+				 */
+				Button("Import", role: .destructive) {
+					//Logger.files.critical("Timetable importing from temp val to storage not configured")
+					guard let new = importSuccess else {
+						Logger.files.critical("Timetable import closure executed with nil importSuccess result value.")
+						return
+					}
+					Storage.shared.timetables[Storage.shared.ActiveTimetable] = new
+					Logger.files.notice("Imported timetable!")
+					importSuccess = nil
+				}//.tint(.accentColor)
+				Button("Cancel", role: .cancel) {
+					importSuccess = nil
+				}
+
+			} message: {
+				if let tbl = importSuccess {
+
+					let counts: (courses: Int, timesVariants: Int, weeks: Int) = (
+						courses: tbl.courses.count,
+						timesVariants: tbl.times.variants.count+1,
+						weeks: tbl.timetable.count
+					)
+					Text("\(counts.courses) course\({if counts.0==1{return""}else{return"s"}}())\n\(counts.timesVariants) timing variant\({if counts.1==1{return""}else{return"s"}}())\n\(counts.weeks) timetabled week\({if counts.2==1{return""}else{return"s"}}())"
+					)
+
+				} else {
+					Text("Error \(#line)")
+						.onAppear {
+							Logger.files.warning("Import alert rendered without valid timetable to import")
+						}
+				}
+			}
 
 
 

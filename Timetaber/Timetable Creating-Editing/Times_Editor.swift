@@ -815,13 +815,10 @@ fileprivate struct TimesVariantEditor: View {
 					if (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || (isNewVariant && localTimes.variants[newIndex!] != originalNew)) {
 						Button("Save", systemImage: "checkmark") {
 							let changes = compileChanges()
-							do {
-								try store.distributeChanges(changes)
-							} catch {
-								Logger.editTimes.fault("Variant \(debugID)  Couldn't distribute changes \(String(reflecting: changes))")
-								return
-							}
+
+							store.distributeChanges(changes)
 							store.applyChanges(changes)
+
 							localTimes = store.timetables[tblIndex].times
 							hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
 							syncPendingFlag()
@@ -1088,14 +1085,9 @@ struct TimesMapping: View {
 					Button("Save", systemImage: "checkmark") {
 						let changes = compileChanges()
 
-						do { try store.distributeChanges(changes)
-						} catch {
-							Logger.editTimes.fault("Couldn't distribute changes \(changes).")
-							//TODO: Distribution Fallback
-							return
-						}
-
+						store.distributeChanges(changes)
 						store.applyChanges(changes)
+						
 						withAnimation {
 							let t = store.timetables[tblIndex].times
 							localTimes = t; origin = t

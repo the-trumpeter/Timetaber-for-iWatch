@@ -4,14 +4,15 @@
 //
 //  Created by Gill Palmer on 3/11/2024.
 //
+//MARK: NO TARGET MEMBERSHIP
 
 import SwiftUI
 import OSLog
 
 
 //MARK: - Template
-struct listTemplate: View {
-    
+fileprivate struct listTemplate: View {
+
     let course: DisplayCourse
 	let timeslot: Timeslot
 
@@ -58,7 +59,7 @@ struct listTemplate: View {
 }
 
 //MARK: - Day
-struct listedDay: View {
+fileprivate struct listedDay: View {
 	let timetable: Timetable
 	var day: [UUID: Times.Period.Contents]
     var courses: [UUID: Course2]
@@ -96,11 +97,11 @@ struct listedDay: View {
             List {
                 ForEach(timePairs, id: \.0) { pair in
                     let time = pair.0
-                    let uuid = pair.1 //period UUID
+                    //let uuid = pair.1 //period UUID
 
 					let ts = Timeslot(week: week, day: weekday, time: time)
 					if
-						let periodContents = (try? timetable.periodContentsFromTimeslot(ts).1),
+						let periodContents = (try? timetable.periodContentsFromTimeslot(ts).1), //FIXME: Throwing error
 						let course2 = timetable.courses[periodContents.courseID]
 					{
 						if let room = course2.rooms[periodContents.roomIndex] {
@@ -123,10 +124,11 @@ struct listedDay: View {
 
 					} else {
 						Text("Error \(#line)") //error getting timeslot
+						
 					}
 
                 }
-            }
+			}
         }
     }
 }
@@ -141,7 +143,7 @@ struct ListView: View {
         if data.termRunningGB && weekdayNumber(.now) > 1 && weekdayNumber(.now) < 7 {
             
             let wk = getIfWeekIsA_FromDateAndGhost(originDate: data.startDateGB, ghostWeek: data.ghostWeekGB)
-			let day = getTimetableDay2(isWeekA: wk, weekDay: weekdayNumber(.now), timetable: data.timetables[data.ActiveTimetable])
+			//let day = getTimetableDay2(isWeekA: wk, weekDay: weekdayNumber(.now), timetable: data.timetables[data.ActiveTimetable])
 			let times: [(Time24, UUID?)] = {
 				do {
 					let timing = try findTimes(weekdayNumber(.now), data.timetables[data.ActiveTimetable])
@@ -155,7 +157,7 @@ struct ListView: View {
 				}
 			}()
 			if times.last?.0 ?? 2400 >= Time24() { //if not after last class of day
-                listedDay(timetable: chaos,
+				listedDay(timetable: data.timetables[data.ActiveTimetable],
                           week: {if wk {.a}else{.b}}(),
                           day: weekdayNumber(.now),
 						  times: times

@@ -454,15 +454,11 @@ fileprivate struct EditTimetableDayView: View {
 						Button("Save changes", systemImage: "checkmark") {
 							let changes = compileChanges()
 							Logger.editTimetable.log("Saving \(changes.count) Changes to timetable.")
-							do {
-								try origin.distributeChanges(changes)
-
-							} catch {
-//								Logger.editTimetable.fault("Could not distrubute changes: \n\(changes)")
-								return
-							}
+							
+							origin.distributeChanges(changes)
 							origin.applyChanges(changes)
-							Logger.editTimetable.log("Saved changes?")
+
+							Logger.editTimetable.notice("Saved changes")
 							// Reset local `day` to match the updated model so Save button disappears
 							day = origin.timetables[tblIndex].timetable[timingDetails.weekab]![timingDetails.weekday]!
 						}.tint(.blue)

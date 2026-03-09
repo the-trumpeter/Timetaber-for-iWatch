@@ -56,6 +56,13 @@
 			);
 			target = AE09C37D2E4D8A680032E777 /* Timetaber */;
 		};
+		AEAEF7B42F58E49F00E7F744 /* Exceptions for "Timetaber Watch App" folder in "Timetaber Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Views/ListView.swift,
+			);
+			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
+		};
 		AED478DE2F4D205B00EFBE35 /* Exceptions for "Timetaber" folder in "Timetaber" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -81,6 +88,9 @@
 		};
 		AE5BB4C52D12962C009928BD /* Timetaber Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AEAEF7B42F58E49F00E7F744 /* Exceptions for "Timetaber Watch App" folder in "Timetaber Watch App" target */,
+			);
 			path = "Timetaber Watch App";
 			sourceTree = "<group>";
 		};

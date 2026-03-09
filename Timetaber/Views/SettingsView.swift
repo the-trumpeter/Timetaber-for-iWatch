@@ -19,10 +19,15 @@ import OSLog
 //MARK: Processes
 fileprivate func startTermProcess(ghostWeek: Bool) throws {
 	// process to start a term
-	
+	let start = Date.now
+
+	try Storage.shared.WCManager.updateTermContext(
+		true, startDate: start, ghostWeek: ghostWeek
+	)
+
 	// ! Need to store that a term is running!!
 	Storage.shared.ghostWeekGB = ghostWeek
-	Storage.shared.startDateGB = Date.now
+	Storage.shared.startDateGB = start
 	Storage.shared.termRunningGB = true
 	reload()
 	log()
@@ -31,7 +36,7 @@ fileprivate func startTermProcess(ghostWeek: Bool) throws {
 
 fileprivate func endTermProcess() throws {
 	//processes to end a term, local 'termrunning' should be changed externally
-	
+	try Storage.shared.WCManager.updateTermContext(false)
 	Storage.shared.termRunningGB = false
 	reload()
 	log()
@@ -59,7 +64,7 @@ fileprivate struct NewTermSheet: View {
 						
 					} catch {
 						//call an error if function returns error
-						Logger.general.fault("startTermProcess threw unexpected error")
+						Logger.general.fault("startTermProcess threw")
 					}
 					
 					dismiss()
@@ -117,7 +122,7 @@ struct SettingsView: View {
 
 
 
-			//TODO: Start/stop term
+
 			Button {
 				alerting = true
 			} label: {
@@ -178,12 +183,11 @@ struct SettingsView: View {
 				Text("Error \(#line)")
 			}
 
-			.padding(.bottom, 30)
+			.padding(.bottom, 20)
 
+			//Spacer() //FIXME: List prioritising over Spacer
 
-
-			ExportView().padding(.bottom, 15)
-
+			//Import/Export options moved to TimetableCreatorView
 
 			Link(destination: URL(string: "https://github.com/the-trumpeter/Timetaber-for-iWatch")!, label: {
 				Label("GitHub Repository", systemImage: "arrowshape.turn.up.right")

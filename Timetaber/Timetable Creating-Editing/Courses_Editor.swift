@@ -420,9 +420,7 @@ struct CoursesEditor: View {
 				ToolbarItem(placement: .confirmationAction) {
 					if !(pendingChanges?.isEmpty ?? true) {
 						Button("Save", systemImage: "checkmark") {
-							do{	try store.distributeChanges(pendingChanges!)
-							} catch { return /** prompt user to copy changes to new timetable */ }
-
+							store.distributeChanges(pendingChanges!)
 							store.applyChanges(pendingChanges!)
 
 						}

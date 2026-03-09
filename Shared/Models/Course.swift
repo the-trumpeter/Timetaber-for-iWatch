@@ -48,7 +48,7 @@ struct Course2: Codable, Equatable {
 
 		self.joke = joke
 
-		self.type = identifier
+		self.type = identifier ?? CourseType.standard
 
 	}
 
@@ -113,7 +113,7 @@ struct DisplayCourse {
 		self.listName = course2.listName ?? name
 		self.listIcon = course2.listIcon
 		self.joke = course2.joke
-		self.type = identifier ?? course2.type ?? nil
+		self.type = identifier ?? course2.type ?? CourseType.standard
 	}
 
 }

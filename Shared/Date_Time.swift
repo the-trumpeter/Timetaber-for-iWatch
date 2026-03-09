@@ -101,7 +101,7 @@ func setCourseChangeAlarm(for time: Time24) {
         reload()
     }
     RunLoop.main.add(UpdateTimer!, forMode: .default)
-	Logger.updateTimer.info("Succesfully set course change alarm for \(date.formatted(date: .numeric, time: .complete))")
+	Logger.updateTimer.notice("Succesfully set course change alarm for \(date.formatted(date: .numeric, time: .complete))")
 }
 
 
@@ -353,10 +353,10 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 	)
 	let week = isweekA ? WeekAB.a : .b
 
-	Logger.dateTime.info("The weekday today is \(todayWeekday). It is week \(String(reflecting: week))")
+	Logger.dateTime.notice("The weekday today is \(todayWeekday). It is week \(String(reflecting: week))")
 
 	guard Storage.termRunningGB else { // if holidays then return
-		Logger.dateTime.info("Got current class. There's no school at the moment. [noTerm]")
+		Logger.dateTime.notice("Got current class. There's no school at the moment. [noTerm]")
 		return (
 			current: noSchool(.noTerm),
 			next: noSchool(.noTerm),
@@ -366,7 +366,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 	guard todayWeekday >= 2, todayWeekday <= 6 else {
-		Logger.dateTime.info("Got current class. There's no school at the moment. [weekend]")
+		Logger.dateTime.notice("Got current class. There's no school at the moment. [weekend]")
 		return (
 			current: noSchool(.weekend),
 			next: noSchool(.weekend),
@@ -405,7 +405,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 	if time24Now < times2Day.first!.0 { // before first course/period/time
 		setCourseChangeAlarm(for: times2Day.first!.0)
-		Logger.dateTime.info("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!.0))]")
+		Logger.dateTime.notice("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!.0))]")
 
 		return (
 			current: noSchool(.beforeClass(startTime: times2Day.first!.0)),
@@ -420,7 +420,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 		) //MARK: Return D
 
 	} else if time24Now >= times2Day.last!.0 { // after last course/period/time
-		Logger.dateTime.info("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!.0)")
+		Logger.dateTime.notice("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!.0)")
 		//try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
 		return (
 			current: noSchool(.afterClass),
@@ -463,7 +463,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.info("Got current class | now(\(now)) == compare(\(compare)) \nThe current class is \(currentCourseLocal.name). Next class is \(nextCourseLocal.name), due at \(next.display())")
+			Logger.dateTime.notice("Got current class | now(\(now)) == compare(\(compare)) \nThe current class is \(currentCourseLocal.name). Next class is \(nextCourseLocal.name), due at \(next.display())")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,
@@ -494,7 +494,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.info("Got current class | now(\(now)) > compare(\(compare)) && now(\(now)) < next(\(next)) \nThe current class is \(currentCourseLocal.name)\nNext class is \(nextCourseLocal.name), due at \(next.display())")
+			Logger.dateTime.notice("Got current class | now(\(now)) > compare(\(compare)) && now(\(now)) < next(\(next)) \nThe current class is \(currentCourseLocal.name)\nNext class is \(nextCourseLocal.name), due at \(next.display())")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,

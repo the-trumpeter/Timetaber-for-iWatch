@@ -11,9 +11,6 @@ import SwiftUI
 
 struct Timetaber_Watch_AppApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    init() {
-		//TODO: update from phone here
-    }
     
     var body: some Scene {
         
@@ -23,12 +20,12 @@ struct Timetaber_Watch_AppApp: App {
                 HomeView()
                     .environmentObject(LocalData.shared)
                 
-                ListView()
+                TimetableView()//ListView()
                     .environmentObject(LocalData.shared)
                 
-                SettingsView()
-                    .environmentObject(LocalData.shared)
-                
+                //SettingsView()
+                //    .environmentObject(LocalData.shared)
+
             }
             .tabViewStyle(.carousel)
             .onAppear() {
@@ -39,6 +36,7 @@ struct Timetaber_Watch_AppApp: App {
                     reload()
                 }
             }
+			
         }
         
     }

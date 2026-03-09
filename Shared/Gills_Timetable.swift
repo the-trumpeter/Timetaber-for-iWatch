@@ -42,7 +42,7 @@ var chaos: Timetable = {
 		englishID: Course2("English",         icon: "book.closed",                 rooms: ["BT4", "BT2"],            colour: "Lemon"),
 		hsieID: Course2("HSIE",            icon: "building.columns",                 rooms: ["BG8"],                 colour: "Rees1"),
 		juniorCBID: Course2("Junior C.B.", icon: "music.note",                                                 colour: "Cherry"),
-		jrStageID: Course2("Jr Stage",        icon: "music.note",                 rooms: ["BT1"],                 colour: "Graphite",    listName:"Junior S.B."),
+		jrStageID: Course2("Jr Stage",        icon: "music.note",                 rooms: ["BT1"],                 colour: "Graphite"),
 		lunchID: Course2("Lunch",         icon: "fork.knife",                                                 colour: "Graphite"),
 		mathsID: Course2("Maths",        icon: "number",                     rooms: ["FT2", "FT8"],                 colour: "Rose"),
 		musicLessonID: Course2("Music Lesson", icon: "music.note",                                             colour: "Graphite"),

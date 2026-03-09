@@ -10,13 +10,13 @@ import SwiftUI
 import OSLog
 
 //MARK: Processes
-func startTermProcess(ghostWeek: Bool) throws {
+func startTermProcess(ghostWeek: Bool, startDate: Date? = nil) {
     // process to start a term
     
     // ! Need to store that a term is running!!
     //TODO: These values should sync across iOS and watchOS
     Storage.shared.ghostWeekGB = ghostWeek
-    Storage.shared.startDateGB = Date.now
+	Storage.shared.startDateGB = startDate ?? .now
     Storage.shared.termRunningGB = true
     reload()
     log()
@@ -45,14 +45,11 @@ struct NewTermSheet: View {
 			VStack{
 				
 				Button("Start") {
-					do {
-						try startTermProcess(ghostWeek: isGhostWeek)
-						Logger.general.log("Started term")
-						reload()
-					} catch {
-						Logger.general.fault("Couldn't start term!")
-					}
-					
+					//try startTermProcess(ghostWeek: isGhostWeek)
+					//Logger.general.log("Started term")
+					//reload()
+					Logger.general.critical("Cannot start term from watch app")
+
 					dismiss()
 					
 				}
@@ -85,38 +82,42 @@ struct SettingsView: View {
         
         VStack {
             
-            Button { withAnimation {
-                if !data.termRunningGB {
-                    showingSheet.toggle()
-                } else {
-                    showConf = true
-                }
-                
-                }} label: {
-                    Label(data.termRunningGB ? "End Term": "Start Term", systemImage: data.termRunningGB ? "stop.circle": "play.circle")}
-                        .contentTransition(.symbolEffect(.replace))
-                        .background(
-                            RoundedRectangle(cornerRadius: 100)
-                                .stroke(.white, lineWidth: data.termRunningGB ? 1: 0))
-            
-                        .sheet(isPresented: $showingSheet) {
-                            NewTermSheet().environmentObject(LocalData.shared)
-                        }
-            
-                        .padding(10)
-            
-                        .confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
-                            
-                            Button("End Term") {
-                                //⭐️on term end
-                                endTermProcess()
-								NSLog("Ended Term")
-                            }
-                            
-                            Button("Cancel", role: .cancel) { }
-                        } message: {
-                            Text("This will reset weeks and move into holiday mode.")
-                        }
+			Button {
+				withAnimation {
+					//if !data.termRunningGB {
+					//    showingSheet.toggle()
+					//} else {
+					//    showConf = true
+					//}
+					Logger.general.critical("Cannot start/stop term from watch app")
+				}
+			} label: {
+				Label(data.termRunningGB ? "End Term": "Start Term", systemImage: data.termRunningGB ? "stop.circle": "play.circle")
+			}
+				.contentTransition(.symbolEffect(.replace))
+				.background(
+					RoundedRectangle(cornerRadius: 100)
+						.stroke(.white, lineWidth: data.termRunningGB ? 1: 0))
+
+				.sheet(isPresented: $showingSheet) {
+					NewTermSheet().environmentObject(LocalData.shared)
+				}
+
+				.padding(10)
+
+				.confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
+
+					Button("End Term") {
+						//⭐️on term end
+						//endTermProcess()
+						//NSLog("Ended Term")
+						Logger.general.critical("Cannot start/stop term from watch app")
+					}
+
+					Button("Cancel", role: .cancel) { }
+				} message: {
+					Text("This will reset weeks and move into holiday mode.")
+				}
             
             Spacer()
         

@@ -179,26 +179,27 @@ struct Timetable: Codable {
 	//MARK: Period Contents from Timeslot
 	func periodContentsFromTimeslot(_ timeslot: Timeslot) throws -> (UUID, Times.Period.Contents) {
 		guard let week: TimetabledWeek = self.timetable[timeslot.week] else {
-			Logger.dateTime.fault("Timeslot contained invalid week: \(String(reflecting: timeslot.week) ) Timetable only contains 1 week.")
+			let weeksNo = self.timetable.count
+			Logger.dateTime.fault("Timeslot contained invalid week: \(String(reflecting: timeslot.week) ) Timetable only contains \(weeksNo) week(s).")
 			throw TimeslotError.noWeekB
 		}
 
 		guard let day = week[timeslot.day] else {
-			Logger.dateTime.fault("Invalid weekday when getting period from timeslot")
+			Logger.dateTime.fault("Invalid weekday \(timeslot.day) when getting period from timeslot")
 			throw TimeslotError.invalidWeekday
 		}
 		guard let times = try? findTimes(timeslot.time, self).dropLast() else {
-			Logger.dateTime.fault("Given timeslot, but enclosed day has no classes")
+			Logger.dateTime.fault("Valid timeslot; but referenced day has no classes")
 			throw TimeslotError.noSchoolToday(.emptyTimes)
 		}
 
 		guard let periodID = times.first(where: {$0.0 == timeslot.time})?.1 else {
-			Logger.dateTime.fault("Invalid Time24 when getting period from timeslot")
+			Logger.dateTime.fault("Invalid Time24 \(timeslot.time) when getting period from timeslot")
 			throw TimeslotError.invalidTime
 		}
 
 		guard let contents = day[periodID] else {
-			Logger.dateTime.fault("Invalid period—could not find periodID in day")
+			Logger.dateTime.fault("Invalid period—could not find periodID \(periodID) in day")
 			throw TimeslotError.invalidPeriod
 		}
 
@@ -384,7 +385,7 @@ struct Timetable: Codable {
 
 		}//for each
 
-		Logger.timetableChanges.info("Successfully applied changes to timetable \(name): \n\t\(successChanges)")
+		Logger.timetableChanges.notice("Successfully applied changes to timetable \(name): \n\t\(successChanges)")
 		if !failChanges.isEmpty { Logger.timetableChanges.error("Couldn't apply changes:\n\t\t\(failChanges)") }
 	}//func applyChanges(_)
 

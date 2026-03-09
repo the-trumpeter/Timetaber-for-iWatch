@@ -32,6 +32,18 @@ extension Logger {
 	static let views = Logger(subsystem: bID, category: "Views")
 
 	static let files = Logger(subsystem: bID, category: "Export/Import JSON")
+	static let connectivity = Logger(subsystem: bID, category: "WatchConnectivity")
+}
+
+extension View {
+	@ViewBuilder
+	func `if`(_ condition: Bool, transform: (Self) -> some View) -> some View {
+		if condition {
+			transform(self)
+		} else {
+			self
+		}
+	}
 }
 
 
@@ -50,7 +62,7 @@ class LocalData: ObservableObject {
 
 	init() {
 		Logger.general.log("Initialising LocalData...")
-		let now = getCurrentClass2(date: .now, timetable: chaos)
+		let now = getCurrentClass2(date: .now, timetable: Storage.shared.timetables[Storage.shared.ActiveTimetable])
 
 		self.currentCourse = now.current
 		self.nextCourse = now.next
