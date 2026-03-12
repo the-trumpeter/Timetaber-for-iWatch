@@ -80,7 +80,7 @@ struct HomeView: View {
 					if case .noSchool = data.nextCourse.type { return "" }
 					guard let room = roomOrBlank(data.nextCourse) else { return "" }
 
-					return "Next up: \(data.nextCourse.name) • \(room)"
+					return "Next up: \(data.nextCourse.name, privacy: .public) • \(room, privacy: .public)"
 					}()
 				)
 				.font(.system(size: 20))

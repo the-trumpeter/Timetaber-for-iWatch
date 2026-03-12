@@ -35,7 +35,7 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 		activationDidCompleteWith activationState: WCSessionActivationState,
 		error: (any Error)?
 	) {
-		Logger.connectivity.notice("WCSession activated. | State: \(String(reflecting: activationState)) | Error: \(String(describing: error))")
+		Logger.connectivity.notice("WCSession activated. | State: \(String(reflecting: activationState), privacy: .public) | Error: \(String(describing: error), privacy: .public)")
 		switch activationState {
 			case .activated:
 				isActivated = true
@@ -49,7 +49,7 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 				 */
 			case .inactive:		Logger.connectivity.warning("WCSession inactive")
 			case .notActivated:	Logger.connectivity.fault("WCSession not activ(e/ated)")
-			@unknown default:	Logger.connectivity.fault("WCSession unknown state \(String(describing: activationState))")
+			@unknown default:	Logger.connectivity.fault("WCSession unknown state \(String(describing: activationState), privacy: .public)")
 		}
 	}
 
@@ -61,6 +61,12 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 		Logger.connectivity.notice("WCSession deactivated")
 		session.activate()
 	}
+
+
+	func session(_ session: WCSession, didFinish: WCSessionUserInfoTransfer, error: (any Error)?) {
+		Logger.connectivity.notice("Finished transferring \(didFinish.userInfo.count, privacy: .public) data entries with error \(String(reflecting: error), privacy: .public)")
+	}
+
 
 
 	//MARK: -
@@ -76,8 +82,8 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 	/// Queue an array of changes to be sent to a connected Apple Watch, using `WCSession.transferUserInfo(_:)`
 	/// - Parameter changes: an array of changes to be queued for distribution
 	func queueChanges(_ changes: [Change]) {
-		guard WCSession.default.isWatchAppInstalled else {
-			Logger.connectivity.info("Watch counterpart app not installed, will not queue changes")
+		guard session.isWatchAppInstalled else {
+			Logger.connectivity.notice("Watch counterpart app not installed, will not queue changes")
 			return
 		}
 		let mappedChanges: [String: Change] = Dictionary(uniqueKeysWithValues:
@@ -86,12 +92,24 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 										)
 		)
 		session.transferUserInfo(mappedChanges)
-		Logger.connectivity.notice("Queued \(changes.count) Changes for sending to watch via WCSession.transferUserInfo(_:)")
+		Logger.connectivity.notice("Queued \(changes.count, privacy: .public) Changes for sending to watch via WCSession.transferUserInfo(_:)")
 	}
+
+	func transferFullTimetable(_ ttbl: Timetable) {
+
+		guard session.isWatchAppInstalled else {
+			Logger.connectivity.info("Watch counterpart app not installed, will not queue changes")
+			return
+		}
+		session.transferUserInfo( ["importTimetable": ttbl] )
+	}
+
+
+
 
 	//MARK: updateApplicationContext
 	func updateTermContext(_ termRunning: Bool, startDate: Date? = nil, ghostWeek: Bool? = nil) throws {
-		guard WCSession.default.isWatchAppInstalled else {
+		guard session.isWatchAppInstalled else {
 			Logger.connectivity.info("Watch counterpart app not installed, will not update context")
 			return
 		}

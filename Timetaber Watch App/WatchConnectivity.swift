@@ -23,8 +23,8 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 	override init() {
 		super.init()
 		if WCSession.isSupported() {
-			session.delegate = self
-			session.activate()
+			self.session.delegate = self
+			self.session.activate()
 		} else {
 			Logger.connectivity.warning("WCSession not supported")
 		}
@@ -36,21 +36,14 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 		activationDidCompleteWith activationState: WCSessionActivationState,
 		error: (any Error)?
 	) {
-		Logger.connectivity.notice("WCSession activated.\nState \(activationState.rawValue)\nError \(String(describing: error))")
+		Logger.connectivity.notice("WCSession activated.\nState \(activationState.rawValue, privacy: .public)\nError \(String(describing: error), privacy: .public)")
 		switch activationState {
 			case .activated:
 				isActivated = true
 				Logger.connectivity.notice("WCSession activated")
-
-				/* ?
-				for message in pendingMessages {
-					send(message: message)
-				}
-				pendingMessages.removeAll()
-				 */
 			case .inactive:		Logger.connectivity.warning("WCSession inactive")
 			case .notActivated:	Logger.connectivity.fault("WCSession not activ(e/ated)")
-			@unknown default:	Logger.connectivity.fault("WCSession unknown state \(String(describing: activationState))")
+			@unknown default:	Logger.connectivity.fault("WCSession unknown state \(String(describing: activationState), privacy: .public)")
 		}
 	}
 	
@@ -68,7 +61,7 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 				case "term-running":
 
 					guard let run = val as? Bool else { //Ensure is correct value
-						Logger.connectivity.critical("Invalid value \(String(describing: val) ) given to key 'term-running'")
+						Logger.connectivity.critical("Invalid value \(String(describing: val), privacy: .public ) given to key 'term-running'")
 						return
 					}
 					guard assembly.running == nil ||
@@ -83,7 +76,7 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 				case "term-startDate":
 
 					guard let start = val as? Date else { //Ensure is correct value
-						Logger.connectivity.critical("Invalid value \(String(describing: val) ) given to key 'term-startDate'")
+						Logger.connectivity.critical("Invalid value \(String(describing: val), privacy: .public ) given to key 'term-startDate'")
 						return
 					}
 					guard assembly.startDate == nil ||
@@ -98,7 +91,7 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 				case "term-ghostWeek":
 
 					guard let ghost = val as? Bool else { //Ensure is correct value
-						Logger.connectivity.critical("Invalid value \(String(describing: val) ) given to key 'term-ghostWeek'")
+						Logger.connectivity.critical("Invalid value \(String(describing: val), privacy: .public ) given to key 'term-ghostWeek'")
 						return
 					}
 					guard assembly.ghostWeek == nil ||
@@ -117,7 +110,7 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 			}//for k,v
 
 			guard let running = assembly.running else {
-				Logger.connectivity.fault("Recieved application context, but missing 'term-running' value. All \(context.count) context will be discarded")
+				Logger.connectivity.fault("Recieved application context, but missing 'term-running' value. All \(context.count, privacy: .public) context will be discarded")
 				return
 			}
 
@@ -143,6 +136,20 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 		DispatchQueue.main.async {
 
+			if info["importTimetable"] != nil {
+
+				guard let imported = info["importTimetable"] as? Timetable else {
+					Logger.connectivity.critical("Data passed as 'importTimetable' does not conform to 'Timetable'")
+					return
+				}
+
+				let actvTbl = Storage.shared.ActiveTimetable
+				Storage.shared.timetables[actvTbl] = imported
+				Logger.connectivity.notice("Recieved & applied new timetable from iOS. Discarded \(info.count-1, privacy: .public) other items")
+				return
+			}
+
+
 			var changes: [Change] = []
 			var invalid: [String: Any] = [:]
 
@@ -156,16 +163,18 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 
 			if !(changes.isEmpty) {
-				//Logger.connectivity.notice("Recieved \(changes.count) Changes from iOS via WatchConnectivity; applying...")
+				//Logger.connectivity.notice("Recieved \(changes.count, privacy: .public) Changes from iOS via WatchConnectivity; applying...")
 				Storage.shared.applyChanges(changes)
 			}
 			if !(invalid.isEmpty) {
-				Logger.connectivity.critical("\(invalid.count)/\(info.count) unexpected userInfo recieved:\n\(invalid)")
+				Logger.connectivity.critical("\(invalid.count, privacy: .public)/\(info.count, privacy: .public) unexpected userInfo recieved:\n\(invalid, privacy: .public)")
 			}
 
-			Logger.connectivity.notice("Parsed \(changes.count) messages out of \(info.count) total recieved.")
-		}
-	}
+			Logger.connectivity.notice("Parsed \(changes.count, privacy: .public) messages out of \(info.count, privacy: .public) total recieved.")
+
+		}//DispatchQueue
+
+	}// session(...didRecieveUserInfo:)
 
 
 

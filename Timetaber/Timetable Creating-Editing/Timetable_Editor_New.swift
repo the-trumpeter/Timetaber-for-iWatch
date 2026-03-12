@@ -308,7 +308,7 @@ fileprivate struct EditTimetableDayView: View {
 
 		//note if timetable doesn't have specified week before crashing. that's a Testflight Me probem.
 		if !store.timetables.indices.contains(tblIndex) {
-			Logger.views.fault("Timetables don't contain timetable for index \(tblIndex)")
+			Logger.views.fault("Timetables don't contain timetable for index \(tblIndex, privacy: .public)")
 		}
 		self.tblIndex = tblIndex
 
@@ -321,7 +321,7 @@ fileprivate struct EditTimetableDayView: View {
 			case .standard: times.standard
 			case .variant(let key): {
 					if  !times.variants.keys.contains(key) {
-						Logger.views.fault("Invalid mapping for day \(day)")
+						Logger.views.fault("Invalid mapping for day \(day, privacy: .public)")
 					}
 					let Vnt = times.variants[key]!
 					variantName = Vnt.name
@@ -333,7 +333,7 @@ fileprivate struct EditTimetableDayView: View {
 
 
 		if store.timetables[tblIndex].timetable[week]![day] == nil {
-			Logger.views.fault("Invalid weekday \(day)")
+			Logger.views.fault("Invalid weekday \(day, privacy: .public)")
 		}
 		self.day = store.timetables[tblIndex].timetable[week]![day]!
 	}
@@ -343,7 +343,7 @@ fileprivate struct EditTimetableDayView: View {
         // Original snapshot for this week/day from storage (non-optional contents)
         guard let originalDay = origin.timetables[tblIndex]
             .timetable[timingDetails.weekab]?[timingDetails.weekday] else {
-            Logger.editTimetable.fault("Couldn't load original day for week/day \(String(reflecting: timingDetails))")
+            Logger.editTimetable.fault("Couldn't load original day for week/day \(String(reflecting: timingDetails), privacy: .public)")
             return []
         }
 
@@ -453,7 +453,7 @@ fileprivate struct EditTimetableDayView: View {
 
 						Button("Save changes", systemImage: "checkmark") {
 							let changes = compileChanges()
-							Logger.editTimetable.log("Saving \(changes.count) Changes to timetable.")
+							Logger.editTimetable.log("Saving \(changes.count, privacy: .public) Changes to timetable.")
 							
 							origin.distributeChanges(changes)
 							origin.applyChanges(changes)
@@ -485,11 +485,11 @@ fileprivate struct EditTimetableDayView: View {
 				Button("Discard", role: .destructive) {
 					withAnimation {
 						guard let week = origin.timetables[tblIndex].timetable[timingDetails.weekab] else {
-							Logger.editTimetable.fault("Week \(String(reflecting: timingDetails.weekab) ) invalid, cannot discard changes.")
+							Logger.editTimetable.fault("Week \(String(reflecting: timingDetails.weekab), privacy: .public ) invalid, cannot discard changes.")
 							return
 						}
 						guard let d = week[timingDetails.weekday] else {
-							Logger.editTimetable.fault("Weekday \(timingDetails.weekday) invalid")
+							Logger.editTimetable.fault("Weekday \(timingDetails.weekday, privacy: .public) invalid")
 							return
 						}
 						day = d

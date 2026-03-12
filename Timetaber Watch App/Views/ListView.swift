@@ -149,7 +149,7 @@ struct ListView: View {
 					let timing = try findTimes(weekdayNumber(.now), data.timetables[data.ActiveTimetable])
 					return timing
 				} catch findTimesError.invalidMapping(let failDisplayCourse){
-					Logger.views.fault("findTimes threw invalid mapping: \(String(reflecting: failDisplayCourse.room) )")
+					Logger.views.fault("findTimes threw invalid mapping: \(String(reflecting: failDisplayCourse.room), privacy: .public )")
 					return []
 				} catch {
 					Logger.views.fault("findTimes threw other than invalidMapping")

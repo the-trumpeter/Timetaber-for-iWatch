@@ -18,9 +18,9 @@ import OSLog
 
 func log() {
 	Logger.general.notice("""
-		Current course: \(LocalData.shared.currentCourse.name), Next course: \(LocalData.shared.nextCourse.name)
-		Term running: \(String(describing: Storage.shared.termRunningGB)), Ghost week: \(String(describing: Storage.shared.ghostWeekGB))
-		Is it week A?: \(String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: Storage.shared.ghostWeekGB) ))
+		Current course: \(LocalData.shared.currentCourse.name, privacy: .public), Next course: \(LocalData.shared.nextCourse.name, privacy: .public)
+		Term running: \(String(describing: Storage.shared.termRunningGB), privacy: .public), Ghost week: \(String(describing: Storage.shared.ghostWeekGB), privacy: .public)
+		Is it week A?: \(String(describing: getIfWeekIsA_FromDateAndGhost(originDate: .now, ghostWeek: Storage.shared.ghostWeekGB) ), privacy: .public)
 		"""
 	)
 
@@ -70,14 +70,14 @@ class Storage: ObservableObject {
 
 		if let loaded = try? loadTimetables(), !loaded.isEmpty {
 			self.timetables = loaded
-			Logger.general.trace("Loaded timetables from persistence: count=\(loaded.count)")
+			Logger.general.trace("Loaded timetables from persistence: count=\(loaded.count, privacy: .public)")
 		} else {
 			self.timetables = [chaos]
 			Logger.general.critical("Could not load timetables, applying default timetable 'chaos' (Gill's timetable)")
 			do {
 				try saveTimetables()
 			} catch {
-				Logger.general.fault("Initial save failed: \(String(describing: error))")
+				Logger.general.fault("Initial save failed: \(String(describing: error), privacy: .public)")
 			}
 			Logger.general.trace("Initialized default timetables and saved")
 		}
@@ -201,7 +201,7 @@ class Storage: ObservableObject {
 
 				case .rename(let name):
 					switch target {
-					case .standard: Logger.timetableChanges.fault("Can't rename Standard times! variantChange: \(String(reflecting: variantChange))"); continue
+					case .standard: Logger.timetableChanges.fault("Can't rename Standard times! variantChange: \(String(reflecting: variantChange), privacy: .public)"); continue
 					case .variant(let key):
 						timetable.times.variants[key]?.name = name
 					}
@@ -268,7 +268,7 @@ class Storage: ObservableObject {
 			case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: let tblIndex):
 				let weekIndex: Int = (wkIndex == .a) ? 0 : 1
 				guard self.timetables[tblIndex].timetable.indices.contains(weekIndex) else {
-					Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(describing: wkIndex))")
+					Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(describing: wkIndex), privacy: .public)")
 					continue
 				}
 				var timetable = self.timetables[tblIndex]
@@ -280,7 +280,7 @@ class Storage: ObservableObject {
 				case 5: week.thursday[pd]	= nil
 				case 6: week.friday[pd]	= nil
 				default:
-					Logger.timetableChanges.fault("Invalid weekday \(wkday)")
+					Logger.timetableChanges.fault("Invalid weekday \(wkday, privacy: .public)")
 					continue
 				}
 				timetable.timetable[weekIndex] = week
@@ -294,12 +294,12 @@ class Storage: ObservableObject {
 			}//switch
 
 		}//for each
-		Logger.timetableChanges.notice("Successfully applied changes to stored data:\n\t\(changes)")
+		Logger.timetableChanges.notice("Successfully applied changes to stored data:\n\t\(changes, privacy: .public)")
 		do {
 			try saveTimetables()
 			Logger.general.trace("Saved timetables after applyChanges")
 		} catch {
-			Logger.general.fault("Failed to save timetables after applyChanges: \(String(describing: error))")
+			Logger.general.fault("Failed to save timetables after applyChanges: \(String(describing: error), privacy: .public)")
 		}
 		reload()
 	}//func applyChanges(_)
@@ -309,6 +309,9 @@ class Storage: ObservableObject {
 	@Published var WCManager = WatchConnectivityManager_iOS()
 	func distributeChanges(_ changes: [Change]) {
 		WCManager.queueChanges(changes)
+	}
+	func sendFullTimetable(_ ttbl: Timetable) {
+		WCManager.
 	}
 	#endif
 

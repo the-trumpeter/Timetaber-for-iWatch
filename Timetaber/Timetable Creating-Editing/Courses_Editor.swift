@@ -263,7 +263,7 @@ fileprivate struct courseEdit: View {
 							pendingChanges = changes + (pendingChanges ?? [])
 							parentCourse = course
 						}
-						Logger.editCourses.debug("parent course is now \(String(reflecting: parentCourse) )")
+						Logger.editCourses.debug("parent course is now \(String(reflecting: parentCourse), privacy: .public )")
 						dismiss()
 					}
 				}
@@ -461,7 +461,7 @@ struct CoursesEditor: View {
 				localCourses = store.timetables[tblIndex].courses
 			}
 		}
-		.alert("Delete \"\( (alertIndex.flatMap { localCourses[$0]?.name }) ?? "Error \(#line)" )\"?", isPresented: $showingAlert) {
+		.alert("Delete \"\( (alertIndex.flatMap { localCourses[$0]?.name }) ?? "Error \(#line)", privacy: .public )\"?", isPresented: $showingAlert) {
 			Button("Delete", role: .destructive) {
 				// Capture the course name before deletion so we can still display/log it after removal
 				let deletedName = alertIndex.flatMap { localCourses[$0]?.name } ?? "Error \(#line)"
@@ -472,7 +472,7 @@ struct CoursesEditor: View {
 				pendingChanges = [change] + (pendingChanges ?? [])
 				localCourses.applyCourseChanges([change])
 
-				Logger.editCourses.log("Unconfirmedly removed \"\(deletedName)\" from UI courses")
+				Logger.editCourses.log("Unconfirmedly removed \"\(deletedName, privacy: .public)\" from UI courses")
 			}
 			Button("Cancel", role: .cancel) {}
 		}.navigationTitle("All Courses")

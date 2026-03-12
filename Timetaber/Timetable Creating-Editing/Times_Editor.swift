@@ -106,7 +106,7 @@ fileprivate struct NewPeriodView: View {
 				Text("Duration")
 				Spacer()
 
-				Button {} label: { Text("\(period.duration/60):\(period.duration % 60 < 10 ? "0":"")\(period.duration%60)") }
+				Button {} label: { Text("\(period.duration/60, privacy: .public):\(period.duration % 60 < 10 ? "0":"", privacy: .public)\(period.duration%60)") }
 					.foregroundStyle(.primary)
 					.padding(.vertical, 6)
 					.padding(.horizontal, 8)
@@ -236,7 +236,7 @@ fileprivate struct TimesSheetView: View {
 					Text("Duration")
 					Spacer()
 
-					Button {} label: { Text("\(period.duration/60):\(period.duration % 60 < 10 ? "0":"")\(period.duration%60)") }
+					Button {} label: { Text("\(period.duration/60, privacy: .public):\(period.duration % 60 < 10 ? "0":"")\(period.duration%60, privacy: .public)") }
 						.foregroundStyle(.primary)
 						.padding(.vertical, 6)
 						.padding(.horizontal, 8)
@@ -350,7 +350,7 @@ fileprivate struct TimesRowView: View {
 				}
 				Text(period.wrappedValue.name)
 				Spacer()
-				Text("\(startDate.formatted(Date.FormatStyle().hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)))")
+				Text("\(startDate.formatted(Date.FormatStyle().hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)), privacy: .public)")
 					.foregroundStyle(.secondary)
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
@@ -415,7 +415,7 @@ fileprivate struct TimesVariantEditor: View {
 		self.localTimes = Storage.shared.timetables[tblIndex].times
 		self.debugID = switch editing {
 			case .standard: "Standard"
-			case .variant(let key): "Variant \(key)"
+			case .variant(let key): "Variant \(key, privacy: .public)"
 		}
 	}
 
@@ -439,18 +439,18 @@ fileprivate struct TimesVariantEditor: View {
 		var loopedTimes = 0
 		while tobelocaltimes.variants[nextKey] != nil && loopedTimes <= 5 {
 			attempts.append(nextKey)
-			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys) for key \(nextKey). Trying again with \(nextKey+1)...")
+			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys, privacy: .public) for key \(nextKey, privacy: .public). Trying again with \(nextKey+1, privacy: .public)...")
 			nextKey += 1
 			loopedTimes += 1
 		}
 		if loopedTimes >= 5 {
-			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys) in five tries.")
+			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys, privacy: .public) in five tries.")
 			throw NewVariantError.couldntGetNextKey(keys: tobelocaltimes.variants.keys, attempt: attempts)
 		}
 
 		if fromBlank {
 			tobelocaltimes.variants[nextKey] = Times.Variant("Variant", variant: [:])
-			Logger.editTimes.debug("Built blank variant of \(String(describing: tobelocaltimes.variants[nextKey]))")
+			Logger.editTimes.debug("Built blank variant of \(String(describing: tobelocaltimes.variants[nextKey]), privacy: .public)")
 		} else {
 			tobelocaltimes.variants[nextKey] = Times.Variant("Variant", variant: tobelocaltimes.standard)
 		}
@@ -462,8 +462,8 @@ fileprivate struct TimesVariantEditor: View {
 		self.debugID = if fromBlank { "New from Blank" } else { "New from Standard" }
 
 		let tempSelf = self
-		Logger.editTimes.debug("Variant \(tempSelf.debugID) localTimes variants init as \(tobelocaltimes.variants.keys)")
-		//Logger.editTimes.debug("Variant \(tempSelf.debugID) localTimes variants \(tempSelf.localTimes.variants.keys)")
+		Logger.editTimes.debug("Variant \(tempSelf.debugID, privacy: .public) localTimes variants init as \(tobelocaltimes.variants.keys, privacy: .public)")
+		//Logger.editTimes.debug("Variant \(tempSelf.debugID, privacy: .public) localTimes variants \(tempSelf.localTimes.variants.keys, privacy: .public)")
 	}
 
 
@@ -475,7 +475,7 @@ fileprivate struct TimesVariantEditor: View {
 
 		if isNewVariant {
 			guard let key: UUID = switch editing {
-			case .standard: { Logger.editTimes.fault("Desync between editing=\(String(reflecting: editing)) and isNewVariant=\(isNewVariant)"); return nil }()
+			case .standard: { Logger.editTimes.fault("Desync between editing=\(String(reflecting: editing), privacy: .public) and isNewVariant=\(isNewVariant, privacy: .public)"); return nil }()
 			case .variant(let vkey): vkey
 			} else { return [] }
 			//guard key != -1 else { return [] }
@@ -508,7 +508,7 @@ fileprivate struct TimesVariantEditor: View {
 			}()
 
 			guard type(of: local) == type(of: origin) else {
-				Logger.editTimes.fault("compiler theloop input types do not match. local: \(type(of: local)), origin: \(type(of: origin))")
+				Logger.editTimes.fault("compiler theloop input types do not match. local: \(type(of: local, privacy: .public)), origin: \(type(of: origin, privacy: .public))")
 				return
 			}
 
@@ -620,10 +620,10 @@ fileprivate struct TimesVariantEditor: View {
 						let namebinding = Binding<String>(get: {
 							switch editing {
 							case .standard:
-								fatalError("Variant \(debugID) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								fatalError("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
 							case .variant(let key):
 								guard let variant = localTimes.variants[key] else {
-									Logger.editTimes.fault("Variant \(debugID) Given variant key \(key) not available in local times [TimesVariantEditor]")
+									Logger.editTimes.fault("Variant \(debugID, privacy: .public) Given variant key \(key, privacy: .public) not available in local times [TimesVariantEditor]")
 									return "Error \(#line)"
 								}
 								return variant.name
@@ -631,10 +631,10 @@ fileprivate struct TimesVariantEditor: View {
 						}, set: { name in
 							switch editing {
 							case .standard:
-								fatalError("Variant \(debugID) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								fatalError("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
 							case .variant(let key):
 								guard localTimes.variants[key] != nil else {
-									Logger.editTimes.fault("Variant \(debugID) Given variant key not available in local times")
+									Logger.editTimes.fault("Variant \(debugID, privacy: .public) Given variant key not available in local times")
 									return
 								}
 								localTimes.variants[key]!.name = name
@@ -679,7 +679,7 @@ fileprivate struct TimesVariantEditor: View {
 							hasPendingChanges = (localTimes != store.timetables[tblIndex].times)
 							//alertIndex = index
 							//showingAlert = true
-							Logger.editTimes.log("Variant \(debugID) Unconfirmedly removed period from UI timesvariant")
+							Logger.editTimes.log("Variant \(debugID, privacy: .public) Unconfirmedly removed period from UI timesvariant")
 						}.labelStyle(.iconOnly)
 							.tint(.red)
 					}
@@ -691,7 +691,7 @@ fileprivate struct TimesVariantEditor: View {
 			//	MARK: New Period
 				HStack {
 					if let lastKey = sortedIndicesByStart(timesets).last, let last = timesets[lastKey] {
-						Text("End: \(last.endTime.display())").foregroundStyle(.secondary)
+						Text("End: \(last.endTime.display(), privacy: .public)").foregroundStyle(.secondary)
 						Spacer()
 					}
 					Button("Add Period", systemImage: "plus") {
@@ -866,10 +866,10 @@ fileprivate struct TimesVariantEditor: View {
 				Logger.editTimes.log("Started editing standard Variant \(debugID) ")
 			case .variant(let v):
 				guard localTimes.variants[v] != nil else {
-					Logger.editTimes.fault("\(debugID) Input variant \(v) not found in localtimes variant keys \(localTimes.variants.keys)")
+					Logger.editTimes.fault("\(debugID, privacy: .public) Input variant \(v, privacy: .public) not found in localtimes variant keys \(localTimes.variants.keys, privacy: .public)")
 					return
 				}
-				Logger.editTimes.log("Started editing \(debugID), \(v): \(String(describing: localTimes.variants[v]?.name ))")
+				Logger.editTimes.log("Started editing \(debugID, privacy: .public), \(v, privacy: .public): \(String(describing: localTimes.variants[v]?.name ), privacy: .public)")
 			}
 
 		}
@@ -909,7 +909,7 @@ struct TimesEditor: View {
 								do {
 									return try AnyView( TimesVariantEditor(blank: false, tblIndex: 0) )
 								} catch TimesVariantEditor.NewVariantError.couldntGetNextKey(keys: let keys, attempt: let attempts) {
-									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys). Tried \(attempts)")
+									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys, privacy: .public). Tried \(attempts, privacy: .public)")
 									return AnyView( VStack {
 										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
 										Text("Error \(#line)").bold()
@@ -931,7 +931,7 @@ struct TimesEditor: View {
 								do {
 									return try AnyView( TimesVariantEditor(blank: true, tblIndex: 0) )
 								} catch TimesVariantEditor.NewVariantError.couldntGetNextKey(keys: let keys, attempt: let attempts) {
-									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys). Tried \(attempts)")
+									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys, privacy: .public). Tried \(attempts, privacy: .public)")
 									return AnyView( VStack {
 										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
 										Text("Error \(#line)").bold()
@@ -1012,7 +1012,7 @@ struct TimesMapping: View {
 		let origin = store.timetables[tblIndex].times.mapping
 		let local = localTimes.mapping
 
-		Logger.editTimes.log("Compiling: \n\toriginal: \(origin)\n\tmodified local: \(local)")
+		Logger.editTimes.log("Compiling: \n\toriginal: \(origin, privacy: .public)\n\tmodified local: \(local, privacy: .public)")
 
 		guard origin != local else {
 			Logger.editTimes.error("No changes to compile, origin is equal to local. Returning []")
@@ -1032,7 +1032,7 @@ struct TimesMapping: View {
 		}
 		
 		bool_pendingChanges = false
-		Logger.editTimes.log("Compiled \(changes.count) mapping change(s)")
+		Logger.editTimes.log("Compiled \(changes.count, privacy: .public) mapping change(s)")
 		return changes
 	}
 

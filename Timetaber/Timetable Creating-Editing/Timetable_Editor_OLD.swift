@@ -37,13 +37,13 @@ fileprivate struct EntryView: View {
 		self.courses = courses
 
 		guard let prop = day[key] else {
-			Logger.editTimetable.fault("UUID \(key) not present in day")
+			Logger.editTimetable.fault("UUID \(key, privacy: .public) not present in day")
 			return nil
 		}
 		self.properties = prop
 
 		guard let course = courses[ prop.courseID ] else {
-			Logger.editTimetable.fault("Course UID \(prop.courseID) not valid")
+			Logger.editTimetable.fault("Course UID \(prop.courseID, privacy: .public) not valid")
 			return nil
 		}
 		self.listedCourse = course
@@ -138,14 +138,14 @@ fileprivate struct DayEditorView: View {
 			if roomIndex != nil && !rooms.isEmpty {
 				ForEach( (0...rooms.count-1), id: \.self) { _roomIndex in
 
-					Text("\(rooms[_roomIndex]!)").tag(_roomIndex)//.onAppear { Logger.<#logger#>.<#action#>( String(describing: roomIndex) ) }
+					Text("\(rooms[_roomIndex]!, privacy: .public)").tag(_roomIndex)//.onAppear { Logger.<#logger#>.<#action#>( String(describing: roomIndex) ) }
 
 				}
 			} else {
                 { roomIndex = nil; return EmptyView() }()
 			}
 		}.disabled(roomIndex == nil || rooms.isEmpty)
-			//.onChange(of: roomIndex, { Logger.<#logger#>.<#action#>( "!! \(String(describing: roomIndex))" ) })
+			//.onChange(of: roomIndex, { Logger.<#logger#>.<#action#>( "!! \(String(describing: roomIndex), privacy: .public)" ) })
 
         HStack {
             Button("Cancel") {

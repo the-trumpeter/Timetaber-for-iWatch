@@ -38,7 +38,7 @@ struct Times: Codable, Equatable {
 					newmap[k] = .variant(match.key)
 				}
 			}
-			Logger.general.debug("Initialised mapping from [Int: String] to: \(newmap)")
+			Logger.general.debug("Initialised mapping from [Int: String] to: \(newmap, privacy: .public)")
 			return newmap
 		}()
 	}
@@ -180,12 +180,12 @@ struct Timetable: Codable {
 	func periodContentsFromTimeslot(_ timeslot: Timeslot) throws -> (UUID, Times.Period.Contents) {
 		guard let week: TimetabledWeek = self.timetable[timeslot.week] else {
 			let weeksNo = self.timetable.count
-			Logger.dateTime.fault("Timeslot contained invalid week: \(String(reflecting: timeslot.week) ) Timetable only contains \(weeksNo) week(s).")
+			Logger.dateTime.fault("Timeslot contained invalid week: \(String(reflecting: timeslot.week), privacy: .public ) Timetable only contains \(weeksNo, privacy: .public) week(s).")
 			throw TimeslotError.noWeekB
 		}
 
 		guard let day = week[timeslot.day] else {
-			Logger.dateTime.fault("Invalid weekday \(timeslot.day) when getting period from timeslot")
+			Logger.dateTime.fault("Invalid weekday \(timeslot.day, privacy: .public) when getting period from timeslot")
 			throw TimeslotError.invalidWeekday
 		}
 		guard let times = try? findTimes(timeslot.time, self).dropLast() else {
@@ -194,12 +194,12 @@ struct Timetable: Codable {
 		}
 
 		guard let periodID = times.first(where: {$0.0 == timeslot.time})?.1 else {
-			Logger.dateTime.fault("Invalid Time24 \(timeslot.time) when getting period from timeslot")
+			Logger.dateTime.fault("Invalid Time24 \(timeslot.time, privacy: .public) when getting period from timeslot")
 			throw TimeslotError.invalidTime
 		}
 
 		guard let contents = day[periodID] else {
-			Logger.dateTime.fault("Invalid period—could not find periodID \(periodID) in day")
+			Logger.dateTime.fault("Invalid period—could not find periodID \(periodID, privacy: .public) in day")
 			throw TimeslotError.invalidPeriod
 		}
 
@@ -337,7 +337,7 @@ struct Timetable: Codable {
 
 				case .week_add(let week, position: let pos, timetable: _):
 					guard self.timetable.count < 2 else {
-						Logger.timetableChanges.fault("Timetable cannot have more than 2 alternating weeks due to current beta limitations. \(String(reflecting: change))")
+						Logger.timetableChanges.fault("Timetable cannot have more than 2 alternating weeks due to current beta limitations. \(String(reflecting: change), privacy: .public)")
 						failChanges.append(change)
 						continue
 					}
@@ -358,7 +358,7 @@ struct Timetable: Codable {
 				case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: _):
 					let weekIndex: Int = (wkIndex == .a) ? 0 : 1
 					guard self.timetable.indices.contains(weekIndex) else {
-						Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(reflecting: wkIndex))")
+						Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(reflecting: wkIndex), privacy: .public)")
 						failChanges.append(change)
 						continue
 					}
@@ -379,14 +379,14 @@ struct Timetable: Codable {
 					successChanges.append(change)
 
 				default:
-				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change)) to timetable \(name)")
+				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change), privacy: .public) to timetable \(name, privacy: .public)")
 
 			}//switch
 
 		}//for each
 
-		Logger.timetableChanges.notice("Successfully applied changes to timetable \(name): \n\t\(successChanges)")
-		if !failChanges.isEmpty { Logger.timetableChanges.error("Couldn't apply changes:\n\t\t\(failChanges)") }
+		Logger.timetableChanges.notice("Successfully applied changes to timetable \(name, privacy: .public): \n\t\(successChanges, privacy: .public)")
+		if !failChanges.isEmpty { Logger.timetableChanges.error("Couldn't apply changes:\n\t\t\(failChanges, privacy: .public)") }
 	}//func applyChanges(_)
 
 

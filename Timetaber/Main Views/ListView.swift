@@ -51,14 +51,14 @@ fileprivate struct DisplayEntry: View {
 
 
 		guard let course = courses[ prop.courseID ] else {
-			Logger.views.fault("Missing course for UUID \(prop.courseID)")
+			Logger.views.fault("Missing course for UUID \(prop.courseID, privacy: .public)")
 			return nil
 		}
 		self.listedCourse = course
 
 
 		self.room = if listedCourse.rooms.isEmpty { nil } else { listedCourse.rooms[properties.roomIndex] }
-        //Logger.<#logger#>.<#action#>("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))\n")
+        //Logger.<#logger#>.<#action#>("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name, privacy: .public)\n\tTime: \(timeslotIdentifier.time, privacy: .public)\n\tRoom: \(String(describing: room), privacy: .public)\n")
     }
 
     var body: some View {
@@ -185,7 +185,7 @@ struct TimetableView: View {
 									Colour.black : .primary
 								)
 						} else {
-							Text("Error \(#line) failed for \(pair.0)")
+							Text("Error \(#line) failed for \(pair.0, privacy: .public)")
 						}
 					}
 				}

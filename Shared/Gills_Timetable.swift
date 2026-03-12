@@ -72,62 +72,64 @@ var chaos: Timetable = {
 	let pLunchStd = UUID()
 	let p5Std = UUID()
 
-	// Variant: 9:30 Music lesson
-	let v930_CheckIn = UUID()
-	let v930_P1a = UUID()
-	let v930_ML = UUID()
-	let v930_P1b = UUID()
-	let v930_P2 = UUID()
-	let v930_Recess = UUID()
-	let v930_P3 = UUID()
-	let v930_P4 = UUID()
-	let v930_Lunch = UUID()
-	let v930_P5 = UUID()
-	let v930_GDG = UUID()
+	// Variant: Monday (ML, GDGs)
+	let mon_CheckIn = UUID()
+	let mon_P1a = UUID()
+	let mon_ML = UUID()
+	let mon_P1b = UUID()
+	let mon_P2 = UUID()
+	let mon_Recess = UUID()
+	let mon_P3 = UUID()
+	let mon_P4 = UUID()
+	let mon_Lunch = UUID()
+	let mon_P5 = UUID()
+	let mon_GDG = UUID()
 
-	// Variant: Band til 5pm
-	let v5pm_CheckIn = UUID()
-	let v5pm_P1 = UUID()
-	let v5pm_P2 = UUID()
-	let v5pm_Recess = UUID()
-	let v5pm_P3 = UUID()
-	let v5pm_P4 = UUID()
-	let v5pm_Lunch = UUID()
-	let v5pm_P5 = UUID()
-	let v5pm_SBU = UUID()
+	// Variant: Tuesday (SSB)
+	let tue_CheckIn = UUID()
+	let tue_P1 = UUID()
+	let tue_P2 = UUID()
+	let tue_Recess = UUID()
+	let tue_P3 = UUID()
+	let tue_P4 = UUID()
+	let tue_Lunch = UUID()
+	let tue_P5 = UUID()
+	let tue_SBU = UUID()
 
-	// Variant: Band til 5:30
-	let v530_CheckIn = UUID()
-	let v530_P1 = UUID()
-	let v530_P2 = UUID()
-	let v530_Recess = UUID()
-	let v530_P3 = UUID()
-	let v530_P4 = UUID()
-	let v530_Lunch = UUID()
-	let v530_P5 = UUID()
-	let v530_SBU = UUID()
+	// Variant: Wednesday (Full variation + MSB)
+//	let wed_CheckIn = UUID()
+	let wed_P1 = UUID()
+	let wed_P2 = UUID()
+	let wed_YA = UUID()
+	let wed_Recess = UUID()
+	let wed_P3 = UUID()
+	let wed_P4 = UUID()
+	let wed_Lunch = UUID()
+	let wed_Sport = UUID()
+	let wed_SBU = UUID()
 
-	// Variant: Band til 4:30
-	let v430_CheckIn = UUID()
-	let v430_P1 = UUID()
-	let v430_P2 = UUID()
-	let v430_Recess = UUID()
-	let v430_P3 = UUID()
-	let v430_P4 = UUID()
-	let v430_Lunch = UUID()
-	let v430_P5 = UUID()
-	let v430_SBU = UUID()
+	// Variant: Thu (JCB)
+	let thu_CheckIn = UUID()
+	let thu_P1 = UUID()
+	let thu_P2 = UUID()
+	let thu_Recess = UUID()
+	let thu_P3 = UUID()
+	let thu_P4 = UUID()
+	let thu_Lunch = UUID()
+	let thu_P5 = UUID()
+	let thu_SBU = UUID()
 
-	let vFri_CheckIn = UUID()
-	let vFri_P1 = UUID()
-	let vFri_P2 = UUID()
-	let vFri_Recess = UUID()
-	let vFri_P3 = UUID()
-	let vFri_P4 = UUID()
-	let vFri_Lunch = UUID()
-	let vFri_P5 = UUID()
-	let vFri_travel = UUID()
-	let vFri_uni = UUID()
+	// Variant: Fri (University)
+	let fri_CheckIn = UUID()
+	let fri_P1 = UUID()
+	let fri_P2 = UUID()
+	let fri_Recess = UUID()
+	let fri_P3 = UUID()
+	let fri_P4 = UUID()
+	let fri_Lunch = UUID()
+	let fri_P5 = UUID()
+	let fri_travel = UUID()
+	let fri_uni = UUID()
 
 	let times = Times(
 		standard: [
@@ -142,61 +144,61 @@ var chaos: Timetable = {
 		   ],
 		   variants: [
 			   UUID():	Times.Variant("mon",	variant: [
-				   v930_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
-				   v930_P1a: Times.Period ("1",		startTime: 0910,	duration: 35),
-				   v930_ML: Times.Period ("ML",		startTime: 945,		duration: 30),
-				   v930_P2: Times.Period ("2",		startTime: 1015,	duration: 55),
-				   v930_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
-				   v930_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
-				   v930_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
-				   v930_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
-				   v930_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
-				   v930_GDG: Times.Period("GDGs", startTime: 1510,		duration: 145)
+				   mon_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
+				   mon_P1a: Times.Period ("1",		startTime: 0910,	duration: 35),
+				   mon_ML: Times.Period ("ML",		startTime: 945,		duration: 30),
+				   mon_P2: Times.Period ("2",		startTime: 1015,	duration: 55),
+				   mon_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
+				   mon_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
+				   mon_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
+				   mon_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
+				   mon_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
+				   mon_GDG: Times.Period("GDGs", startTime: 1510,		duration: 145)
 			   ]),
 			   UUID():	Times.Variant("tue", 		variant: [
-				   v5pm_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
-				   v5pm_P1: Times.Period ("1",		startTime: 0910,	duration: 60),
-				   v5pm_P2: Times.Period ("2",		startTime: 1010,	duration: 60),
-				   v5pm_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
-				   v5pm_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
-				   v5pm_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
-				   v5pm_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
-				   v5pm_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
-				   v5pm_SBU: Times.Period ("SBU",	startTime: 1510,	duration:110)
+				   tue_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
+				   tue_P1: Times.Period ("1",		startTime: 0910,	duration: 60),
+				   tue_P2: Times.Period ("2",		startTime: 1010,	duration: 60),
+				   tue_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
+				   tue_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
+				   tue_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
+				   tue_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
+				   tue_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
+				   tue_SBU: Times.Period ("SBU",	startTime: 1510,	duration:110)
 			   ]),
 			   UUID():	Times.Variant("wed",		variant: [
-				   v530_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
-				   v530_P1: Times.Period ("1",		startTime: 0910,	duration: 60),
-				   v530_P2: Times.Period ("2",		startTime: 1010,	duration: 60),//should there be YA here?
-				   v530_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
-				   v530_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
-				   v530_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
-				   v530_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
-				   v530_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
-				   v530_SBU: Times.Period ("SBU",	startTime: 1510,	duration:140)
+				   wed_P1: Times.Period ("1",		startTime: 0900,	duration: 60),
+				   wed_P2: Times.Period ("2",		startTime: 1000,	duration: 50),
+				   wed_YA: Times.Period("YA",		startTime: 1050,	duration: 10),// fix below
+				   wed_Recess: Times.Period ("Recess",startTime: 1100,	duration: 20),
+				   wed_P3: Times.Period ("3",		startTime: 1120,	duration: 50),
+				   wed_P4: Times.Period ("4",		startTime: 1210,	duration: 50),
+				   wed_Lunch: Times.Period ("Lunch",startTime: 1300,	duration: 30),
+				   wed_Sport: Times.Period ("Sport",		startTime: 1330,	duration: 50+50),
+				   wed_SBU: Times.Period ("SBU",	startTime: 1510,	duration: 140)
 			   ]),
 			   UUID():	Times.Variant("thu",		variant: [
-				   v430_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
-				   v430_P1: Times.Period ("1",		startTime: 0910,	duration: 60),
-				   v430_P2: Times.Period ("2",		startTime: 1010,	duration: 60),
-				   v430_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
-				   v430_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
-				   v430_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
-				   v430_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
-				   v430_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
-				   v430_SBU: Times.Period ("SBU",	startTime: 1510,	duration: 80)
+				   thu_CheckIn: Times.Period ("Check In",startTime: 0900,	duration: 10),
+				   thu_P1: Times.Period ("1",		startTime: 0910,	duration: 60),
+				   thu_P2: Times.Period ("2",		startTime: 1010,	duration: 60),
+				   thu_Recess: Times.Period ("Recess",startTime: 1110,	duration: 20),
+				   thu_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
+				   thu_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
+				   thu_Lunch: Times.Period ("Lunch",startTime: 1330,	duration: 40),
+				   thu_P5: Times.Period ("5",		startTime: 1410,	duration: 60),
+				   thu_SBU: Times.Period ("SBU",	startTime: 1510,	duration: 80)
 			   ]),
 			   UUID(): Times.Variant("fri",		variant: [
-					vFri_CheckIn: Times.Period ("Check In",	startTime: 0900,	duration: 10),
-					vFri_P1: Times.Period ("1",		startTime: 0910,	duration: 60),
-					vFri_P2: Times.Period ("2",		startTime: 1010,	duration: 60),
-					vFri_Recess: Times.Period ("Recess",	startTime: 1110,	duration: 20),
-					vFri_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
-					vFri_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
-					vFri_Lunch: Times.Period ("Lunch",	startTime: 1330,	duration: 40),
-					vFri_P5: Times.Period ("5",		startTime: 1410,	duration: 10),
-					vFri_travel: Times.Period ("",			startTime: 1420,	duration: 40),//travel
-					vFri_uni: Times.Period ("",			startTime: 1500,	duration: 120),//uni
+					fri_CheckIn: Times.Period ("Check In",	startTime: 0900,	duration: 10),
+					fri_P1: Times.Period ("1",		startTime: 0910,	duration: 60),
+					fri_P2: Times.Period ("2",		startTime: 1010,	duration: 60),
+					fri_Recess: Times.Period ("Recess",	startTime: 1110,	duration: 20),
+					fri_P3: Times.Period ("3",		startTime: 1130,	duration: 60),
+					fri_P4: Times.Period ("4",		startTime: 1230,	duration: 60),
+					fri_Lunch: Times.Period ("Lunch",	startTime: 1330,	duration: 40),
+					fri_P5: Times.Period ("5",		startTime: 1410,	duration: 10),
+					fri_travel: Times.Period ("",			startTime: 1420,	duration: 40),//travel
+					fri_uni: Times.Period ("",			startTime: 1500,	duration: 120),//uni
 				]),
 		   ],
 		   mapping: [
@@ -217,64 +219,65 @@ var chaos: Timetable = {
 			// Week A (key 1): Mon..Fri (from previous 1..5)
 			Timetable.TimetabledWeek(
 				monday: [
-					v930_CheckIn: Contents(courseID: checkInID,	roomIndex: 0),
-					v930_P1a: Contents(courseID: multimediaID,	roomIndex: 0),
-					v930_ML: Contents(courseID: musicLessonID,	roomIndex: 0),
-					v930_P2: Contents(courseID: scienceID,		roomIndex: 0),
-					v930_Recess: Contents(courseID: recessID,	roomIndex: 0),
-					v930_P3: Contents(courseID: englishID,		roomIndex: 0),
-					v930_P4: Contents(courseID: pdhpeID,		roomIndex: 0),
-					v930_Lunch: Contents(courseID: jrStageID,	roomIndex: 0),
-					v930_P5: Contents(courseID: iStemID,		roomIndex: 0),
-					v930_GDG: Contents(courseID: gdgID, 		roomIndex: 0)
+					mon_CheckIn: Contents(courseID: checkInID,	roomIndex: 0),
+					mon_P1a: Contents(courseID: multimediaID,	roomIndex: 0),
+					mon_ML: Contents(courseID: musicLessonID,	roomIndex: 0),
+					mon_P2: Contents(courseID: scienceID,		roomIndex: 0),
+					mon_Recess: Contents(courseID: recessID,	roomIndex: 0),
+					mon_P3: Contents(courseID: englishID,		roomIndex: 0),
+					mon_P4: Contents(courseID: pdhpeID,		roomIndex: 0),
+					mon_Lunch: Contents(courseID: jrStageID,	roomIndex: 0),
+					mon_P5: Contents(courseID: iStemID,		roomIndex: 0),
+					mon_GDG: Contents(courseID: gdgID, 		roomIndex: 0)
 					//UUID(): Contents(course: 21, variant: 0)
 				],
 				tuesday: [
-					v5pm_CheckIn: Contents(courseID: checkInID,	roomIndex: 0),
-					v5pm_P1: Contents(courseID: scienceID,		roomIndex: 0),
-					v5pm_P2: Contents(courseID: hsieID,			roomIndex: 0),
-					v5pm_Recess: Contents(courseID: recessID,	roomIndex: 0),
-					v5pm_P3: Contents(courseID: englishID,		roomIndex: 0),
-					v5pm_P4: Contents(courseID: mathsID,		roomIndex: 0),
-					v5pm_Lunch: Contents(courseID: lunchID,		roomIndex: 0),
-					v5pm_P5: Contents(courseID: multimediaID,	roomIndex: 0),
-					v5pm_SBU: Contents(courseID: stageBandID,	roomIndex: 0),
+					tue_CheckIn: Contents(courseID: checkInID,	roomIndex: 0),
+					tue_P1: Contents(courseID: scienceID,		roomIndex: 0),
+					tue_P2: Contents(courseID: hsieID,			roomIndex: 0),
+					tue_Recess: Contents(courseID: recessID,	roomIndex: 0),
+					tue_P3: Contents(courseID: englishID,		roomIndex: 0),
+					tue_P4: Contents(courseID: mathsID,		roomIndex: 0),
+					tue_Lunch: Contents(courseID: lunchID,		roomIndex: 0),
+					tue_P5: Contents(courseID: multimediaID,	roomIndex: 0),
+					tue_SBU: Contents(courseID: stageBandID,	roomIndex: 0),
 					//UUID(): Contents(course: 21, variant: 0)
 				],
 				wednesday: [
-					v530_CheckIn: Contents(courseID: iStemID, roomIndex: 0),
-					v530_P1: Contents(courseID: mathsID, roomIndex: 0),
-					v530_P2: Contents(courseID: recessID, roomIndex: 0),
-					v530_Recess: Contents(courseID: recessID, roomIndex: 0),
-					v530_P3: Contents(courseID: crixID, roomIndex: 0),
-					v530_P4: Contents(courseID: hsieID, roomIndex: 0),
-					v530_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					v530_P5: Contents(courseID: theatreCrewID, roomIndex: -1),
-					v530_SBU: Contents(courseID: marchingBandID, roomIndex: -1),
+					//wed_CheckIn: Contents(courseID: iStemID, roomIndex: 0),
+					wed_P1: Contents(courseID: iStemID, roomIndex: 0),
+					wed_P2: Contents(courseID: mathsID, roomIndex: 0),
+					wed_YA: Contents(courseID: yearAssemblyID, roomIndex: 0),
+					wed_Recess: Contents(courseID: recessID, roomIndex: 0),
+					wed_P3: Contents(courseID: crixID, roomIndex: 0),
+					wed_P4: Contents(courseID: hsieID, roomIndex: 0),
+					wed_Lunch: Contents(courseID: lunchID, roomIndex: 0),
+					wed_Sport: Contents(courseID: theatreCrewID, roomIndex: -1),
+					wed_SBU: Contents(courseID: marchingBandID, roomIndex: -1),
 					//UUID(): Contents(course: 21, variant: 0)
 				],//.compactMapValues { $0 },
 				thursday: [
-					v430_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
-					v430_P1: Contents(courseID: englishID, roomIndex: 1),
-					v430_P2: Contents(courseID: pdhpeID, roomIndex: 1),
-					v430_Recess: Contents(courseID: recessID, roomIndex: 0),
-					v430_P3: Contents(courseID: hsieID, roomIndex: 0),
-					v430_P4: Contents(courseID: scienceID, roomIndex: 0),
-					v430_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					v430_P5: Contents(courseID: crixID, roomIndex: 0),
-					v430_SBU: Contents(courseID: juniorCBID, roomIndex: -1)
+					thu_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
+					thu_P1: Contents(courseID: englishID, roomIndex: 1),
+					thu_P2: Contents(courseID: pdhpeID, roomIndex: 1),
+					thu_Recess: Contents(courseID: recessID, roomIndex: 0),
+					thu_P3: Contents(courseID: hsieID, roomIndex: 0),
+					thu_P4: Contents(courseID: scienceID, roomIndex: 0),
+					thu_Lunch: Contents(courseID: lunchID, roomIndex: 0),
+					thu_P5: Contents(courseID: crixID, roomIndex: 0),
+					thu_SBU: Contents(courseID: juniorCBID, roomIndex: -1)
 				],
 				friday: [
-					vFri_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
-					vFri_P1: Contents(courseID: hsieID, roomIndex: 0),
-					vFri_P2: Contents(courseID: scienceID, roomIndex: 0),
-					vFri_Recess: Contents(courseID: recessID, roomIndex: 0),
-					vFri_P3: Contents(courseID: mathsID, roomIndex: 0),
-					vFri_P4: Contents(courseID: crixID, roomIndex: 0),
-					vFri_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					vFri_P5: Contents(courseID: englishID, roomIndex: 0),
-					vFri_travel: Contents(courseID: travelID, roomIndex: -1),
-					vFri_uni: Contents(courseID: uniID, roomIndex: 0)
+					fri_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
+					fri_P1: Contents(courseID: hsieID, roomIndex: 0),
+					fri_P2: Contents(courseID: scienceID, roomIndex: 0),
+					fri_Recess: Contents(courseID: recessID, roomIndex: 0),
+					fri_P3: Contents(courseID: mathsID, roomIndex: 0),
+					fri_P4: Contents(courseID: crixID, roomIndex: 0),
+					fri_Lunch: Contents(courseID: lunchID, roomIndex: 0),
+					fri_P5: Contents(courseID: englishID, roomIndex: 0),
+					fri_travel: Contents(courseID: travelID, roomIndex: -1),
+					fri_uni: Contents(courseID: uniID, roomIndex: 0)
 					//UUID(): Contents(course: 21, variant: 0)
 				]
 			),
@@ -282,65 +285,65 @@ var chaos: Timetable = {
 			// Week B (key 2): Mon..Fri (from previous 6..10)
 			Timetable.TimetabledWeek(
 				monday: [
-					v930_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
-					v930_P1a: Contents(courseID: multimediaID, 	roomIndex: 0),
-					v930_ML: Contents(courseID: musicLessonID, 	roomIndex: 0),
-					v930_P2: Contents(courseID: mathsID, 		roomIndex: 1),
-					v930_Recess: Contents(courseID: recessID, 	roomIndex: 0),
-					v930_P3: Contents(courseID: iStemID, 		roomIndex: 0),
-					v930_P4: Contents(courseID: crixID, 		roomIndex: 0),
-					v930_Lunch: Contents(courseID: jrStageID, 	roomIndex: 0),
-					v930_P5: Contents(courseID: pdhpeID, 		roomIndex: 1),
-					v930_GDG: Contents(courseID: gdgID, 		roomIndex: 0)
+					mon_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
+					mon_P1a: Contents(courseID: multimediaID, 	roomIndex: 0),
+					mon_ML: Contents(courseID: musicLessonID, 	roomIndex: 0),
+					mon_P2: Contents(courseID: mathsID, 		roomIndex: 1),
+					mon_Recess: Contents(courseID: recessID, 	roomIndex: 0),
+					mon_P3: Contents(courseID: iStemID, 		roomIndex: 0),
+					mon_P4: Contents(courseID: crixID, 		roomIndex: 0),
+					mon_Lunch: Contents(courseID: jrStageID, 	roomIndex: 0),
+					mon_P5: Contents(courseID: pdhpeID, 		roomIndex: 1),
+					mon_GDG: Contents(courseID: gdgID, 		roomIndex: 0)
 					//UUID(): Contents(course: 21, variant: 0)x
 				],
 				tuesday: [
-					v5pm_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
-					v5pm_P1: Contents(courseID: scienceID, roomIndex: 0),
-					v5pm_P2: Contents(courseID: hsieID, roomIndex: 0),
-					v5pm_Recess: Contents(courseID: recessID, roomIndex: 0),
-					v5pm_P3: Contents(courseID: mathsID, roomIndex: 0),
-					v5pm_P4: Contents(courseID: multimediaID, roomIndex: 0),
-					v5pm_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					v5pm_P5: Contents(courseID: englishID, roomIndex: 0),
-					v5pm_SBU: Contents(courseID: stageBandID, roomIndex: 0),
+					tue_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
+					tue_P1: Contents(courseID: scienceID, roomIndex: 0),
+					tue_P2: Contents(courseID: hsieID, roomIndex: 0),
+					tue_Recess: Contents(courseID: recessID, roomIndex: 0),
+					tue_P3: Contents(courseID: mathsID, roomIndex: 0),
+					tue_P4: Contents(courseID: multimediaID, roomIndex: 0),
+					tue_Lunch: Contents(courseID: lunchID, roomIndex: 0),
+					tue_P5: Contents(courseID: englishID, roomIndex: 0),
+					tue_SBU: Contents(courseID: stageBandID, roomIndex: 0),
 					//UUID(): Contents(course: 21, variant: 0)
 				],
 				wednesday: [
-					v530_CheckIn: Contents(courseID: hsieID, roomIndex: 0),
-					v530_P1: Contents(courseID: mathsID, roomIndex: 0),
-					v530_P2: Contents(courseID: yearAssemblyID, roomIndex: 0),
-					v530_Recess: Contents(courseID: recessID, roomIndex: 0),
-					v530_P3: Contents(courseID: visualArtsID, roomIndex: 0),
-					v530_P4: Contents(courseID: scienceID, roomIndex: 0),
-					v530_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					v530_P5: Contents(courseID: seniorCBID, roomIndex: 0),
-					v530_SBU: Contents(courseID: marchingBandID, roomIndex: 0),
+					wed_P1: Contents(courseID: hsieID, roomIndex: 0),
+					wed_P2: Contents(courseID: mathsID, roomIndex: 0),
+					wed_YA: Contents(courseID: yearAssemblyID, roomIndex: 0),
+					wed_Recess: Contents(courseID: recessID, roomIndex: 0),
+					wed_P3: Contents(courseID: visualArtsID, roomIndex: 0),
+					wed_P4: Contents(courseID: scienceID, roomIndex: 0),
+					wed_Lunch: Contents(courseID: lunchID, roomIndex: 0),
+					wed_Sport: Contents(courseID: seniorCBID, roomIndex: 0),
+					wed_SBU: Contents(courseID: marchingBandID, roomIndex: 0),
 					//UUID(): Contents(course: 21, variant: 0)
 				],
 				thursday: [
-					v430_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
-					v430_P1: Contents(courseID: hsieID, roomIndex: 0),
-					v430_P2: Contents(courseID: pdhpeID, roomIndex: 0),
-					v430_Recess: Contents(courseID: recessID, roomIndex: 0),
-					v430_P3: Contents(courseID: englishID, roomIndex: 0),
-					v430_P4: Contents(courseID: scienceID, roomIndex: 0),
-					v430_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					v430_P5: Contents(courseID: crixID, roomIndex: 0),
-					v430_SBU: Contents(courseID: juniorCBID, roomIndex: -1),
+					thu_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
+					thu_P1: Contents(courseID: hsieID, roomIndex: 0),
+					thu_P2: Contents(courseID: pdhpeID, roomIndex: 0),
+					thu_Recess: Contents(courseID: recessID, roomIndex: 0),
+					thu_P3: Contents(courseID: englishID, roomIndex: 0),
+					thu_P4: Contents(courseID: scienceID, roomIndex: 0),
+					thu_Lunch: Contents(courseID: lunchID, roomIndex: 0),
+					thu_P5: Contents(courseID: crixID, roomIndex: 0),
+					thu_SBU: Contents(courseID: juniorCBID, roomIndex: -1),
 					//UUID(): Contents(course: 21, variant: 0)
 				],
 				friday: [
-					vFri_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
-					vFri_P1: Contents(courseID: crixID, roomIndex: 0),
-					vFri_P2: Contents(courseID: englishID, roomIndex: 0),
-					vFri_Recess: Contents(courseID: recessID, roomIndex: 0),
-					vFri_P3: Contents(courseID: iStemID, roomIndex: 0),
-					vFri_P4: Contents(courseID: mathsID, roomIndex: 0),
-					vFri_Lunch: Contents(courseID: lunchID, roomIndex: 0),
-					vFri_P5: Contents(courseID: multimediaID, roomIndex: 0),
-					vFri_travel: Contents(courseID: travelID, roomIndex: -1),
-					vFri_uni: Contents(courseID: uniID, roomIndex: 0)
+					fri_CheckIn: Contents(courseID: checkInID, roomIndex: 0),
+					fri_P1: Contents(courseID: crixID, roomIndex: 0),
+					fri_P2: Contents(courseID: englishID, roomIndex: 0),
+					fri_Recess: Contents(courseID: recessID, roomIndex: 0),
+					fri_P3: Contents(courseID: iStemID, roomIndex: 0),
+					fri_P4: Contents(courseID: mathsID, roomIndex: 0),
+					fri_Lunch: Contents(courseID: lunchID, roomIndex: 0),
+					fri_P5: Contents(courseID: multimediaID, roomIndex: 0),
+					fri_travel: Contents(courseID: travelID, roomIndex: -1),
+					fri_uni: Contents(courseID: uniID, roomIndex: 0)
 					//UUID(): Contents(course: 21, variant: 0)
 				]
 			)

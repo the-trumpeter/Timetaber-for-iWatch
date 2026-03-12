@@ -84,7 +84,7 @@ struct ExportView: View {
 					)
 					exporting = true
 				} catch {
-					Logger.files.critical("Could not export timetable! The timetable is as follows (sorry):\n\(String(reflecting: store.timetables[store.ActiveTimetable]))")
+					Logger.files.critical("Could not export timetable! The timetable is as follows (sorry):\n\(String(reflecting: store.timetables[store.ActiveTimetable]), privacy: .public)")
 					exportFailed = true
 				}
 			}.padding(.bottom, 2)
@@ -95,7 +95,7 @@ struct ExportView: View {
 				contentType: .json,
 				defaultFilename: "Timetable",
 				onCompletion: { result in
-					Logger.files.notice("Exported timetable to \( String(reflecting: result) )")
+					Logger.files.notice("Exported timetable to \( String(reflecting: result), privacy: .public )")
 				}
 			)
 
@@ -203,13 +203,13 @@ struct ExportView: View {
 				}
 				 */
 				Button("Import", role: .destructive) {
-					//Logger.files.critical("Timetable importing from temp val to storage not configured")
 					guard let new = importSuccess else {
 						Logger.files.critical("Timetable import closure executed with nil importSuccess result value.")
 						return
 					}
+					Storage.shared.sendFullTimetable(new)
 					Storage.shared.timetables[Storage.shared.ActiveTimetable] = new
-					Logger.files.notice("Imported timetable!")
+					Logger.files.notice("Imported timetable! Hopefully it syncs to watch")
 					importSuccess = nil
 				}//.tint(.accentColor)
 				Button("Cancel", role: .cancel) {

@@ -6,10 +6,10 @@
 //
 
 import Foundation
+import OSLog
 
 /// A 24-hour time
 typealias Time24 = Int
-
 
 fileprivate let dFormatter = DateFormatter()
 
@@ -52,8 +52,8 @@ extension Date {
 		components.second = 0
 		//Logger.<#logger#>.<#action#>(" Composing date \(String(describing: components.hour!)):\(String(describing: components.minute!))")
 		guard let date = Calendar.current.date(from: components) else {
-			log()
-			fatalError(" | \(Date.now.formatted(date: .numeric, time: .complete))\n\tAttempting: \(String(describing: components.hour)):\(String(describing: components.minute))\n\tDateComponents: \(String(describing: components))")
+			Logger.dateTime.critical("Failed to create date from components \(String(reflecting: components), privacy: .public))")
+			self = Date()
 		}
 		self = date
 	}

@@ -43,7 +43,7 @@ extension Dictionary where Key == UUID, Value == Course2 {
 
 				default:
 				let me = self
-				Logger.timetableChanges.fault("Dictionary extension - Couldn't apply change \(String(reflecting: change)) to value of type Binding<[Int: Course2]>\n\tself = \(me)")
+				Logger.timetableChanges.fault("Dictionary extension - Couldn't apply change \(String(reflecting: change), privacy: .public) to value of type Binding<[Int: Course2]>\n\tself = \(me, privacy: .public)")
 			}
 
 		}
@@ -93,15 +93,15 @@ extension Times {
 						self.mapping.removeValue(forKey: key)
 						break
 					}
-				Logger.editTimes.debug("Updating map \(key) to \(String(reflecting: value) )")
+				Logger.editTimes.debug("Updating map \(key, privacy: .public) to \(String(reflecting: value), privacy: .public )")
 					self.mapping.updateValue(value, forKey: key)
 
 				default:
-				Logger.editTimes.fault("Couldn't apply change \(String(reflecting: change)) to value of type Times")
+				Logger.editTimes.fault("Couldn't apply change \(String(reflecting: change), privacy: .public) to value of type Times")
 			}
 
 		}
-		Logger.editTimes.notice("Applied changes \(changes) to a (instance of) Times")
+		Logger.editTimes.notice("Applied changes \(changes, privacy: .public) to a (instance of) Times")
 	}
 }
 
@@ -174,11 +174,11 @@ fileprivate struct timetableOptions: View {
 				} label: {
 					HStack {
 						Text("Timetable").foregroundStyle(.primary); Spacer();
-						Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
+						Text("\(timetable.timetable.count, privacy: .public) week\( timetable.timetable.count != 1 ? "s":"", privacy: .public)").foregroundStyle(.secondary)
 					}
 				}
 
-				// Button("Delete \"\(name)\"", systemImage: "trash", role: .destructive) { }
+				// Button("Delete \"\(name, privacy: .public)\"", systemImage: "trash", role: .destructive) { }
 
 
 				ExportView()

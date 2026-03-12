@@ -52,7 +52,7 @@ func findClassfromTimeWeekDayNifWeekIsA(sessionStartTime: Int, weekDay: Int, isW
 func getTimetableDay2(isWeekA: Bool, weekDay: Int, timetable: Timetable) -> Dictionary< UUID, Times.Period.Contents > {
 	let weeks = timetable.timetable
 	guard weekDay >= 2 && weekDay <= 6 else {
-		Logger.dateTime.fault("Invalid weekday \(weekDay)")
+		Logger.dateTime.fault("Invalid weekday \(weekDay, privacy: .public)")
 		return [:]
 	}
 	if isWeekA {
@@ -101,7 +101,7 @@ func setCourseChangeAlarm(for time: Time24) {
         reload()
     }
     RunLoop.main.add(UpdateTimer!, forMode: .default)
-	Logger.updateTimer.notice("Succesfully set course change alarm for \(date.formatted(date: .numeric, time: .complete))")
+	Logger.updateTimer.notice("Succesfully set course change alarm for \(date.formatted(date: .numeric, time: .complete), privacy: .public)")
 }
 
 
@@ -250,15 +250,15 @@ enum findTimesError: Error {
 func findTimes(_ wkday: Int, _ timetable: Timetable, includeFinishTime: Bool = true) throws -> [ (Time24, Optional<UUID>) ] {
 	if let mapKey = timetable.times.mapping[wkday] {
 
-		//Logger.dateTime.debug("findTimes got map key \(mapKey)")
+		//Logger.dateTime.debug("findTimes got map key \(mapKey, privacy: .public)")
 		guard
 			let variant = switch mapKey {
 				case .variant(let id): timetable.times.variants[id]?.variant
 				case .standard: timetable.times.standard
 			}
 		else {
-			Logger.dateTime.fault("Time mapping value \( String(describing: mapKey) ) does not correspond to a variant in .variants.keys = \(timetable.times.variants.keys)")
-			throw findTimesError.invalidMapping(failCourse(feedback: "Error D\(#line) Invalid mapping value \(mapKey)"))
+			Logger.dateTime.fault("Time mapping value \( String(describing: mapKey), privacy: .public ) does not correspond to a variant in .variants.keys = \(timetable.times.variants.keys, privacy: .public)")
+			throw findTimesError.invalidMapping(failCourse(feedback: "Error D\(#line) Invalid mapping value \(mapKey, privacy: .public)"))
 		}
 		//Logger.dateTime.debug("findTimes found variant: \(String(describing: variant))")
 		//Logger.dateTime.debug("findTimes found times for weekday \(wkday)")
@@ -276,7 +276,7 @@ func findTimes(_ wkday: Int, _ timetable: Timetable, includeFinishTime: Bool = t
 
 		return times
 	}
-	//Logger.dateTime.debug("findTimes found (standard) times for weekday \(wkday)")
+	//Logger.dateTime.debug("findTimes found (standard) times for weekday \(wkday, privacy: .public)")
 	return timetable.times.standard.map { ($1.startTime, $0 as UUID?) }.sorted(by: { $0.0 < $1.0 })
 }
 
@@ -301,21 +301,21 @@ func findClassFromTimeWeekDayAndIfWeekIsA_2(timetable: Timetable, period periodI
 
 	// Expecting `[courseId, roomIndex]` at this time key
 	guard let pair = timetableDay?[periodID] else {
-		Logger.dateTime.warning("Time \(periodID) not found in timetableDay (probably a free period), or weekday \(weekDay) is invalid")
+		Logger.dateTime.warning("Time \(periodID, privacy: .public) not found in timetableDay (probably a free period), or weekday \(weekDay, privacy: .public) is invalid")
 		return noSchool(.freePeriod)//failCourse(feedback: "Error D\(#line)")
 	}
 	/* (from the brief days when it was an array)
 	// Ensure the pair has at least two integers
 	guard pair.count >= 2 else {
-		Logger.dateTime.fault("Invalid mapping for period \(periodID)")
-		return failCourse(feedback: "Error D\(#line) invalid mapping for period \(periodID)")
+		Logger.dateTime.fault("Invalid mapping for period \(periodID, privacy: .public)")
+		return failCourse(feedback: "Error D\(#line) invalid mapping for period \(periodID, privacy: .public)")
 	}
 	 */
 
 	// Look up the course; if missing, fail gracefully
 	guard let course2 = timetable.courses[pair.courseID] else {
-		Logger.dateTime.fault("Missing course for id \(pair.courseID)")
-		return failCourse(feedback: "Error D\(#line) missing course for id \(pair.courseID)")
+		Logger.dateTime.fault("Missing course for id \(pair.courseID, privacy: .public)")
+		return failCourse(feedback: "Error D\(#line) missing course for id \(pair.courseID, privacy: .public)")
 	}
 
 	// If room index is valid, return with room; otherwise return base Course
@@ -353,7 +353,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 	)
 	let week = isweekA ? WeekAB.a : .b
 
-	Logger.dateTime.notice("The weekday today is \(todayWeekday). It is week \(String(reflecting: week))")
+	Logger.dateTime.notice("The weekday today is \(todayWeekday, privacy: .public). It is week \(String(reflecting: week), privacy: .public)")
 
 	guard Storage.termRunningGB else { // if holidays then return
 		Logger.dateTime.notice("Got current class. There's no school at the moment. [noTerm]")
@@ -383,7 +383,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 	//let times2Day: [Time24]
 	do {
 		times2Day = try findTimes(todayWeekday, timetable)
-		Logger.dateTime.debug("Times for today are \(times2Day.map { $0.0 })")
+		Logger.dateTime.debug("Times for today are \(times2Day.map { $0.0 }, privacy: .public)")
 	} catch findTimesError.invalidMapping(let fail) {
 		return (
 			current: fail,
@@ -405,7 +405,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 	if time24Now < times2Day.first!.0 { // before first course/period/time
 		setCourseChangeAlarm(for: times2Day.first!.0)
-		Logger.dateTime.notice("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!.0))]")
+		Logger.dateTime.notice("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!.0, privacy: .public))]")
 
 		return (
 			current: noSchool(.beforeClass(startTime: times2Day.first!.0)),
@@ -420,7 +420,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 		) //MARK: Return D
 
 	} else if time24Now >= times2Day.last!.0 { // after last course/period/time
-		Logger.dateTime.notice("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!.0)")
+		Logger.dateTime.notice("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!.0, privacy: .public)")
 		//try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
 		return (
 			current: noSchool(.afterClass),
@@ -436,7 +436,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 		let compare = times2Day[n].0 // time we r comparing to
 		let now = time24Now // current time
-		//Logger.<#logger#>.<#action#>("- Times today count is \(times2Day.count) and n+1 is \(n+1).")
+		//Logger.<#logger#>.<#action#>("- Times today count is \(times2Day.count, privacy: .public) and n+1 is \(n+1, privacy: .public).")
 
 		let next = times2Day.count > (n+1) ? times2Day[n+1].0 : Int.max // next comparitive time; ensure we are not at end of array already
 
@@ -463,7 +463,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.notice("Got current class | now(\(now)) == compare(\(compare)) \nThe current class is \(currentCourseLocal.name). Next class is \(nextCourseLocal.name), due at \(next.display())")
+			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) == compare(\(compare, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public). Next class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(, privacy: .public))")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,
@@ -494,7 +494,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.notice("Got current class | now(\(now)) > compare(\(compare)) && now(\(now)) < next(\(next)) \nThe current class is \(currentCourseLocal.name)\nNext class is \(nextCourseLocal.name), due at \(next.display())")
+			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) > compare(\(compare, privacy: .public)) && now(\(now, privacy: .public)) < next(\(next, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public)\nNext class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(, privacy: .public))")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,

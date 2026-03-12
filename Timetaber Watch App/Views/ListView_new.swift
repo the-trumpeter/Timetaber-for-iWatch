@@ -46,14 +46,14 @@ fileprivate struct DisplayEntry: View {
 			return nil
 		}
 		guard let prop = day[tP] else {
-			Logger.views.fault("")
+			Logger.views.fault("Invalid UUID \(tP, privacy: .public) in day")
 			return nil
 		}
 		self.properties = prop
 
 
 		guard let course = courses[ prop.courseID ] else {
-			Logger.views.fault("Missing course for UUID \(prop.courseID)")
+			Logger.views.fault("Missing course for UUID \(prop.courseID, privacy: .public)")
 			return nil
 		}
 		self.listedCourse = course
@@ -62,7 +62,7 @@ fileprivate struct DisplayEntry: View {
 
 
 		self.room = if listedCourse.rooms.isEmpty { nil } else { listedCourse.rooms[properties.roomIndex] }
-		//Logger.<#logger#>.<#action#>("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name)\n\tTime: \(timeslotIdentifier.time)\n\tRoom: \(String(describing: room))\n")
+		//Logger.<#logger#>.<#action#>("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name, privacy: .public)\n\tTime: \(timeslotIdentifier.time, privacy: .public)\n\tRoom: \(String(describing: room), privacy: .public)\n")
 	}
 
 	var body: some View {
@@ -196,7 +196,7 @@ struct TimetableView: View {
 										.clipShape(RoundedRectangle(cornerRadius: 10))
 								)
 						} else {
-							Text("Error \(#line):\(pair.0)")
+							Text("Error \(#line):\(pair.0, privacy: .public)")
 						}
 					}
 				}
