@@ -16,7 +16,8 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 	@Published var lastRecievedData: [String: Any] = [:]
 
 	private var isActivated = false
-	//private var pendingMessages: [ [String: Any] ] = []
+	private var pendingContext: [ [String: Any] ] = []
+	private var pendingUserInfo: [ [String: Any] ] = []
 
 
 	override init() {
@@ -41,12 +42,22 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 				isActivated = true
 				Logger.connectivity.notice("WCSession activated")
 
-				/* ?
-				for message in pendingMessages {
-					send(message: message)
+				var failedPend: [ [String: Any] ] = []
+				for send in pendingContext {
+					do {
+						try session.updateApplicationContext(send)
+					} catch {
+						Logger.connectivity.warning("Got an error while retrying send context; queing for another attempt when session activates")
+						failedPend.append(send)
+					}
 				}
-				pendingMessages.removeAll()
-				 */
+				pendingUserInfo = failedPend
+
+			
+				for send in pendingUserInfo {
+					session.transferUserInfo(send)
+				}
+
 			case .inactive:		Logger.connectivity.warning("WCSession inactive")
 			case .notActivated:	Logger.connectivity.fault("WCSession not activ(e/ated)")
 			@unknown default:	Logger.connectivity.fault("WCSession unknown state \(String(describing: activationState), privacy: .public)")
@@ -91,6 +102,11 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 											changes.indices.map { changeKeyFormat($0) },	changes
 										)
 		)
+		guard session.activationState == .activated else {
+			Logger.connectivity.warning("Session inactive (how did that happen??!), queing changes userInfo for dispatch when session activates")
+			pendingUserInfo.append(mappedChanges)
+			return
+		}
 		session.transferUserInfo(mappedChanges)
 		Logger.connectivity.notice("Queued \(changes.count, privacy: .public) Changes for sending to watch via WCSession.transferUserInfo(_:)")
 	}
@@ -98,7 +114,12 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 	func transferFullTimetable(_ ttbl: Timetable) {
 
 		guard session.isWatchAppInstalled else {
-			Logger.connectivity.info("Watch counterpart app not installed, will not queue changes")
+			Logger.connectivity.info("Watch counterpart app not installed, will not transmit timetable")
+			return
+		}
+		guard session.activationState == .activated else {
+			Logger.connectivity.warning("Session inactive (how did that happen??!), queing full timetable userInfo for dispatch when session activates")
+			pendingUserInfo.append( ["importTimetable": ttbl] )
 			return
 		}
 		session.transferUserInfo( ["importTimetable": ttbl] )
@@ -108,26 +129,37 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 
 
 	//MARK: updateApplicationContext
-	func updateTermContext(_ termRunning: Bool, startDate: Date? = nil, ghostWeek: Bool? = nil) throws {
-		guard session.isWatchAppInstalled else {
-			Logger.connectivity.info("Watch counterpart app not installed, will not update context")
-			return
-		}
+	func updateTermContext(_ termRunning: Bool, startDate: Date? = nil, ghostWeek: Bool? = nil) {
+		var send: [String: Any] = [:]
 		if termRunning {
 			guard let startDate, let ghostWeek else {
 				Logger.connectivity.critical("Cannot start term without a start date!! What idiot made them optionals?")
 				return
 			}
 			// Term started
-			try session.updateApplicationContext( [
-					termKeyFormat("running"): termRunning,
-					termKeyFormat("startDate"): startDate,
-					termKeyFormat("ghostWeek"): ghostWeek
-				]
-			)
+			send = [
+				termKeyFormat("running"): termRunning,
+				termKeyFormat("startDate"): startDate,
+				termKeyFormat("ghostWeek"): ghostWeek
+			]
 		} else {
 			// Term stopped
-			try session.updateApplicationContext([termKeyFormat("running"): termRunning])
+			send = [termKeyFormat("running"): termRunning]
+		}
+		guard session.isWatchAppInstalled else {
+			Logger.connectivity.info("Watch counterpart app not installed, will not update context")
+			return
+		}
+		guard session.activationState == .activated else {
+			Logger.connectivity.warning("Session inactive (how did that happen??!), queing context for dispatch when session activates")
+			pendingUserInfo.append(send)
+			return
+		}
+		do {
+			try session.updateApplicationContext(send)
+		} catch {
+			Logger.connectivity.warning("Got an error; queing for another attempt when session activates")
+			pendingUserInfo.append(send)
 		}
 	}
 }
