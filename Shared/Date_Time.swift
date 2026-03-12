@@ -258,7 +258,7 @@ func findTimes(_ wkday: Int, _ timetable: Timetable, includeFinishTime: Bool = t
 			}
 		else {
 			Logger.dateTime.fault("Time mapping value \( String(describing: mapKey), privacy: .public ) does not correspond to a variant in .variants.keys = \(timetable.times.variants.keys, privacy: .public)")
-			throw findTimesError.invalidMapping(failCourse(feedback: "Error D\(#line) Invalid mapping value \(mapKey, privacy: .public)"))
+			throw findTimesError.invalidMapping(failCourse(feedback: "Error D\(#line) Invalid mapping value \(mapKey)"))
 		}
 		//Logger.dateTime.debug("findTimes found variant: \(String(describing: variant))")
 		//Logger.dateTime.debug("findTimes found times for weekday \(wkday)")
@@ -315,7 +315,7 @@ func findClassFromTimeWeekDayAndIfWeekIsA_2(timetable: Timetable, period periodI
 	// Look up the course; if missing, fail gracefully
 	guard let course2 = timetable.courses[pair.courseID] else {
 		Logger.dateTime.fault("Missing course for id \(pair.courseID, privacy: .public)")
-		return failCourse(feedback: "Error D\(#line) missing course for id \(pair.courseID, privacy: .public)")
+		return failCourse(feedback: "Error D\(#line) missing course for id \(pair.courseID)")
 	}
 
 	// If room index is valid, return with room; otherwise return base Course
@@ -463,7 +463,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) == compare(\(compare, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public). Next class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(, privacy: .public))")
+			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) == compare(\(compare, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public). Next class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(), privacy: .public)")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,
@@ -494,7 +494,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) > compare(\(compare, privacy: .public)) && now(\(now, privacy: .public)) < next(\(next, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public)\nNext class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(, privacy: .public))")
+			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) > compare(\(compare, privacy: .public)) && now(\(now, privacy: .public)) < next(\(next, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public)\nNext class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(), privacy: .public)")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,

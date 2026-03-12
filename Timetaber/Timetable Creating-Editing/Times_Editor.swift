@@ -106,7 +106,7 @@ fileprivate struct NewPeriodView: View {
 				Text("Duration")
 				Spacer()
 
-				Button {} label: { Text("\(period.duration/60, privacy: .public):\(period.duration % 60 < 10 ? "0":"", privacy: .public)\(period.duration%60)") }
+				Button {} label: { Text("\(period.duration/60):\(period.duration % 60 < 10 ? "0":"")\(period.duration%60)") }
 					.foregroundStyle(.primary)
 					.padding(.vertical, 6)
 					.padding(.horizontal, 8)
@@ -236,7 +236,7 @@ fileprivate struct TimesSheetView: View {
 					Text("Duration")
 					Spacer()
 
-					Button {} label: { Text("\(period.duration/60, privacy: .public):\(period.duration % 60 < 10 ? "0":"")\(period.duration%60, privacy: .public)") }
+					Button {} label: { Text("\(period.duration/60):\(period.duration % 60 < 10 ? "0":"")\(period.duration%60)") }
 						.foregroundStyle(.primary)
 						.padding(.vertical, 6)
 						.padding(.horizontal, 8)
@@ -350,7 +350,7 @@ fileprivate struct TimesRowView: View {
 				}
 				Text(period.wrappedValue.name)
 				Spacer()
-				Text("\(startDate.formatted(Date.FormatStyle().hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)), privacy: .public)")
+				Text("\(startDate.formatted(Date.FormatStyle().hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)))")
 					.foregroundStyle(.secondary)
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
@@ -415,7 +415,7 @@ fileprivate struct TimesVariantEditor: View {
 		self.localTimes = Storage.shared.timetables[tblIndex].times
 		self.debugID = switch editing {
 			case .standard: "Standard"
-			case .variant(let key): "Variant \(key, privacy: .public)"
+			case .variant(let key): "Variant \(key)"
 		}
 	}
 
@@ -508,7 +508,7 @@ fileprivate struct TimesVariantEditor: View {
 			}()
 
 			guard type(of: local) == type(of: origin) else {
-				Logger.editTimes.fault("compiler theloop input types do not match. local: \(type(of: local, privacy: .public)), origin: \(type(of: origin, privacy: .public))")
+				Logger.editTimes.fault("compiler theloop input types do not match. local: \(type(of: local)), origin: \(type(of: origin))")
 				return
 			}
 
@@ -620,7 +620,8 @@ fileprivate struct TimesVariantEditor: View {
 						let namebinding = Binding<String>(get: {
 							switch editing {
 							case .standard:
-								fatalError("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								Logger.editTimes.critical("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								return "Error \(#line)"
 							case .variant(let key):
 								guard let variant = localTimes.variants[key] else {
 									Logger.editTimes.fault("Variant \(debugID, privacy: .public) Given variant key \(key, privacy: .public) not available in local times [TimesVariantEditor]")
@@ -631,7 +632,8 @@ fileprivate struct TimesVariantEditor: View {
 						}, set: { name in
 							switch editing {
 							case .standard:
-								fatalError("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								Logger.editTimes.critical("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								return
 							case .variant(let key):
 								guard localTimes.variants[key] != nil else {
 									Logger.editTimes.fault("Variant \(debugID, privacy: .public) Given variant key not available in local times")
@@ -691,7 +693,7 @@ fileprivate struct TimesVariantEditor: View {
 			//	MARK: New Period
 				HStack {
 					if let lastKey = sortedIndicesByStart(timesets).last, let last = timesets[lastKey] {
-						Text("End: \(last.endTime.display(), privacy: .public)").foregroundStyle(.secondary)
+						Text("End: \(last.endTime.display())").foregroundStyle(.secondary)
 						Spacer()
 					}
 					Button("Add Period", systemImage: "plus") {

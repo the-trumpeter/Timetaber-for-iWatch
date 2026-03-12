@@ -174,7 +174,7 @@ fileprivate struct timetableOptions: View {
 				} label: {
 					HStack {
 						Text("Timetable").foregroundStyle(.primary); Spacer();
-						Text("\(timetable.timetable.count, privacy: .public) week\( timetable.timetable.count != 1 ? "s":"", privacy: .public)").foregroundStyle(.secondary)
+						Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
 					}
 				}
 

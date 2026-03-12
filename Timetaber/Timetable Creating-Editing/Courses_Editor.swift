@@ -461,7 +461,7 @@ struct CoursesEditor: View {
 				localCourses = store.timetables[tblIndex].courses
 			}
 		}
-		.alert("Delete \"\( (alertIndex.flatMap { localCourses[$0]?.name }) ?? "Error \(#line)", privacy: .public )\"?", isPresented: $showingAlert) {
+		.alert("Delete \"\( (alertIndex.flatMap { localCourses[$0]?.name }) ?? "Error \(#line)")\"?", isPresented: $showingAlert) {
 			Button("Delete", role: .destructive) {
 				// Capture the course name before deletion so we can still display/log it after removal
 				let deletedName = alertIndex.flatMap { localCourses[$0]?.name } ?? "Error \(#line)"

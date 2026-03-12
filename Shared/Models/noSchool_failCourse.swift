@@ -28,7 +28,7 @@ func noSchool(_ key: TimeCase? = nil) -> DisplayCourse {
 		case .weekend: "It's the weekend."
 		case .noTerm: "No term running."
 		case .noTimetable: "No timetable available."
-		case .beforeClass(let startTime): "First class at \(startTime.display(), privacy: .public)."
+		case .beforeClass(let startTime): "First class at \(startTime.display())."
 		case .afterClass: "School's out for today!"
 		case .freePeriod: "Study... or run to Maccas"
 		default: "Not yet, anyway..."

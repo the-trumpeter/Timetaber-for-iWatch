@@ -185,7 +185,7 @@ struct TimetableView: View {
 									Colour.black : .primary
 								)
 						} else {
-							Text("Error \(#line) failed for \(pair.0, privacy: .public)")
+							Text("Error \(#line) failed for \(pair.0)")
 						}
 					}
 				}

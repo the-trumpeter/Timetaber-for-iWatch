@@ -54,6 +54,7 @@ extension Date {
 		guard let date = Calendar.current.date(from: components) else {
 			Logger.dateTime.critical("Failed to create date from components \(String(reflecting: components), privacy: .public))")
 			self = Date()
+			return
 		}
 		self = date
 	}

@@ -196,7 +196,7 @@ struct TimetableView: View {
 										.clipShape(RoundedRectangle(cornerRadius: 10))
 								)
 						} else {
-							Text("Error \(#line):\(pair.0, privacy: .public)")
+							Text("Error \(#line):\(pair.0)")
 						}
 					}
 				}
