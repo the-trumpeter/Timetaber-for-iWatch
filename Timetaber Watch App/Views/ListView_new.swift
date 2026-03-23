@@ -179,7 +179,7 @@ struct TimetableView: View {
 
 
 				List {
-					//FIXME: Weird space here between content and toolbar/title
+					
 					ForEach(times, id: \.0) { pair in
 						let timeslot = Timeslot(week: week, day: weekday, time: pair.0)
 						if let entry = DisplayEntry(

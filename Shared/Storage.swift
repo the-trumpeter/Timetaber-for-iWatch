@@ -311,7 +311,7 @@ class Storage: ObservableObject {
 		WCManager.queueChanges(changes)
 	}
 	func sendFullTimetable(_ ttbl: Timetable) {
-		WCManager.sendFullTimetable(ttbl)
+		WCManager.transferFullTimetable(ttbl)
 	}
 	#endif
 
