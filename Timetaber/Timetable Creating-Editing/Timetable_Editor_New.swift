@@ -301,6 +301,8 @@ fileprivate struct EditTimetableDayView: View {
 	@State var discardConfirmation = false
 	@Environment(\.dismiss) var dismiss
 
+	@State var saveFailed = false
+
 	init(tblIndex: Int, week: WeekAB, day: Weekday) {
 		let store = Storage.shared
 
@@ -454,10 +456,13 @@ fileprivate struct EditTimetableDayView: View {
 						Button("Save changes", systemImage: "checkmark") {
 							let changes = compileChanges()
 							Logger.editTimetable.log("Saving \(changes.count, privacy: .public) Changes to timetable.")
-							
-							origin.distributeChanges(changes)
-							origin.applyChanges(changes)
 
+							do {
+								try origin.distributeChanges(changes)
+								origin.applyChanges(changes)
+							} catch {
+								saveFailed = true
+							}
 							Logger.editTimetable.notice("Saved changes")
 							// Reset local `day` to match the updated model so Save button disappears
 							day = origin.timetables[tblIndex].timetable[timingDetails.weekab]![timingDetails.weekday]!
@@ -497,6 +502,11 @@ fileprivate struct EditTimetableDayView: View {
 				}
 				Button("Cancel", role: .cancel) {
 					discardConfirmation = false
+				}
+			}
+			.alert("Couldn't send changes to watch.", isPresented: $saveFailed) {
+				Button("OK") {
+					saveFailed = false
 				}
 			}
 			.navigationBarBackButtonHidden(true)

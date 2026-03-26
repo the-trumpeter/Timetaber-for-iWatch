@@ -401,6 +401,7 @@ fileprivate struct TimesVariantEditor: View {
 	@State private var hasPendingChanges = false
 	@State private var discardConfirmation = false
 
+	@State var saveFailed = false
 
 	@Environment(\.dismiss) private var dismiss
 
@@ -818,8 +819,12 @@ fileprivate struct TimesVariantEditor: View {
 						Button("Save", systemImage: "checkmark") {
 							let changes = compileChanges()
 
-							store.distributeChanges(changes)
-							store.applyChanges(changes)
+							do {
+								try store.distributeChanges(changes)
+								store.applyChanges(changes)
+							} catch {
+								saveFailed = true
+							}
 
 							localTimes = store.timetables[tblIndex].times
 							hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
@@ -845,6 +850,11 @@ fileprivate struct TimesVariantEditor: View {
 					}
 				}
 
+			}
+			.alert("Couldn't send changes to watch.", isPresented: $saveFailed) {
+				Button("OK") {
+					saveFailed = false
+				}
 			}
 			.alert("Discard changes?", isPresented: $discardConfirmation) {
 				Button("Discard", role: .destructive) {
@@ -1002,6 +1012,8 @@ struct TimesMapping: View {
 	@State var bool_pendingChanges = false
 	@State var discardConfirmation = false
 
+	@State var saveFailed = false
+
 	init(tblIndex: Int = 0) {
 		self.tblIndex 	= tblIndex
 		self.localTimes = Storage.shared.timetables[tblIndex].times
@@ -1087,9 +1099,13 @@ struct TimesMapping: View {
 					Button("Save", systemImage: "checkmark") {
 						let changes = compileChanges()
 
-						store.distributeChanges(changes)
-						store.applyChanges(changes)
-						
+						do {
+							try store.distributeChanges(changes)
+							store.applyChanges(changes)
+						} catch {
+							saveFailed = true
+						}
+
 						withAnimation {
 							let t = store.timetables[tblIndex].times
 							localTimes = t; origin = t
@@ -1124,6 +1140,11 @@ struct TimesMapping: View {
 			}
 			Button("Cancel", role: .cancel) {
 				discardConfirmation = false
+			}
+		}
+		.alert("Couldn't send changes to watch.", isPresented: $saveFailed) {
+			Button("OK") {
+				saveFailed = false
 			}
 		}
 		.navigationBarBackButtonHidden(true)

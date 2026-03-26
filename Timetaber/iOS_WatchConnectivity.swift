@@ -92,37 +92,56 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 	//MARK: transferUserInfo
 	/// Queue an array of changes to be sent to a connected Apple Watch, using `WCSession.transferUserInfo(_:)`
 	/// - Parameter changes: an array of changes to be queued for distribution
-	func queueChanges(_ changes: [Change]) {
+	func queueChanges(_ changes: [Change]) throws {
+
+		//WATCH APP INSTALLED?
 		guard session.isWatchAppInstalled else {
 			Logger.connectivity.notice("Watch counterpart app not installed, will not queue changes")
 			return
 		}
-		let mappedChanges: [String: Change] = Dictionary(uniqueKeysWithValues:
-										zip(
-											changes.indices.map { changeKeyFormat($0) },	changes
-										)
-		)
+
+		//ENCODE
+		let json = try JSONEncoder().encode(changes)
+
+		//QUEUE FOR DISPATCH
 		guard session.activationState == .activated else {
 			Logger.connectivity.warning("Session inactive (how did that happen??!), queing changes userInfo for dispatch when session activates")
-			pendingUserInfo.append(mappedChanges)
+			pendingUserInfo.append( ["changes": json] )
 			return
 		}
-		session.transferUserInfo(mappedChanges)
-		Logger.connectivity.notice("Queued \(changes.count, privacy: .public) Changes for sending to watch via WCSession.transferUserInfo(_:)")
+
+		//SEND
+		session.transferUserInfo( ["changes": json] )
+
+		//LOG
+		Logger.connectivity.notice("Encoded & queued \(changes.count, privacy: .public) 'Changes' for sending to watch via WCSession.transferUserInfo(_:)")
 	}
 
-	func transferFullTimetable(_ ttbl: Timetable) {
 
+		//MARK: Full
+	func transferFullTimetable(_ ttbl: Timetable) throws {
+
+		//WATCH APP INSTALLED?
 		guard session.isWatchAppInstalled else {
 			Logger.connectivity.info("Watch counterpart app not installed, will not transmit timetable")
 			return
 		}
+
+		//ENCODE
+		let json = try ttbl.encode()
+
+		//QUEUE FOR DISPATCH
 		guard session.activationState == .activated else {
 			Logger.connectivity.warning("Session inactive (how did that happen??!), queing full timetable userInfo for dispatch when session activates")
-			pendingUserInfo.append( ["importTimetable": ttbl] )
+			pendingUserInfo.append( ["importTimetable": json] )
 			return
 		}
-		session.transferUserInfo( ["importTimetable": ttbl] )
+
+		//SEND
+		session.transferUserInfo( ["importTimetable": json] )
+
+		//LOG
+		Logger.connectivity.notice("Encoded & queued FULL TIMETABLE for sending to watch via WCSession.transferUserInfo(_:)")
 	}
 
 
