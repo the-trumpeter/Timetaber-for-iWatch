@@ -137,7 +137,7 @@ extension Array where Element == Timetable.TimetabledWeek  {
 }
 
 
-//MARK: Timetable
+//MARK: - Timetable
 ///Contains all data of a user's timetable.
 struct Timetable: Codable {
 	var name: String
@@ -255,7 +255,24 @@ struct Timetable: Codable {
 		]
 	}
 
-	
+	func encode() throws -> Data {
+		let encoder = JSONEncoder()
+		encoder.outputFormatting = .prettyPrinted
+
+		let data = try encoder.encode(self)
+		return data
+	}
+	init? (_ json: Data) {
+		let decoder = JSONDecoder()
+		do {
+			let decoded = try decoder.decode(Timetable.self, from: json)
+			self = decoded
+		} catch {
+			return nil
+		}
+	}
+
+
 	/**
 	 Apply a given set of `Change`s to the parent timetable.
 	 - Parameter changes: The changes to be applied to the timetable.

@@ -307,11 +307,11 @@ class Storage: ObservableObject {
 
 	#if os(iOS)
 	@Published var WCManager = WatchConnectivityManager_iOS()
-	func distributeChanges(_ changes: [Change]) {
-		WCManager.queueChanges(changes)
+	func distributeChanges(_ changes: [Change]) throws {
+		try WCManager.queueChanges(changes)
 	}
-	func sendFullTimetable(_ ttbl: Timetable) {
-		WCManager.transferFullTimetable(ttbl)
+	func sendFullTimetable(_ ttbl: Timetable) throws {
+		try WCManager.transferFullTimetable(ttbl)
 	}
 	#endif
 

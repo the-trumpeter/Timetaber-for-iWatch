@@ -8,7 +8,7 @@
 import SwiftUI
 import OSLog
 
-
+//TODO: Symbol chooser looks crap
 
 fileprivate struct symbolchooser: View {
 	@Binding var course: Course2
@@ -308,6 +308,12 @@ fileprivate struct coursebutton: View {
 	}
 
 	var body: some View {
+        let roomsArray: [(Int, String)] = course.wrappedValue.rooms.map { ($0.key, $0.value) }
+        let sortedRooms: [(Int, String)] = roomsArray.sorted { (lhs: (Int, String), rhs: (Int, String)) -> Bool in
+            lhs.0 < rhs.0
+        }
+        let joinedRooms: String = sortedRooms.map { (pair: (Int, String)) in pair.1 }.joined(separator: "; ")
+
 		Button { showingSheet.toggle() } label: {
 
 			HStack {
@@ -319,11 +325,6 @@ fileprivate struct coursebutton: View {
 				Text(course.wrappedValue.name).lineLimit(1)
 
 				Spacer()
-
-                let joinedRooms: String = course.wrappedValue.rooms
-                    .sorted(by: { $0.key < $1.key })
-                    .map { $0.value }
-                    .joined(separator: "; ")
 
 				Text(joinedRooms)
 					.foregroundStyle(.secondary)
@@ -350,6 +351,29 @@ fileprivate struct coursebutton: View {
 	}
 }
 
+
+
+fileprivate struct CoursesListRows: View {
+	let sortedIDs: [UUID]
+	@Binding var localCourses: [UUID: Course2]
+	let tblIndex: Int
+	@Binding var pendingChanges: [Change]?
+
+	var body: some View {
+		ForEach(sortedIDs, id: \.self) { key in
+			coursebutton(localCourses: $localCourses,
+						 tblIndex: tblIndex,
+						 pos: key,
+						 pendingChanges: $pendingChanges)
+				.swipeActions(edge: .trailing) {
+					Button("Delete", role: .destructive) {
+						pendingChanges = [Change.course_delete(index: key, timetable: tblIndex)] + (pendingChanges ?? [])
+					}
+				}
+		}
+	}
+}
+
 //MARK: Public access Courses editor
 
 ///Edit courses.
@@ -367,6 +391,8 @@ struct CoursesEditor: View {
 	@State var showingAlert = false
 	@State var alertIndex: UUID? = nil
 
+	@State var saveFailed = false
+
 	init(tblIndex: Int = 0) {
 		self.tblIndex = tblIndex
 		self.localCourses = Storage.shared.timetables[tblIndex].courses
@@ -375,25 +401,42 @@ struct CoursesEditor: View {
 	@State var discardConfirmation = false
 	@Environment(\.dismiss) var dismiss
 
+	private func confirmDelete() {
+		let deletedName = alertIndex.flatMap { localCourses[$0]?.name } ?? "Error \(#line)"
+		guard let id = alertIndex else { return }
+		let change = Change.course_delete(index: id, timetable: tblIndex)
+		pendingChanges = [change] + (pendingChanges ?? [])
+		localCourses.applyCourseChanges([change])
+		let logMessage: String = "Unconfirmedly removed \"\(deletedName)\" from UI courses"
+		Logger.editCourses.log("\(logMessage, privacy: .public)")
+	}
+
+	private var sortedCourseIDs: [UUID] {
+		let pairs: [(UUID, Course2)] = localCourses.map { (key: UUID, value: Course2) in (key, value) }
+		let sortedPairs: [(UUID, Course2)] = pairs.sorted { (lhs: (UUID, Course2), rhs: (UUID, Course2)) -> Bool in
+			lhs.1.name < rhs.1.name
+		}
+		let keys: [UUID] = sortedPairs.map { (key: UUID, _ : Course2) in key }
+		return keys
+	}
+
+
 	var body: some View {
 		NavigationStack {
+            let alertTitle: String = {
+                if let id = alertIndex, let name = localCourses[id]?.name {
+                    return "Delete \"\(name)\"?"
+                } else {
+                    return "Delete \"Error \(#line)\"?"
+                }
+            }()
+            
 			List {
-                // Precompute a stable, type-explicit sorted list to help the type-checker
-                let sortedCourses: [(id: UUID, course: Course2)] = localCourses
-                    .map { ($0.key, $0.value) }
-                    .sorted {
-						$0.1.name < $1.1.name
-                    }
 
-                ForEach(sortedCourses, id: \.id) { entry in
-                    let index = entry.id
-                    coursebutton(localCourses: $localCourses, tblIndex: tblIndex, pos: index, pendingChanges: $pendingChanges)
-						.swipeActions(edge: .trailing) {
-							Button("Delete", role: .destructive) {
-								pendingChanges = [Change.course_delete(index: index, timetable: tblIndex)] + (pendingChanges ?? [])
-							}
-						}
-				}
+				CoursesListRows(sortedIDs: sortedCourseIDs,
+								localCourses: $localCourses,
+								tblIndex: tblIndex,
+								pendingChanges: $pendingChanges)
 
 				Button("Add Course", systemImage: "plus") {
 					newCourse_fakePending = []
@@ -402,7 +445,7 @@ struct CoursesEditor: View {
 					newCourseSheet.toggle()
 				}
 				.sheet(isPresented: $newCourseSheet) {
-					///ondismiss
+					//ondismiss
 					if newCourse_fakeNewCourse.name != "\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}" {
 						let id = UUID()
 						pendingChanges = [Change.course_create(index: id, newCourse_fakeNewCourse, timetable: tblIndex)] + (pendingChanges ?? [])
@@ -420,8 +463,14 @@ struct CoursesEditor: View {
 				ToolbarItem(placement: .confirmationAction) {
 					if !(pendingChanges?.isEmpty ?? true) {
 						Button("Save", systemImage: "checkmark") {
-							store.distributeChanges(pendingChanges!)
-							store.applyChanges(pendingChanges!)
+
+							do {
+								try store.distributeChanges(pendingChanges!)
+								store.applyChanges(pendingChanges!)
+							} catch {
+								Logger.editCourses.fault("Could not json-encode \(pendingChanges?.count ?? -1) changes")
+								saveFailed = true
+							}
 
 						}
 					}
@@ -445,37 +494,21 @@ struct CoursesEditor: View {
 				}
 
 			}
-			.alert("Discard changes?", isPresented: $discardConfirmation) {
-				Button("Discard", role: .destructive) {
-					withAnimation {
-						localCourses = store.timetables[tblIndex].courses
-						pendingChanges = []
-					}
-				}
-				Button("Cancel", role: .cancel) {
-					discardConfirmation = false
-				}
-			}
-			.navigationBarBackButtonHidden(true)
-			.onAppear {
-				localCourses = store.timetables[tblIndex].courses
+			.alert(alertTitle, isPresented: $showingAlert) {
+				Button("Delete", role: .destructive) { confirmDelete() }
+				Button("Cancel", role: .cancel) { }
 			}
 		}
-		.alert("Delete \"\( (alertIndex.flatMap { localCourses[$0]?.name }) ?? "Error \(#line)")\"?", isPresented: $showingAlert) {
-			Button("Delete", role: .destructive) {
-				// Capture the course name before deletion so we can still display/log it after removal
-				let deletedName = alertIndex.flatMap { localCourses[$0]?.name } ?? "Error \(#line)"
-
-				// Ensure we have a valid UUID to delete
-				guard let id = alertIndex else { return }
-				let change = Change.course_delete(index: id, timetable: tblIndex)
-				pendingChanges = [change] + (pendingChanges ?? [])
-				localCourses.applyCourseChanges([change])
-
-				Logger.editCourses.log("Unconfirmedly removed \"\(deletedName, privacy: .public)\" from UI courses")
+		.alert("Couldn't send changes to watch.", isPresented: $saveFailed) {
+			Button("OK") {
+				saveFailed = false
 			}
-			Button("Cancel", role: .cancel) {}
-		}.navigationTitle("All Courses")
+		}
+		.navigationTitle("All Courses")
+		.onAppear {
+			localCourses = store.timetables[tblIndex].courses
+		}
+		.navigationTitle("All Courses")
 		.onAppear {
 			Logger.editCourses.log("Started editing courses")
 		}
@@ -486,3 +519,4 @@ struct CoursesEditor: View {
 #Preview {
 	CoursesEditor(tblIndex: 0)
 }
+

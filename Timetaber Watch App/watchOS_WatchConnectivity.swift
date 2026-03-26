@@ -130,35 +130,52 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 		}//dispatchqueue
 	}
 
+
+
 	//MARK: Recieve Changes [userInfo]
 	func session(_ session: WCSession, didReceiveUserInfo info: [String: Any]) {
+
+		//LOG
 		Logger.connectivity.notice("Recieved user info. Sending to DispatchQueue.main for asynchronous processing")
 
 		DispatchQueue.main.async {
 
+			//CHECK FOR FULL TIMETABLE
 			if info["importTimetable"] != nil {
 
-				guard let imported = info["importTimetable"] as? Timetable else {
-					Logger.connectivity.critical("Data passed as 'importTimetable' does not conform to 'Timetable'")
+				guard let json = info["importTimetable"] as? Data  else {
+					return
+				}
+
+				guard let imported = Timetable(json) else {
+					Logger.connectivity.critical("'Data' passed as 'importTimetable' cannot be decoded to 'Timetable'")
+					//TODO: Error recovery
 					return
 				}
 
 				let actvTbl = Storage.shared.ActiveTimetable
+
 				Storage.shared.timetables[actvTbl] = imported
 				Logger.connectivity.notice("Recieved & applied new timetable from iOS. Discarded \(info.count-1, privacy: .public) other items")
-				return
+
 			}
 
+
+			//DECODE
 
 			var changes: [Change] = []
 			var invalid: [String: Any] = [:]
 
-			for (key, val) in info {
-				if let chg = val as? Change {
-					changes.append(chg)
+			if let raw = info["changes"] {
+
+				if let data = raw as? Data,
+				   let decoded = try? JSONDecoder().decode([Change].self, from: data)
+				{
+					changes = decoded
 				} else {
-					invalid[key] = val
+					Logger.connectivity.critical("Could not decode data passed as 'changes' to [Change].self")
 				}
+
 			}
 
 
@@ -170,49 +187,14 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 				Logger.connectivity.critical("\(invalid.count, privacy: .public)/\(info.count, privacy: .public) unexpected userInfo recieved:\n\(invalid, privacy: .public)")
 			}
 
-			Logger.connectivity.notice("Parsed \(changes.count, privacy: .public) messages out of \(info.count, privacy: .public) total recieved.")
+			Logger.connectivity.notice("Parsed \(changes.count, privacy: .public) Changes from 1 entry in \(info.count) userInfo key/value pairs.")
 
 		}//DispatchQueue
 
-	}// session(...didRecieveUserInfo:)
+	}// session(_:didRecieveUserInfo:)
 
 
 
-	/*
-	//MARK: - My mess
-
-	#if os(iOS)
-	enum ConnectivityError: Error {
-		case couldntDistribute([Change])
-		case couldntDistributeTerm(running: Bool, startDate: Date, ghostWeek: Bool)
-	}
-
-	///Send a set of `Change`s to a connected Apple Watch.
-	///
-	///Do not apply changes via `applyChanges` unless `distributeChanges` has first successfully sent them to the Apple Watch.
-	///
-	///If no Apple Watch is connected to the iPhone, `distributeChanges` will return success.
-	///
-	///In the case that the changes cannot be sent to the watch and `ConnectivityError.couldntDistribute` is thrown, give the user a choice to send those changes to a sort of waiting-list timetable (yet to be implemented)
-	func distributeChanges(_ changes: [Change]) throws {
-		///send changes to watch here
-		///if we can't get it to the watch, maybe offer to save it to another timetable instead of desyncing the two
 
 
-	}
-
-	func distributeToggleTerm(_ running: Bool, startDate date: Date, ghostWeek ghost: Bool) throws {
-
-	}
-
-	#endif
-
-
-	#if os(watchOS)
-	func pingPhone() {
-
-	}
-	#endif
-	*/
-}
-
+}//WCManager

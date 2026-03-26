@@ -52,7 +52,7 @@ struct HomeView: View {
 	var body: some View {
 		let course = data.currentCourse
 		ZStack {
-			Colour(course.colour).ignoresSafeArea()
+			if colourScheme == .light { Colour(course.colour).ignoresSafeArea() }
 			VStack {
 				Spacer()
 				
@@ -88,8 +88,8 @@ struct HomeView: View {
 			}
 
 			.foregroundStyle(
-				coloursNeedBlackForeground.contains(course.colour) ?
-					Colour.black : .primary
+				colourScheme == .light ? (coloursNeedBlackForeground.contains(course.colour) ?
+										 Colour.black : .primary) : Colour(course.colour)
 			)
 			.if(!coloursNeedBlackForeground.contains(course.colour)) { $0.colorInvert()
 			}

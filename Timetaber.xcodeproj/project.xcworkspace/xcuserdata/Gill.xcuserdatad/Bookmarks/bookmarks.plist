@@ -59,13 +59,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>992</string>
+					<string>1002</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>991</string>
+					<string>1001</string>
 					<key>Timestamp</key>
-					<string>794974594.0566911</string>
+					<string>796105423.0909621</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -153,55 +153,6 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>28</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>27</string>
-					<key>Timestamp</key>
-					<string>792384366.51436</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>is-complete</key>
-			<true/>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>					Button(symbol, systemImage: symbol) {
-</string>
-				<key>leading</key>
-				<string>			) {
-				ForEach(sfsymbols, id: \.self) { symbol in
-</string>
-				<key>trailing</key>
-				<string>						course.icon = symbol
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {dismiss()} )
-
-</string>
-			</dict>
-			<key>title</key>
-			<string>TODO: Button triggered if scroll started&amp;ended on it</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
 					<string>169</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
@@ -234,6 +185,132 @@
 				<string>				   wed_P1: Times.Period ("1",		startTime: 0900,	duration: 60),
 				   wed_P2: Times.Period ("2",		startTime: 1000,	duration: 50),
 				   wed_YA: Times.Period("YA",		startTime: 1050,	duration: 10),// fix below
+</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>0</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>0</string>
+					<key>Timestamp</key>
+					<string>796080118.251078</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Gills_Timetable.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string></string>
+				<key>trailing</key>
+				<string>//
+//  Timetable_sharing.swift
+//  Timetaber
+</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>0</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>0</string>
+					<key>Timestamp</key>
+					<string>796080120.5948</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Gills_Timetable.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string></string>
+				<key>trailing</key>
+				<string>//
+//  Timetable_sharing.swift
+//  Timetaber
+</string>
+			</dict>
+			<key>type</key>
+			<string>bookmark</string>
+		</dict>
+		<dict>
+			<key>destination</key>
+			<dict>
+				<key>location-parameters</key>
+				<dict>
+					<key>EndingColumnNumber</key>
+					<string>0</string>
+					<key>EndingLineNumber</key>
+					<string>0</string>
+					<key>StartingColumnNumber</key>
+					<string>0</string>
+					<key>StartingLineNumber</key>
+					<string>0</string>
+					<key>Timestamp</key>
+					<string>796080121.555956</string>
+				</dict>
+				<key>rebasable-url</key>
+				<dict>
+					<key>base</key>
+					<string>workspace</string>
+					<key>payload</key>
+					<dict>
+						<key>relative-path</key>
+						<string>Shared/Gills_Timetable.swift</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>text-context</key>
+			<dict>
+				<key>focused</key>
+				<string></string>
+				<key>leading</key>
+				<string></string>
+				<key>trailing</key>
+				<string>//
+//  Timetable_sharing.swift
+//  Timetaber
 </string>
 			</dict>
 			<key>type</key>
