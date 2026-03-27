@@ -115,6 +115,8 @@ fileprivate struct timetableOptions: View {
 
 	@State var timesSheet = false
 
+	@State var sendFullFailed = false
+
 	init(_ timetable: Binding<Timetable>, index: Int) {
 		self.tblIndex = index
 		self._timetable = timetable
@@ -180,8 +182,30 @@ fileprivate struct timetableOptions: View {
 
 				// Button("Delete \"\(name, privacy: .public)\"", systemImage: "trash", role: .destructive) { }
 
+				HStack {
 
-				ExportView()
+					if Storage.shared.WCManager.session.isWatchAppInstalled {
+						Menu("Debug...", systemImage: "ladybug") {
+							Button("Send Full Timetable To Watch...", systemImage: "applewatch") {
+								do {
+									try Storage.shared.WCManager.transferFullTimetable(Storage.shared.timetables[tblIndex])
+								} catch {
+									Logger.general.critical("Could not send full timetable to watch!!")
+									sendFullFailed = true
+								}
+							}
+						}
+						Spacer()
+					}
+
+					ExportView()
+				}
+				.alert("Couldn't export timetable", isPresented: $sendFullFailed) {
+					Button("OK", role: .cancel) { sendFullFailed = false }
+				} message: {
+					Text("JSON encoding failed.\nDon't edit your timetable. Show a/the developer your in-app timetable, in person.\nYou can safely continue using this app, however the watch app's data may be outdated.")
+				}
+
 
 
 			}.listStyle(.inset)

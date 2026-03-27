@@ -76,6 +76,9 @@ fileprivate struct DisplayEntry: View {
 					.aspectRatio(contentMode: .fit)
 					.padding(.leading, 2)
 					.padding(.trailing, 3)
+					.if(course.listIcon == "black") {
+						$0.foregroundStyle(.primary)
+					}
 			} else {
 				Image(systemName: course.icon)
 					.resizable()
@@ -86,6 +89,9 @@ fileprivate struct DisplayEntry: View {
 					.frame(maxWidth: 25, maxHeight: 25)
 					.padding(.leading, 2)
 					.padding(.trailing, 3)
+					.if(course.listIcon == "black") {
+						$0.foregroundStyle(.primary)
+					}
 			}
 
 			VStack {
@@ -115,59 +121,87 @@ fileprivate struct DisplayEntry: View {
 
 ///"List view" of today's classes
 struct TimetableView: View {
-	@State var day: [UUID: Times.Period.Contents]
-	var courses: Binding< [UUID: Course2] >
-	let week: WeekAB
-	let weekday: Int
 
 	@EnvironmentObject var data: LocalData
 	@ObservedObject var storage: Storage = Storage.shared
-	let tblIndex: Int
+	var tblIndex: Int { Storage.shared.ActiveTimetable }
+	var week: WeekAB {
+		if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) {
+			return WeekAB.a
+		} else {
+			return WeekAB.b
+		}
+	}
+	var weekday: Int { weekdayNumber(.now) }
 
-	@State var sectionHeader: String
-
-
-	@State var error = false
-	@State var fail: DisplayCourse? = nil
-
-	init(week _week: WeekAB = { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }(),
-		 day _day: Int = weekdayNumber(.now),
-		 tblIndex: Int = 0
-	) {
-		//May need to return early in case of weekend or no term
-		//Logger._.("Start TimetableView init")
-		let wkday = _day
-		let wk = _week
-		let tbl = Storage.shared.timetables[tblIndex]
-
-		self.weekday = wkday
-		self.week = wk
-
-		self.day = if wkday >= 2 && wkday <= 6 {
-			getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: tbl)
-		} else { [:] }
-
-		self.courses = Binding(get: {
+	var courses: Binding< [UUID: Course2] > {
+		Binding(get: {
 			Storage.shared.timetables[tblIndex].courses
-			}, set:{_ in}
-			)
+		}, set:{_ in}
+		)
+	}
 
-		self.tblIndex = tblIndex
+	var day: [UUID: Times.Period.Contents] {
+		return if weekday >= 2 && weekday <= 6 {
+			getTimetableDay2(isWeekA: { if(week == .a){true}else{false} }(), weekDay: weekday, timetable: Storage.shared.timetables[tblIndex])
+		} else { [:] }
+	}
 
-		let suffix =  if week == .a { " A" } else { " B" }
-		self.sectionHeader = switch weekday {
+
+	var sectionHeader: String {
+		let suffix = if week == .a { " A" } else { " B" }
+		return switch weekdayNumber(.now) {
 			case 2: "Monday"+suffix
 			case 3: "Tuesday"+suffix
 			case 4: "Wednesday"+suffix
 			case 5: "Thursday"+suffix
 			case 6: "Friday"+suffix
 			default: "Error \(#line)"
-		  }
-		//Logger.<#logger#>.<#action#>("End TimetableView init")
+		}
 	}
 
+
+	@State var error = false
+	@State var fail: DisplayCourse? = nil
+
+//		init(week _week: WeekAB = { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { ˆWeekAB.b } }(),
+//		 day _day: Int = weekdayNumber(.now),
+//		 tblIndex: Int = 0
+//	) {
+//		//May need to return early in case of weekend or no term
+//		//Logger._.("Start TimetableView init")
+//		let wkday = _day
+//		let wk = _week
+//		let tbl = Storage.shared.timetables[tblIndex]
+//
+//		self.weekday = wkday
+//		self.week = wk
+//
+//		self.day = if wkday >= 2 && wkday <= 6 {
+//			getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: tbl)
+//		} else { [:] }
+//
+//		self.courses = Binding(get: {
+//			Storage.shared.timetables[tblIndex].courses
+//			}, set:{_ in}
+//			)
+//
+//		self.tblIndex = tblIndex
+//
+//		let suffix =  if week == .a { " A" } else { " B" }
+//		self.sectionHeader = switch weekday {
+//			case 2: "Monday"+suffix
+//			case 3: "Tuesday"+suffix
+//			case 4: "Wednesday"+suffix
+//			case 5: "Thursday"+suffix
+//			case 6: "Friday"+suffix
+//			default: "Error \(#line)"
+//		  }
+//		//Logger.<#logger#>.<#action#>("End TimetableView init")
+//	}
+
 	@State var times: [(Time24, UUID?)] = []
-	//@State var dayKeys: [(Time24)] = []
+//	@State var dayKeys: [(Time24)] = []
 
 	var body: some View {
 		NavigationStack {
@@ -200,34 +234,34 @@ struct TimetableView: View {
 						}
 					}
 				}
-				//.listStyle(.inset)
-				//.toolbar {
-				//	ToolbarItem(placement: .principal) { Text(sectionHeader) }
-				//}
+//				.listStyle(.inset)
+//				.toolbar {
+//					ToolbarItem(placement: .principal) { Text(sectionHeader) }
+//				}
 			} else if error {
-				//Image(systemName: "exclamationmark.triangle").foregroundStyle(.secondary).font(.title).bold(false)
+//				Image(systemName: "exclamationmark.triangle").foregroundStyle(.secondary).font(.title).bold(false)
 				Text("Error \(#line)").foregroundStyle(.secondary).multilineTextAlignment(.center).bold()
-				//Text(String(describing: fail?.room)).foregroundStyle(.secondary).multilineTextAlignment(.center)
-			/*} else if Storage.shared.termRunningGB == false {
-				//Text("No school right now.\nIt's the holidays.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
-				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
-			} else if weekdayNumber(.now) != 1 || weekdayNumber(.now) != 7 {
-				//Text("No school right now.\nIt's the weekend.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
-				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
-			 */
+//				Text(String(describing: fail?.room)).foregroundStyle(.secondary).multilineTextAlignment(.center)
+//			} else if Storage.shared.termRunningGB == false {
+//				Text("No school right now.\nIt's the holidays.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
+//				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
+//			} else if weekdayNumber(.now) != 1 || weekdayNumber(.now) != 7 {
+//				Text("No school right now.\nIt's the weekend.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
+//				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
+//
 			} else {
 				//Text("No school right now.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
 				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
 			}
 
-			/*.toolbar {
-				ToolbarItem(placement: .primaryAction) {
-					NavigationLink {
-						EditDayView(timetable: Storage.shared.timetable, week: week)
-							} label: { 						Label("Edit", systemImage: "pencil")
-					}
-				}
-			}*/
+//			.toolbar {
+//				ToolbarItem(placement: .primaryAction) {
+//					NavigationLink {
+//						EditDayView(timetable: Storage.shared.timetable, week: week)
+//							} label: { 						Label("Edit", systemImage: "pencil")
+//					}
+//				}
+//			}
 		}.onAppear {
 			do {
 				times = try findTimes(weekday, storage.timetables[tblIndex], includeFinishTime: false)//.map({$0.0})
@@ -246,8 +280,8 @@ struct TimetableView: View {
 }
 
 
-
-#Preview {
-	TimetableView(week: .a, day: 2).environmentObject(LocalData.shared)
-}
-
+//
+//#Preview {
+//	TimetableView(week: .a, day: 2).environmentObject(LocalData.shared)
+//}
+//

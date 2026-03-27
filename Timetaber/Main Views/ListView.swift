@@ -140,7 +140,7 @@ struct TimetableView: View {
 			case 4: "Wednesday"+suffix
 			case 5: "Thursday"+suffix
 			case 6: "Friday"+suffix
-			default: "Error \(#line)"
+			default: " "
 		  }
 		//Logger.<#logger#>.<#action#>("End TimetableView init")
     }
@@ -150,74 +150,59 @@ struct TimetableView: View {
 
     var body: some View {
         NavigationStack {
+			Group {
+				if weekday != 1 && weekday != 7 &&
+					Storage.shared.termRunningGB == true &&
+					error == false
+				{
 
-			if weekday != 1 && weekday != 7 &&
-				Storage.shared.termRunningGB == true &&
-				error == false
-			{
 
-
-				List {
-					//FIXME: Weird space here between content and toolbar/title
-					ForEach(times, id: \.0) { pair in
-						let timeslot = Timeslot(week: week, day: weekday, time: pair.0)
-						if let entry = DisplayEntry(
-							timetableDay: day,
-							timeslot: timeslot,
-							courses: courses.wrappedValue,
-							timesPair: pair
-						) {
-							let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
-							entry
-								.listRowBackground(
-									ZStack {
-										bG
-										HStack {
-											Rectangle()
-												.foregroundStyle(Colour(entry.listedCourse.colour))
-												.frame(width: 5.0)
-											Spacer()
+					List {
+						//FIXME: Weird space here between content and toolbar/title
+						ForEach(times, id: \.0) { pair in
+							let timeslot = Timeslot(week: week, day: weekday, time: pair.0)
+							if let entry = DisplayEntry(
+								timetableDay: day,
+								timeslot: timeslot,
+								courses: courses.wrappedValue,
+								timesPair: pair
+							) {
+								let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
+								entry
+									.listRowBackground(
+										ZStack {
+											bG
+											HStack {
+												Rectangle()
+													.foregroundStyle(Colour(entry.listedCourse.colour))
+													.frame(width: 5.0)
+												Spacer()
+											}
 										}
-									}
-								)
-								.foregroundStyle(
-									coloursNeedBlackForeground.contains(entry.listedCourse.colour) && (bG != nil) ?
-									Colour.black : .primary
-								)
-						} else {
-							Text("Error \(#line) failed for \(pair.0)")
+									)
+									.foregroundStyle(
+										coloursNeedBlackForeground.contains(entry.listedCourse.colour) && (bG != nil) ?
+										Colour.black : .primary
+									)
+							} else {
+								Text("Error \(#line) failed for \(pair.0)")
+							}
 						}
 					}
+					.listStyle(.inset)
+				} else if error {
+					Image(systemName: "exclamationmark.triangle").foregroundStyle(.secondary).font(.title).bold(false)
+					Text("Error \(#line)").foregroundStyle(.secondary).multilineTextAlignment(.center).bold()
+					Text(String(describing: fail?.room)).foregroundStyle(.secondary).multilineTextAlignment(.center)
+				} else {
+					Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
 				}
-				.listStyle(.inset)
-				.toolbar {
-					ToolbarItem(placement: .principal) { Text(sectionHeader) }
-				}
-			} else if error {
-				Image(systemName: "exclamationmark.triangle").foregroundStyle(.secondary).font(.title).bold(false)
-				Text("Error \(#line)").foregroundStyle(.secondary).multilineTextAlignment(.center).bold()
-				Text(String(describing: fail?.room)).foregroundStyle(.secondary).multilineTextAlignment(.center)
-			/*} else if Storage.shared.termRunningGB == false {
-				//Text("No school right now.\nIt's the holidays.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
-				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
-			} else if weekdayNumber(.now) != 1 || weekdayNumber(.now) != 7 {
-				//Text("No school right now.\nIt's the weekend.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
-				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
-			 */
-			} else {
-				//Text("No school right now.").foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
-				Text("The day's classes will appear here.").foregroundStyle(.secondary).multilineTextAlignment(.center)
-			}
 
-			/*.toolbar {
-				ToolbarItem(placement: .primaryAction) {
-					NavigationLink {
-						EditDayView(timetable: Storage.shared.timetable, week: week)
-							} label: { 						Label("Edit", systemImage: "pencil")
-					}
-				}
-			}*/
-		}.onAppear {
+			}
+			.navigationTitle(sectionHeader)
+			.navigationBarTitleDisplayMode(.inline)
+		}
+		.onAppear {
 			do {
 				times = try findTimes(weekday, storage.timetables[tblIndex], includeFinishTime: false)//.map({$0.0})
 			} catch findTimesError.invalidMapping(let failDisp) {

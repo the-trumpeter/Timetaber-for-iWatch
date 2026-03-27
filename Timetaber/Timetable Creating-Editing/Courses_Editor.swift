@@ -14,6 +14,7 @@ fileprivate struct symbolchooser: View {
 	@Binding var course: Course2
 	//@Binding var debugDelayDismiss: Bool
 	@Environment(\.dismiss) var dismiss
+
 	var body: some View {
 		ScrollView {
 			LazyVGrid(
@@ -30,13 +31,19 @@ fileprivate struct symbolchooser: View {
 						DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {dismiss()} )
 
 					}
+					.if(coloursNeedBlackForeground.contains(course.colour) && course.icon == symbol) {
+						$0.foregroundStyle(.black)
+					}
+					.if(coloursNeedWhiteForeground.contains(course.colour) && course.icon == symbol) {
+						$0.foregroundStyle(.white)
+					}
 					.font(.title)
 					.labelStyle(.iconOnly)
 					.frame(width: 45, height: 45)
 					.buttonStyle(.plain)
 					.if(course.icon == symbol) {
 						$0.background {
-							RoundedRectangle(cornerRadius: 5.0).foregroundStyle(.tertiary)
+							RoundedRectangle(cornerRadius: 5.0).foregroundStyle(Colour(course.colour))
 						}
 					}
 					.if(course.icon != symbol) {
@@ -71,8 +78,8 @@ fileprivate struct courseEdit: View {
 	@State private var coloursSheet = false
 	@State private var iconSheetPopover = false
 
-	let colours = ["graphite", "peach", "lemon", "rees1", "apricot",
-				   "lime", "ice", "blueberry", "rose", "cherry"]
+	let colours = ["black", "graphite", "peach", "lemon", "rees1", "apricot",
+				   "white", "lime", "ice", "blueberry", "rose", "cherry"]
 
 	@Environment(\.dismiss) var dismiss
 	@FocusState private var nameFieldIsFocused: Bool
@@ -149,13 +156,21 @@ fileprivate struct courseEdit: View {
 					HStack {
 						Image(systemName: course.icon.lowercased()).font(.title)
 						Text(course.name).font(.title)
-					}.padding(5)
+					}
+					.if(coloursNeedBlackForeground.contains(course.colour)) {
+						$0.foregroundStyle(.black)
+					}
+					.if(coloursNeedWhiteForeground.contains(course.colour)) {
+						$0.foregroundStyle(.white)
+					}
+
+					.padding(5)
 						.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(Colour(course.colour.lowercased())) }//.secondary) }
 
 
 					Grid {
 						GridRow {
-							ForEach(0...4, id: \.self) { index in
+							ForEach(0...5, id: \.self) { index in
 								let colour = colours[index]
 								Button { course.colour = colour } label: {
 									Circle()
@@ -177,7 +192,7 @@ fileprivate struct courseEdit: View {
 						}
 
 						GridRow {
-							ForEach(5...9, id: \.self) { index in
+							ForEach(5...10, id: \.self) { index in
 								let colour = colours[index]
 								Button { course.colour = colour } label: {
 									Circle()
@@ -467,6 +482,7 @@ struct CoursesEditor: View {
 							do {
 								try store.distributeChanges(pendingChanges!)
 								store.applyChanges(pendingChanges!)
+								pendingChanges = []
 							} catch {
 								Logger.editCourses.fault("Could not json-encode \(pendingChanges?.count ?? -1) changes")
 								saveFailed = true
@@ -507,11 +523,9 @@ struct CoursesEditor: View {
 		.navigationTitle("All Courses")
 		.onAppear {
 			localCourses = store.timetables[tblIndex].courses
-		}
-		.navigationTitle("All Courses")
-		.onAppear {
 			Logger.editCourses.log("Started editing courses")
 		}
+		.navigationBarBackButtonHidden()
 		.navigationBarTitleDisplayMode(.inline)
 	}
 }

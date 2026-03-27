@@ -12,7 +12,7 @@ import WatchConnectivity
 
 class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObject {
 
-	private var session = WCSession.default
+	@Published var session = WCSession.default
 	@Published var lastRecievedData: [String: Any] = [:]
 
 	private var isActivated = false
@@ -39,9 +39,11 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 		Logger.connectivity.notice("WCSession activated. | State: \(String(reflecting: activationState), privacy: .public) | Error: \(String(describing: error), privacy: .public)")
 		switch activationState {
 			case .activated:
+
 				isActivated = true
 				Logger.connectivity.notice("WCSession activated")
 
+				//queue any pending data
 				var failedPend: [ [String: Any] ] = []
 				for send in pendingContext {
 					do {
@@ -52,11 +54,25 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 					}
 				}
 				pendingUserInfo = failedPend
-
 			
 				for send in pendingUserInfo {
 					session.transferUserInfo(send)
 				}
+
+				//if watch app not already installed
+			if Storage.shared.isWatchAppInstalledAndInitialised == false {
+
+				if session.isWatchAppInstalled {
+					do {
+						try transferFullTimetable(Storage.shared.timetables[Storage.shared.ActiveTimetable])
+						Storage.shared.isWatchAppInstalledAndInitialised = true
+						Logger.connectivity
+					} catch {
+						Logger.connectivity.critical("Failed to send full timetable to newly installed watch app!")
+					}
+				}
+
+			}
 
 			case .inactive:		Logger.connectivity.warning("WCSession inactive")
 			case .notActivated:	Logger.connectivity.fault("WCSession not activ(e/ated)")

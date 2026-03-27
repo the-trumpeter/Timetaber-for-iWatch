@@ -164,7 +164,7 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 			//DECODE
 
 			var changes: [Change] = []
-			var invalid: [String: Any] = [:]
+//			var invalid: [String: Any] = [:]
 
 			if let raw = info["changes"] {
 
@@ -183,9 +183,10 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 				//Logger.connectivity.notice("Recieved \(changes.count, privacy: .public) Changes from iOS via WatchConnectivity; applying...")
 				Storage.shared.applyChanges(changes)
 			}
-			if !(invalid.isEmpty) {
-				Logger.connectivity.critical("\(invalid.count, privacy: .public)/\(info.count, privacy: .public) unexpected userInfo recieved:\n\(invalid, privacy: .public)")
-			}
+
+//			if !(invalid.isEmpty) {
+//				Logger.connectivity.critical("\(invalid.count, privacy: .public)/\(info.count, privacy: .public) unexpected userInfo recieved:\n\(invalid, privacy: .public)")
+//			}
 
 			Logger.connectivity.notice("Parsed \(changes.count, privacy: .public) Changes from 1 entry in \(info.count) userInfo key/value pairs.")
 

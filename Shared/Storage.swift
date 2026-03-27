@@ -34,6 +34,8 @@ class Storage: ObservableObject {
 	@AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = true//false
 	@AppStorage("timetaber.userdefaults.ghostWeek") var ghostWeekGB = false
 
+	@AppStorage("timetaber.userdefaults.isWatchAppInstalled") var isWatchAppInstalledAndInitialised = false
+
 	// Backwards-compatible storage for Date using Double (timeIntervalSince1970)
 	var startDateGB: Date {
 		get {
