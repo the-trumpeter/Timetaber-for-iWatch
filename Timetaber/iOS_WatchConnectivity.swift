@@ -66,7 +66,7 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 					do {
 						try transferFullTimetable(Storage.shared.timetables[Storage.shared.ActiveTimetable])
 						Storage.shared.isWatchAppInstalledAndInitialised = true
-						Logger.connectivity
+						Logger.connectivity.notice("Transferred full timetable to newly installed watch app")
 					} catch {
 						Logger.connectivity.critical("Failed to send full timetable to newly installed watch app!")
 					}

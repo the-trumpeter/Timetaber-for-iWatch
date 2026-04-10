@@ -56,22 +56,25 @@ struct HomeView: View {
 		let current = data.currentCourse //DisplayCourse("LongName", icon: "clock", room: "AB1", colour: "blueberry")
 		let next = if current.name != "Error" { data.nextCourse } else { current }
 
-        VStack {
-            Spacer()
+		let colour = if current.colour == "black" { "white" } else { current.colour }
+		let nextColour = if next.colour == "black" { "white" } else { next.colour }
 
-            // CURRENT CLASS
-			Image(systemName: current.icon)//data.currentCourse.icon)
-				.foregroundStyle(Colour(current.colour))
-                .imageScale(.large)
-                .font(.system(size: 27).weight(.semibold))
+		VStack {
+			Spacer()
 
-				  Text(current.name)//data.currentCourse.name)
-                .font(.system(size:25).weight(.bold))
-				.foregroundStyle(Colour(current.colour))
-                .padding(
-					EdgeInsets(top: 0, leading: 0, bottom: (current.room != nil) ? -6 : 0, trailing: 0)
-				)
-            
+			// CURRENT CLASS
+			Group {
+				Image(systemName: current.icon)//data.currentCourse.icon)
+					.imageScale(.large)
+					.font(.system(size: 27).weight(.semibold))
+
+				Text(current.name)//data.currentCourse.name)
+					.font(.system(size:25).weight(.bold))
+					.padding(
+						EdgeInsets(top: 0, leading: 0, bottom: (current.room != nil) ? -6 : 0, trailing: 0)
+					)
+			}.foregroundStyle(Colour(colour))
+
             // ROOM
             Text(roomOrBlank(current) ?? "")
 				.frame(maxWidth: .infinity)
@@ -89,7 +92,7 @@ struct HomeView: View {
 						.bold()
 
 					Text(getNextString(next))
-						.foregroundStyle(Colour(next.colour))
+						.foregroundStyle(Colour(nextColour))
 						.font(.system(size: 15))
 
 				default: EmptyView()

@@ -478,35 +478,38 @@ fileprivate struct EditTimetableDayView: View {
 						}
 					} label: {
 						if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
-							Text("Discard")
+							Label("Back", systemImage: "xmark")
 						} else {
 							Label("Back", systemImage: "chevron.left")
 						}
 					}
+					.confirmationDialog(
+						Text("Error \(#line)"),
+						isPresented: $discardConfirmation
+					) {
+						Button("Discard Changes", role: .destructive) {
+							withAnimation {
+								guard let week = origin.timetables[tblIndex].timetable[timingDetails.weekab] else {
+									Logger.editTimetable.fault("Week \(String(reflecting: timingDetails.weekab), privacy: .public ) invalid, cannot discard changes.")
+									return
+								}
+								guard let d = week[timingDetails.weekday] else {
+									Logger.editTimetable.fault("Weekday \(timingDetails.weekday, privacy: .public) invalid")
+									return
+								}
+								day = d
+							}
+							Logger.views.info("Discarded changes to timetabled day")
+						}
+					} message: {
+						Text("Are you sure you want to discard your changes?")
+					}
 				}
 
 			}
-			.alert("Discard changes?", isPresented: $discardConfirmation) {
-				Button("Discard", role: .destructive) {
-					withAnimation {
-						guard let week = origin.timetables[tblIndex].timetable[timingDetails.weekab] else {
-							Logger.editTimetable.fault("Week \(String(reflecting: timingDetails.weekab), privacy: .public ) invalid, cannot discard changes.")
-							return
-						}
-						guard let d = week[timingDetails.weekday] else {
-							Logger.editTimetable.fault("Weekday \(timingDetails.weekday, privacy: .public) invalid")
-							return
-						}
-						day = d
-					}
-				}
-				Button("Cancel", role: .cancel) {
-					discardConfirmation = false
-				}
-			}
 			.alert("Couldn't send changes to watch.", isPresented: $saveFailed) {
 				Button("OK") {
-					saveFailed = false
+					saveFailed = false 
 				}
 			}
 			.navigationBarBackButtonHidden(true)

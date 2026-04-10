@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import OSLog
 
 
 
@@ -88,11 +89,10 @@ struct HomeView: View {
 			}
 
 			.foregroundStyle(
-				colourScheme == .light ? (coloursNeedBlackForeground.contains(course.colour) ?
-										 Colour.black : .primary) : Colour(course.colour)
+				colourScheme == .light ? (coloursNeedBlackForeground.contains(course.colour) ? Colour.black : .primary)
+							/* dark */	: Colour(course.colour)
 			)
-			.if(!coloursNeedBlackForeground.contains(course.colour)) { $0.colorInvert()
-			}
+			.if(!coloursNeedBlackForeground.contains(course.colour) && colourScheme == .light) { $0.colorInvert() }
 
 			.padding()
 		}

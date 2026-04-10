@@ -12,60 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>25</string>
+					<string>1012</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>24</string>
+					<string>1011</string>
 					<key>Timestamp</key>
-					<string>785113020.796414</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/LocalData.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>		print("LocalData init")
-</string>
-				<key>leading</key>
-				<string>
-	init() {
-</string>
-				<key>trailing</key>
-				<string>		let now = getCurrentClass2(date: .now, timetable: chaos)
-		self.currentCourse = now[0]
-		self.nextCourse = now[1]
-</string>
-			</dict>
-			<key>title</key>
-			<string>Got to put together a noSchool for lack of timetables.</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>1002</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>1001</string>
-					<key>Timestamp</key>
-					<string>796105423.0909621</string>
+					<string>797392028.620258</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -141,7 +94,7 @@
 </string>
 			</dict>
 			<key>title</key>
-			<string>PRIORITY Make Contents optional, default unwrap to free period</string>
+			<string>PoLAUNCH Make Contents optional, default unwrap to free period</string>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>
@@ -153,13 +106,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>169</string>
+					<string>109</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>168</string>
+					<string>108</string>
 					<key>Timestamp</key>
-					<string>794881136.108544</string>
+					<string>797305147.962441</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -168,149 +121,23 @@
 					<key>payload</key>
 					<dict>
 						<key>relative-path</key>
-						<string>Shared/Gills_Timetable.swift</string>
+						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
 					</dict>
 				</dict>
 			</dict>
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>			   UUID():	Times.Variant("wed",		variant: [
+				<string>		ScrollView(.horizontal, showsIndicators: true) {//TODO: Open scroll on selected item
 </string>
 				<key>leading</key>
-				<string>				   tue_SBU: Times.Period ("SBU",	startTime: 1510,	duration:110)
-			   ]),
+				<string>		.padding(.bottom, 10)
+
 </string>
 				<key>trailing</key>
-				<string>				   wed_P1: Times.Period ("1",		startTime: 0900,	duration: 60),
-				   wed_P2: Times.Period ("2",		startTime: 1000,	duration: 50),
-				   wed_YA: Times.Period("YA",		startTime: 1050,	duration: 10),// fix below
-</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>0</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>0</string>
-					<key>Timestamp</key>
-					<string>796080118.251078</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Gills_Timetable.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string></string>
-				<key>leading</key>
-				<string></string>
-				<key>trailing</key>
-				<string>//
-//  Timetable_sharing.swift
-//  Timetaber
-</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>0</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>0</string>
-					<key>Timestamp</key>
-					<string>796080120.5948</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Gills_Timetable.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string></string>
-				<key>leading</key>
-				<string></string>
-				<key>trailing</key>
-				<string>//
-//  Timetable_sharing.swift
-//  Timetaber
-</string>
-			</dict>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>0</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>0</string>
-					<key>Timestamp</key>
-					<string>796080121.555956</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Shared/Gills_Timetable.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string></string>
-				<key>leading</key>
-				<string></string>
-				<key>trailing</key>
-				<string>//
-//  Timetable_sharing.swift
-//  Timetaber
+				<string>			HStack(spacing: 12) {
+
+				ForEach(0..&lt;sfsymbols.count, id: \.self) { i in
 </string>
 			</dict>
 			<key>type</key>

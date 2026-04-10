@@ -61,6 +61,105 @@ fileprivate struct symbolchooser: View {
 	}
 }
 
+fileprivate struct symbolBackground: View {
+	@Binding var course: Course2
+	let symbol: String
+	var body: some View {
+		RoundedRectangle(cornerRadius: 5.0)
+			.foregroundStyle(Colour(course.colour))
+			.opacity((course.icon != symbol) ? 0.0 : 1.0)
+	}
+}
+
+fileprivate struct symbolchooser_new: View {
+	@Binding var course: Course2
+	let colours: [String]
+	//@Binding var debugDelayDismiss: Bool
+//	@Environment(\.dismiss) var dismiss
+
+	@State var page = 0
+    @State private var pagingForward: Bool = true
+	let endPage = 11
+    
+    private struct PageIdentity: Hashable {
+        let page: Int
+        let forward: Bool
+    }
+
+	var body: some View {
+
+		HStack {
+			Image(systemName: course.icon.lowercased()).font(.title)
+			Text(course.name).font(.title)
+		}
+		.if(coloursNeedBlackForeground.contains(course.colour)) {
+			$0.foregroundStyle(.black)
+		}
+		.if(coloursNeedWhiteForeground.contains(course.colour)) {
+			$0.foregroundStyle(.white)
+		}
+
+		.padding(5)
+		.background {
+			RoundedRectangle(cornerRadius: 10)
+				.foregroundStyle(Colour(course.colour.lowercased()) )
+		}//.secondary) }
+		.padding(.bottom, 10)
+
+		ScrollView(.horizontal, showsIndicators: true) {//TODO: Open scroll on selected item
+			HStack(spacing: 12) {
+
+				ForEach(0..<sfsymbols.count, id: \.self) { i in
+
+					if i == 0 {
+						Spacer().frame(width: 16)
+					}
+
+					let symbol = sfsymbols[i]
+
+					Image(systemName: symbol)
+						.onTapGesture {
+							course.icon = symbol
+						}
+						.if(coloursNeedBlackForeground.contains(course.colour) && course.icon == symbol) {
+							$0.foregroundStyle(.black)
+						}
+						.if(coloursNeedWhiteForeground.contains(course.colour) && course.icon == symbol) {
+							$0.foregroundStyle(.white)
+						}
+						.font(.title)
+						.labelStyle(.iconOnly)
+						.frame(width: 45, height: 45)
+						.background {
+							symbolBackground(course: $course, symbol: symbol)
+						}
+					if (i + 1) % 4 == 0 && i < sfsymbols.count - 1 {
+						Spacer().frame(width: 5)
+					}
+					if i == sfsymbols.count-1 {
+						Spacer().frame(width: 16)
+					}
+
+				}
+
+			}
+			.padding(.horizontal, 5)
+		}
+		.mask(
+			LinearGradient(
+				gradient: Gradient(stops: [
+					.init(color: .clear, location: 0.0),
+					.init(color: .black, location: 0.1),
+					.init(color: .black, location: 0.9),
+					.init(color: .clear, location: 1.0),
+				]),
+				startPoint: .leading,
+				endPoint: .trailing
+			)
+		)
+
+	}
+}
 
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton/courseEdit
 fileprivate struct courseEdit: View {
@@ -138,7 +237,9 @@ fileprivate struct courseEdit: View {
 						}
 						.padding(5)
 				}.sheet(isPresented: $iconSheetPopover) {
-					symbolchooser(course: $course, )//debugDelayDismiss: $debugSymbolDismissDelay)
+					symbolchooser_new(course: $course, colours: colours)//debugDelayDismiss: $debugSymbolDismissDelay)
+						.presentationDetents([.height(200)])
+
 				}
 				//COLOURS
 				Button { coloursSheet.toggle() } label: {
@@ -157,15 +258,18 @@ fileprivate struct courseEdit: View {
 						Image(systemName: course.icon.lowercased()).font(.title)
 						Text(course.name).font(.title)
 					}
-					.if(coloursNeedBlackForeground.contains(course.colour)) {
+					.if(coloursNeedBlackForeground.contains(course.colour.lowercased())) {
 						$0.foregroundStyle(.black)
 					}
-					.if(coloursNeedWhiteForeground.contains(course.colour)) {
+					.if(coloursNeedWhiteForeground.contains(course.colour.lowercased())) {
 						$0.foregroundStyle(.white)
 					}
 
 					.padding(5)
-						.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(Colour(course.colour.lowercased())) }//.secondary) }
+					.background {
+						RoundedRectangle(cornerRadius: 10)
+							.foregroundStyle(Colour(course.colour.lowercased()) )
+					}//.secondary) }
 
 
 					Grid {
@@ -192,7 +296,7 @@ fileprivate struct courseEdit: View {
 						}
 
 						GridRow {
-							ForEach(5...10, id: \.self) { index in
+							ForEach(6...11, id: \.self) { index in
 								let colour = colours[index]
 								Button { course.colour = colour } label: {
 									Circle()
@@ -403,7 +507,7 @@ struct CoursesEditor: View {
 	@State var newCourse_fakePending: [Change]? = nil //courseEdit computes EDITS from tblIndex and pos, but it writes them back here where I can discard them and replace them with a .course_add
 	@State var newCourse_fakeNewCourse: Course2 = Course2("\u{0000}\u{0001}\u{0002}\u{0003}\u{0004}\u{0005}\u{0006}\u{0007}", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard) //courseEdit wil be comparing its normal Course2 with a control one of impossible characters, therefore there will always be changes.
 
-	@State var showingAlert = false
+	@State var showingDeleteConfirmation = false
 	@State var alertIndex: UUID? = nil
 
 	@State var saveFailed = false
@@ -482,7 +586,9 @@ struct CoursesEditor: View {
 							do {
 								try store.distributeChanges(pendingChanges!)
 								store.applyChanges(pendingChanges!)
-								pendingChanges = []
+								withAnimation {
+									pendingChanges = []
+								}
 							} catch {
 								Logger.editCourses.fault("Could not json-encode \(pendingChanges?.count ?? -1) changes")
 								saveFailed = true
@@ -494,23 +600,34 @@ struct CoursesEditor: View {
 				}
 
 				ToolbarItem(placement: .topBarLeading) {
-					Button {
+					Button(
+						"Back", systemImage:
+							(pendingChanges?.isEmpty ?? true) ? "chevron.left" : "xmark"
+					) {
 						if !(pendingChanges?.isEmpty ?? true) {
 							discardConfirmation = true
 						} else {
 							dismiss()
 						}
-					} label: {
-						if !(pendingChanges?.isEmpty ?? true) {
-							Text("Discard")
-						} else {
-							Label("Back", systemImage: "chevron.left")
+					}
+					.confirmationDialog(
+						Text("Error \(#line)"),
+						isPresented: $discardConfirmation
+					) {
+						Button("Discard Changes", role: .destructive) {
+							withAnimation {
+								pendingChanges = nil
+								localCourses = store.timetables[tblIndex].courses
+							}
+							Logger.views.info("Discarded changes to courses")
 						}
+					} message: {
+						Text("Are you sure you want to discard your changes?")
 					}
 				}
 
 			}
-			.alert(alertTitle, isPresented: $showingAlert) {
+			.alert(alertTitle, isPresented: $showingDeleteConfirmation) {
 				Button("Delete", role: .destructive) { confirmDelete() }
 				Button("Cancel", role: .cancel) { }
 			}

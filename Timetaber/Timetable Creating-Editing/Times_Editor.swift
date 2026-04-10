@@ -594,6 +594,12 @@ fileprivate struct TimesVariantEditor: View {
 
 	//MARK: Edit Variant body
 	var body: some View {
+
+		let navTitle = switch editing {
+		case .standard: "Standard Timing"
+		case .variant(_): "Timing Variant"
+		}
+
 		NavigationStack {
 
 
@@ -825,10 +831,11 @@ fileprivate struct TimesVariantEditor: View {
 							} catch {
 								saveFailed = true
 							}
-
-							localTimes = store.timetables[tblIndex].times
-							hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
-							syncPendingFlag()
+							withAnimation {
+								localTimes = store.timetables[tblIndex].times
+								hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
+								syncPendingFlag()
+							}
 						}.disabled(invalidOrderingOrOverlap)
 					}
 
@@ -843,10 +850,25 @@ fileprivate struct TimesVariantEditor: View {
 						}
 					} label: {
 						if (hasPendingChanges || !(localTimes == store.timetables[tblIndex].times) || (isNewVariant && localTimes.variants[newIndex!] != originalNew)) {
-							Text("Discard")
+							Label("Back", systemImage: "xmark")
 						} else {
 							Label("Back", systemImage: "chevron.left")
 						}
+					}
+					.confirmationDialog(
+						Text("Error \(#line)"),
+						isPresented: $discardConfirmation
+					) {
+						Button("Discard Changes", role: .destructive) {
+							withAnimation {
+								localTimes = store.timetables[tblIndex].times
+								hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
+								syncPendingFlag()
+							}
+							Logger.views.info("Discarded changes to timing variants")
+						}
+					} message: {
+						Text("Are you sure you want to discard your changes?")
 					}
 				}
 
@@ -856,19 +878,8 @@ fileprivate struct TimesVariantEditor: View {
 					saveFailed = false
 				}
 			}
-			.alert("Discard changes?", isPresented: $discardConfirmation) {
-				Button("Discard", role: .destructive) {
-					withAnimation {
-						localTimes = store.timetables[tblIndex].times
-						hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
-						syncPendingFlag()
-					}
-				}
-				Button("Cancel", role: .cancel) {
-					discardConfirmation = false
-				}
-			}
 			.navigationBarBackButtonHidden(true)
+			.navigationTitle(navTitle)
 
 
 		}// NavigationStack
@@ -986,7 +997,6 @@ struct TimesEditor: View {
 
 
 
-//MARK: -
 //MARK: -
 
 
@@ -1121,26 +1131,25 @@ struct TimesMapping: View {
 						dismiss()
 					}
 				} label: {
-					if bool_pendingChanges {
-						Text("Discard")
-					} else {
-						Label("Back", systemImage: "chevron.left")
+					Label("Back", systemImage: bool_pendingChanges ? "xmark" : "chevron.left")
+				}
+				.confirmationDialog(
+					Text("Error \(#line)"),
+					isPresented: $discardConfirmation
+				) {
+					Button("Discard Changes", role: .destructive) {
+						withAnimation {
+							localTimes = store.timetables[tblIndex].times
+							origin = store.timetables[tblIndex].times
+							bool_pendingChanges = false
+						}
+						Logger.views.info("Discarded changes to times mapping")
 					}
+				} message: {
+					Text("Are you sure you want to discard your changes?")
 				}
 			}
 
-		}
-		.alert("Discard changes?", isPresented: $discardConfirmation) {
-			Button("Discard", role: .destructive) {
-				withAnimation {
-					localTimes = store.timetables[tblIndex].times
-					origin = store.timetables[tblIndex].times
-					bool_pendingChanges = false
-				}
-			}
-			Button("Cancel", role: .cancel) {
-				discardConfirmation = false
-			}
 		}
 		.alert("Couldn't send changes to watch.", isPresented: $saveFailed) {
 			Button("OK") {
@@ -1156,8 +1165,11 @@ struct TimesMapping: View {
 
 
 
-//MARK: #Preview
-#Preview {
+//MARK: #Preview(s)
+#Preview("Day Structure") {
 	TimesEditor(tblIndex: 0)
+}
+#Preview("Week Structure") {
+	TimesMapping(tblIndex: 0)
 }
 

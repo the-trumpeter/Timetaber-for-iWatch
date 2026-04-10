@@ -5,20 +5,30 @@
 //  Created by Gill Palmer on 10/1/2026.
 //
 
+
+
+/*
+ need custom symbols:
+ music.note
+ cpu
+ clapperboard
+ bus
+*/
+
+
 /// Symbols to be used in SF Symbols chooser
 let sfsymbols = [
 
 	//General school symbols
-	"graduationcap", "backpack", "highlighter", "text.document",
-					 "checklist", "face.smiling",
+	"graduationcap", "backpack", "text.document", "face.smiling",
 
 	//English
 	"book", "book.closed", "text.quote", "book.pages",
 
 	//HSIE														//Lote
-	"building.columns", "globe.asia.australia", "map", 		"character.bubble",
+	"globe", "globe.asia.australia", "map", 		"character.bubble",
 	//Commerce
-	"banknote", "chart.line.uptrend.xyaxis", "briefcase",	"globe",
+	"banknote", "chart.line.uptrend.xyaxis", "briefcase", "building.columns",
 
 //	HSIE other
 //	"hourglass",

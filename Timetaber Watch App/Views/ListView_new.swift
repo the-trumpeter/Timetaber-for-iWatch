@@ -10,6 +10,17 @@ import SwiftUI
 import OSLog
 import UIKit
 
+
+
+let customSymbols = [
+	"cpu": Image("cpu.circle.fill"),
+	"movieclapper": Image("movieclapper.circle.fill"),
+	"bus.fill": Image("bus.circle.fill"),
+	"music.note": Image("music.note.circle.fill"),
+]
+
+
+
 fileprivate struct DisplayEntry: View {
 
 	let listedCourse: Course2
@@ -51,7 +62,6 @@ fileprivate struct DisplayEntry: View {
 		}
 		self.properties = prop
 
-
 		guard let course = courses[ prop.courseID ] else {
 			Logger.views.fault("Missing course for UUID \(prop.courseID, privacy: .public)")
 			return nil
@@ -65,27 +75,30 @@ fileprivate struct DisplayEntry: View {
 		//Logger.<#logger#>.<#action#>("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name, privacy: .public)\n\tTime: \(timeslotIdentifier.time, privacy: .public)\n\tRoom: \(String(describing: room), privacy: .public)\n")
 	}
 
-	var body: some View {
+	var body: some View {   
 
 		HStack{
-			if UIImage(systemName: course.listIcon) != nil {
-				Image(systemName: course.listIcon)
+			let clr = if course.colour.lowercased() == "black" { "white" } else { course.colour.lowercased() }
+			if let img = customSymbols[course.icon] {
+				img
 					.resizable()
-					.foregroundStyle(Colour(course.colour))
-					.frame(maxWidth: 25, maxHeight: 25)
 					.aspectRatio(contentMode: .fit)
+					.symbolVariant(.circle)
+					.symbolVariant(.fill)
+					.foregroundStyle(Colour(clr))
+					.frame(maxWidth: 25, maxHeight: 25)
 					.padding(.leading, 2)
 					.padding(.trailing, 3)
 					.if(course.listIcon == "black") {
 						$0.foregroundStyle(.primary)
 					}
 			} else {
-				Image(systemName: course.icon)
+				Image(systemName: course.listIcon)
 					.resizable()
 					.aspectRatio(contentMode: .fit)
 					.symbolVariant(.circle)
 					.symbolVariant(.fill)
-					.foregroundStyle(Colour(course.colour))
+					.foregroundStyle(Colour(clr))
 					.frame(maxWidth: 25, maxHeight: 25)
 					.padding(.leading, 2)
 					.padding(.trailing, 3)
@@ -222,7 +235,16 @@ struct TimetableView: View {
 							courses: courses.wrappedValue,
 							timesPair: pair
 						) {
-							let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
+							var bG: Colour? {
+								if (data.currentTime == timeslot) {
+									if entry.listedCourse.colour.lowercased() == "black" {
+										return Colour("white")
+									}
+									return Colour(entry.listedCourse.colour)
+								} else {
+									return nil
+								}
+							}
 							entry
 								.listRowBackground(
 									(bG ?? .clear)
@@ -280,8 +302,8 @@ struct TimetableView: View {
 }
 
 
-//
-//#Preview {
-//	TimetableView(week: .a, day: 2).environmentObject(LocalData.shared)
-//}
-//
+
+#Preview {
+	TimetableView().environmentObject(LocalData.shared)
+}
+

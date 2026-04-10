@@ -44,7 +44,7 @@ fileprivate struct DisplayEntry: View {
 			return nil
 		}
 		guard let prop = day[tP] else {
-			Logger.views.fault("")
+			Logger.views.error("Could not find UUID in day")
 			return nil
 		}
 		self.properties = prop
@@ -59,6 +59,7 @@ fileprivate struct DisplayEntry: View {
 
 		self.room = if listedCourse.rooms.isEmpty { nil } else { listedCourse.rooms[properties.roomIndex] }
         //Logger.<#logger#>.<#action#>("DisplayEntry Initialised,\n\tCourse: \(listedCourse.name, privacy: .public)\n\tTime: \(timeslotIdentifier.time, privacy: .public)\n\tRoom: \(String(describing: room), privacy: .public)\n")
+		//Logger.views.debug("Listing: \(course.name, privacy: .public)")
     }
 
     var body: some View {
@@ -94,59 +95,87 @@ fileprivate struct DisplayEntry: View {
 
 ///"List view" of today's classes
 struct TimetableView: View {
-	@State var day: [UUID: Times.Period.Contents]
-    var courses: Binding< [UUID: Course2] >
-    let week: WeekAB
-    let weekday: Int
-
-    @EnvironmentObject var data: LocalData
+	@EnvironmentObject var data: LocalData
 	@ObservedObject var storage: Storage = Storage.shared
-	let tblIndex: Int
+	var tblIndex: Int { Storage.shared.ActiveTimetable }
+	var week: WeekAB {
+		if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) {
+			return WeekAB.a
+		} else {
+			return WeekAB.b
+		}
+	}
+	var weekday: Int { weekdayNumber(.now) }
 
-	@State var sectionHeader: String
-
-
-	@State var error = false
-	@State var fail: DisplayCourse? = nil
-
-    init(week _week: WeekAB = { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }(),
-		 day _day: Int = weekdayNumber(.now),
-		 tblIndex: Int = 0
-	) {
-		//May need to return early in case of weekend or no term
-		//Logger._.("Start TimetableView init")
-		let wkday = _day
-        let wk = _week
-		let tbl = Storage.shared.timetables[tblIndex]
-
-		self.weekday = wkday
-		self.week = wk
-
-		self.day = if wkday >= 2 && wkday <= 6 {
-			getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: tbl)
-		} else { [:] }
-
-		self.courses = Binding(get: {
+	var courses: Binding< [UUID: Course2] > {
+		Binding(get: {
 			Storage.shared.timetables[tblIndex].courses
-			}, set:{_ in}
-			)
+		}, set:{_ in}
+		)
+	}
 
-		self.tblIndex = tblIndex
+	var day: [UUID: Times.Period.Contents] {
+		return if weekday >= 2 && weekday <= 6 {
+			getTimetableDay2(isWeekA: { if(week == .a){true}else{false} }(), weekDay: weekday, timetable: Storage.shared.timetables[tblIndex])
+		} else { [:] }
+	}
 
-		let suffix =  if week == .a { " A" } else { " B" }
-		self.sectionHeader = switch weekday {
+
+	var sectionHeader: String {
+		let suffix = if week == .a { " A" } else { " B" }
+		return switch weekdayNumber(.now) {
 			case 2: "Monday"+suffix
 			case 3: "Tuesday"+suffix
 			case 4: "Wednesday"+suffix
 			case 5: "Thursday"+suffix
 			case 6: "Friday"+suffix
-			default: " "
-		  }
-		//Logger.<#logger#>.<#action#>("End TimetableView init")
-    }
+			default: "Error \(#line)"
+		}
+	}
+
+	@State var error = false
+	@State var fail: DisplayCourse? = nil
+
+//    init(week _week: WeekAB = { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }(),
+//		 day _day: Int = weekdayNumber(.now),
+//		 tblIndex: Int = 0
+//	) {
+//		//May need to return early in case of weekend or no term
+//		//Logger._.("Start TimetableView init")
+//		let wkday = _day
+//        let wk = _week
+//		let tbl = Storage.shared.timetables[tblIndex]
+//
+//		self.weekday = wkday
+//		self.week = wk
+//
+//		self.day = if wkday >= 2 && wkday <= 6 {
+//			getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: tbl)
+//		} else { [:] }
+//
+//		self.courses = Binding(get: {
+//			Storage.shared.timetables[tblIndex].courses
+//			}, set:{_ in}
+//			)
+//
+//		self.tblIndex = tblIndex
+//
+//		let suffix =  if week == .a { " A" } else { " B" }
+//		self.sectionHeader = switch weekday {
+//			case 2: "Monday"+suffix
+//			case 3: "Tuesday"+suffix
+//			case 4: "Wednesday"+suffix
+//			case 5: "Thursday"+suffix
+//			case 6: "Friday"+suffix
+//			default: ""
+//		  }
+//		//Logger.<#logger#>.<#action#>("End TimetableView init")
+//    }
 
 	@State var times: [(Time24, UUID?)] = []
 	//@State var dayKeys: [(Time24)] = []
+
+	@Environment(\.colorScheme) var colourScheme
 
     var body: some View {
         NavigationStack {
@@ -158,7 +187,6 @@ struct TimetableView: View {
 
 
 					List {
-						//FIXME: Weird space here between content and toolbar/title
 						ForEach(times, id: \.0) { pair in
 							let timeslot = Timeslot(week: week, day: weekday, time: pair.0)
 							if let entry = DisplayEntry(
@@ -167,7 +195,33 @@ struct TimetableView: View {
 								courses: courses.wrappedValue,
 								timesPair: pair
 							) {
-								let bG: Colour? = (data.currentTime == timeslot) ? Colour(entry.listedCourse.colour) : nil
+								var bG: Colour? {
+									if (data.currentTime == timeslot) {
+										if colourScheme == .light && entry.listedCourse.colour.lowercased() == "white" {
+											return Colour("black")
+										}
+										if colourScheme == .dark &&	entry.listedCourse.colour.lowercased() == "black" {
+											return Colour("white")
+										}
+										return Colour(entry.listedCourse.colour)
+									} else {
+										return nil
+									}
+								}
+								var fG: Colour {
+									if bG == Colour("black") ||
+										coloursNeedWhiteForeground.contains( entry.listedCourse.colour.lowercased() ) && (data.currentTime == timeslot)
+									{
+										return Colour("white")
+									}
+									if bG == Colour("white") ||
+										coloursNeedBlackForeground.contains( entry.listedCourse.colour.lowercased() ) && (data.currentTime == timeslot)
+									{
+										return Colour("black")
+									}
+
+									return .primary
+								}
 								entry
 									.listRowBackground(
 										ZStack {
@@ -180,10 +234,9 @@ struct TimetableView: View {
 											}
 										}
 									)
-									.foregroundStyle(
-										coloursNeedBlackForeground.contains(entry.listedCourse.colour) && (bG != nil) ?
-										Colour.black : .primary
-									)
+									.foregroundStyle(fG)
+
+
 							} else {
 								Text("Error \(#line) failed for \(pair.0)")
 							}
@@ -222,6 +275,6 @@ struct TimetableView: View {
 
 
 #Preview {
-	TimetableView(week: .a, day: 2).environmentObject(LocalData.shared)
+	TimetableView().environmentObject(LocalData.shared)
 }
 
