@@ -36,6 +36,10 @@ class Storage: ObservableObject {
 
 	@AppStorage("timetaber.userdefaults.isWatchAppInstalled") var isWatchAppInstalledAndInitialised = false
 
+	#if os(watchOS)
+	@AppStorage("timetaber.userdefaults.globalErrorMessage") var globalErrorMessage: String = "This is a major error"
+	#endif
+
 	// Backwards-compatible storage for Date using Double (timeIntervalSince1970)
 	var startDateGB: Date {
 		get {

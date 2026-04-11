@@ -62,11 +62,13 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 					guard let run = val as? Bool else { //Ensure is correct value
 						Logger.connectivity.critical("Invalid value \(String(describing: val), privacy: .public ) given to key 'term-running'")
+						Storage.shared.globalErrorMessage = "Error \(#line): WC 'term-running' given invalid type"
 						return
 					}
 					guard assembly.running == nil ||
 							assembly.running == run else { //Ensure not contradicting other values of same purpose
 						Logger.connectivity.critical("Multiple contradicting 'term-running' declarations in recieved applicationContext")
+						Storage.shared.globalErrorMessage = "Error \(#line): WC multiple contradicting 'term-running' values"
 						return
 					}
 					assembly.running = run
@@ -77,11 +79,13 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 					guard let start = val as? Date else { //Ensure is correct value
 						Logger.connectivity.critical("Invalid value \(String(describing: val), privacy: .public ) given to key 'term-startDate'")
+						Storage.shared.globalErrorMessage = "Error \(#line): WC 'term-startDate' given invalid type"
 						return
 					}
 					guard assembly.startDate == nil ||
 							assembly.startDate == start else { //Ensure not contradicting other values of same purpose
 						Logger.connectivity.critical("Multiple contradicting 'term-startDate' declarations in recieved applicationContext")
+						Storage.shared.globalErrorMessage = "Error \(#line): WC multiple contradicting 'term-startDate' values"
 						return
 					}
 					assembly.startDate = start
@@ -92,11 +96,13 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 					guard let ghost = val as? Bool else { //Ensure is correct value
 						Logger.connectivity.critical("Invalid value \(String(describing: val), privacy: .public ) given to key 'term-ghostWeek'")
+						Storage.shared.globalErrorMessage = "Error \(#line): WC 'term-ghostWeek' given invalid type"
 						return
 					}
 					guard assembly.ghostWeek == nil ||
 							assembly.ghostWeek == ghost else { //Ensure not contradicting other values of same purpose
 						Logger.connectivity.critical("Multiple contradicting 'term-ghostWeek' declarations in recieved applicationContext")
+						Storage.shared.globalErrorMessage = "Error \(#line): WC multiple contradicting 'term-startDate' values"
 						return
 					}
 					assembly.ghostWeek = ghost
@@ -110,7 +116,8 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 			}//for k,v
 
 			guard let running = assembly.running else {
-				Logger.connectivity.fault("Recieved application context, but missing 'term-running' value. All \(context.count, privacy: .public) context will be discarded")
+				Logger.connectivity.critical("Recieved application context, but missing 'term-running' value. All \(context.count, privacy: .public) context will be discarded")
+				Storage.shared.globalErrorMessage = "Error \(#line): WC applicationContext missing 'term-running' (ignored)"
 				return
 			}
 
@@ -143,13 +150,15 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 			//CHECK FOR FULL TIMETABLE
 			if info["importTimetable"] != nil {
 
-				guard let json = info["importTimetable"] as? Data  else {
+				guard let json = info["importTimetable"] as? Data else {
+					Logger.connectivity.critical("Value for 'importTimetable' does not conform to Data")
+					Storage.shared.globalErrorMessage = "Error \(#line): WC 'importTimetable' does not conform to Data"
 					return
 				}
 
 				guard let imported = Timetable(json) else {
 					Logger.connectivity.critical("'Data' passed as 'importTimetable' cannot be decoded to 'Timetable'")
-					//TODO: Error recovery
+					Storage.shared.globalErrorMessage = "Error \(#line): WC 'importTimetable' JSON cannot be decoded to Timetable"
 					return
 				}
 
@@ -157,7 +166,7 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 				Storage.shared.timetables[actvTbl] = imported
 				Logger.connectivity.notice("Recieved & applied new timetable from iOS. Discarded \(info.count-1, privacy: .public) other items")
-
+				return
 			}
 
 
@@ -168,25 +177,30 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 			if let raw = info["changes"] {
 
-				if let data = raw as? Data,
-				   let decoded = try? JSONDecoder().decode([Change].self, from: data)
-				{
-					changes = decoded
-				} else {
-					Logger.connectivity.critical("Could not decode data passed as 'changes' to [Change].self")
+
+				guard let data = raw as? Data else {
+					Logger.connectivity.critical("Value for 'changes' does not conform to Data")
+					Storage.shared.globalErrorMessage = "Error \(#line): WC 'changes' does not conform to Data"
+					return
+				}
+				guard let decoded = try? JSONDecoder().decode([Change].self, from: data) else {
+					Logger.connectivity.critical("'Data' passed as 'changes' cannot be decoded to '[Change].self'")
+					Storage.shared.globalErrorMessage = "Error \(#line): WC 'changes' JSON cannot be decoded to '[Change]'"
+					return
+				}
+				changes = decoded
+
+
+
+				if !(changes.isEmpty) {
+					//Logger.connectivity.notice("Recieved \(changes.count, privacy: .public) Changes from iOS via WatchConnectivity; applying...")
+					Storage.shared.applyChanges(changes)
 				}
 
+				//			if !(invalid.isEmpty) {
+				//				Logger.connectivity.critical("\(invalid.count, privacy: .public)/\(info.count, privacy: .public) unexpected userInfo recieved:\n\(invalid, privacy: .public)")
+				//			}
 			}
-
-
-			if !(changes.isEmpty) {
-				//Logger.connectivity.notice("Recieved \(changes.count, privacy: .public) Changes from iOS via WatchConnectivity; applying...")
-				Storage.shared.applyChanges(changes)
-			}
-
-//			if !(invalid.isEmpty) {
-//				Logger.connectivity.critical("\(invalid.count, privacy: .public)/\(info.count, privacy: .public) unexpected userInfo recieved:\n\(invalid, privacy: .public)")
-//			}
 
 			Logger.connectivity.notice("Parsed \(changes.count, privacy: .public) Changes from 1 entry in \(info.count) userInfo key/value pairs.")
 

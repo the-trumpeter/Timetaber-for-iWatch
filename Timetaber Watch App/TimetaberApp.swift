@@ -11,9 +11,21 @@ import SwiftUI
 
 struct Timetaber_Watch_AppApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    
+	@ObservedObject var storage = Storage.shared
+
     var body: some Scene {
-        
+		let globalError = Binding(
+			get: { storage.globalErrorMessage != "" },
+			set: { new in
+				if new {
+					if storage.globalErrorMessage.isEmpty {
+						Storage.shared.globalErrorMessage = "Error \(#line)"
+					}
+				} else {
+					Storage.shared.globalErrorMessage = ""
+				}
+			}
+		)
         WindowGroup {
             
             TabView{
@@ -36,8 +48,18 @@ struct Timetaber_Watch_AppApp: App {
                     reload()
                 }
             }
-			
+			.alert(storage.globalErrorMessage, isPresented: globalError) {
+				Button("OK") { storage.globalErrorMessage = "" }
+			} message: {
+				Text("Timetable may be outdated. Try sending full timetable from iOS app")
+			}
+			.onChange(of: Storage.shared.globalErrorMessage) { _, new in
+				if !(new.isEmpty) {
+					WKInterfaceDevice.current().play(.failure)
+				}
+			}
+
         }
-        
+
     }
 }
