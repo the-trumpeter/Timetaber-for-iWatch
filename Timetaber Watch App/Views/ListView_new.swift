@@ -221,7 +221,8 @@ struct TimetableView: View {
 
 			if weekday != 1 && weekday != 7 &&
 				Storage.shared.termRunningGB == true &&
-				error == false
+				error == false  &&
+				Storage.shared.timetables.indices.contains(Storage.shared.ActiveTimetable)
 			{
 
 
@@ -256,6 +257,16 @@ struct TimetableView: View {
 						}
 					}
 				}
+				.onAppear {
+					do {
+						times = try findTimes(weekday, storage.timetables[tblIndex], includeFinishTime: false)//.map({$0.0})
+					} catch findTimesError.invalidMapping(let failDisp) {
+						error = true
+						fail = failDisp
+					} catch {
+						fatalError("findTimes threw other than findTimesError.invalidMapping")
+					}
+				}
 //				.listStyle(.inset)
 //				.toolbar {
 //					ToolbarItem(placement: .principal) { Text(sectionHeader) }
@@ -284,15 +295,6 @@ struct TimetableView: View {
 //					}
 //				}
 //			}
-		}.onAppear {
-			do {
-				times = try findTimes(weekday, storage.timetables[tblIndex], includeFinishTime: false)//.map({$0.0})
-			} catch findTimesError.invalidMapping(let failDisp) {
-				error = true
-				fail = failDisp
-			} catch {
-				fatalError("findTimes threw other than findTimesError.invalidMapping")
-			}
 		}
 
 

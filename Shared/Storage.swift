@@ -33,11 +33,11 @@ class Storage: ObservableObject {
 
 	@AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = true//false
 	@AppStorage("timetaber.userdefaults.ghostWeek") var ghostWeekGB = false
-
+	#if os(iOS)
 	@AppStorage("timetaber.userdefaults.isWatchAppInstalled") var isWatchAppInstalledAndInitialised = false
-
+	#endif
 	#if os(watchOS)
-	@AppStorage("timetaber.userdefaults.globalErrorMessage") var globalErrorMessage: String = "This is a major error"
+	@AppStorage("timetaber.userdefaults.globalErrorMessage") var globalErrorMessage: String = ""
 	#endif
 
 	// Backwards-compatible storage for Date using Double (timeIntervalSince1970)
@@ -73,13 +73,13 @@ class Storage: ObservableObject {
 		self.ghostWeekGB = ghostWeekGB
 
 		self.ActiveTimetable = 0
-
+		#if os(watchOS)
 		if let loaded = try? loadTimetables(), !loaded.isEmpty {
 			self.timetables = loaded
 			Logger.general.trace("Loaded timetables from persistence: count=\(loaded.count, privacy: .public)")
 		} else {
-			self.timetables = [chaos]
-			Logger.general.critical("Could not load timetables, applying default timetable 'chaos' (Gill's timetable)")
+			self.timetables = []
+			Logger.general.warning("Could not load timetables; leaving empty.")
 			do {
 				try saveTimetables()
 			} catch {
@@ -87,6 +87,10 @@ class Storage: ObservableObject {
 			}
 			Logger.general.trace("Initialized default timetables and saved")
 		}
+		#endif
+		#if os(iOS)
+		self.timetables = [chaos] // [Timetable()]
+		#endif
 	}
 
 	private let timetablesStorageKey = "timetaber.userdefaults.timetables"
@@ -329,7 +333,18 @@ class Storage: ObservableObject {
 
 func reload() {
 
-	let now = getCurrentClass2(date: .now, timetable: Storage.shared.timetables[Storage.shared.ActiveTimetable])
+	let isweekA = getIfWeekIsA_FromDateAndGhost(
+		originDate: Storage.shared.startDateGB,
+		ghostWeek: Storage.shared.ghostWeekGB
+	)
+	var now: (current: DisplayCourse, next: DisplayCourse, timeslot: Timeslot)
+		= (noSchool(.noTimetable), noSchool(.noTimetable), Timeslot(week: isweekA ? .a : .b, day: weekdayNumber(.now), time: -1))
+
+	let activeIndex = Storage.shared.ActiveTimetable
+	if Storage.shared.timetables.indices.contains(activeIndex) {
+		let timetable = Storage.shared.timetables[activeIndex]
+		now = getCurrentClass2(date: .now, timetable: timetable)
+	}
 
 	//withAnimation {
 		LocalData.shared.currentCourse = now.0

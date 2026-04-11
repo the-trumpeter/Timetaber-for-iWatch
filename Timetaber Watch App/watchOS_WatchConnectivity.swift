@@ -164,8 +164,9 @@ class WatchConnectivityManager_watchOS: NSObject, WCSessionDelegate, ObservableO
 
 				let actvTbl = Storage.shared.ActiveTimetable
 
-				Storage.shared.timetables[actvTbl] = imported
+				Storage.shared.timetables.insert(imported, at: actvTbl)
 				Logger.connectivity.notice("Recieved & applied new timetable from iOS. Discarded \(info.count-1, privacy: .public) other items")
+				reload()
 				return
 			}
 

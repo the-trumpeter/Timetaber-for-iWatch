@@ -62,7 +62,19 @@ class LocalData: ObservableObject {
 
 	init() {
 		Logger.general.log("Initialising LocalData...")
-		let now = getCurrentClass2(date: .now, timetable: Storage.shared.timetables[Storage.shared.ActiveTimetable])
+
+		let isweekA = getIfWeekIsA_FromDateAndGhost(
+			originDate: Storage.shared.startDateGB,
+			ghostWeek: Storage.shared.ghostWeekGB
+		)
+		var now: (current: DisplayCourse, next: DisplayCourse, timeslot: Timeslot)
+			= (noSchool(.noTimetable), noSchool(.noTimetable), Timeslot(week: isweekA ? .a : .b, day: weekdayNumber(.now), time: -1))
+
+		let activeIndex = Storage.shared.ActiveTimetable
+		if Storage.shared.timetables.indices.contains(activeIndex) {
+			let timetable = Storage.shared.timetables[activeIndex]
+			now = getCurrentClass2(date: .now, timetable: timetable)
+		}
 
 		self.currentCourse = now.current
 		self.nextCourse = now.next
@@ -73,4 +85,3 @@ class LocalData: ObservableObject {
 		Logger.general.log("LocalData initialised")
 	}
 }
-

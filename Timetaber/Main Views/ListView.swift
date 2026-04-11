@@ -129,7 +129,7 @@ struct TimetableView: View {
 			case 4: "Wednesday"+suffix
 			case 5: "Thursday"+suffix
 			case 6: "Friday"+suffix
-			default: "Error \(#line)"
+			default: ""
 		}
 	}
 

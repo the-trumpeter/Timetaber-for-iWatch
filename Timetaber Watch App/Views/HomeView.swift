@@ -60,45 +60,50 @@ struct HomeView: View {
 		let nextColour = if next.colour == "black" { "white" } else { next.colour }
 
 		VStack {
-			Spacer()
-
-			// CURRENT CLASS
-			Group {
-				Image(systemName: current.icon)//data.currentCourse.icon)
-					.imageScale(.large)
-					.font(.system(size: 27).weight(.semibold))
-
-				Text(current.name)//data.currentCourse.name)
-					.font(.system(size:25).weight(.bold))
-					.padding(
-						EdgeInsets(top: 0, leading: 0, bottom: (current.room != nil) ? -6 : 0, trailing: 0)
-					)
-			}.foregroundStyle(Colour(colour))
-
-            // ROOM
-            Text(roomOrBlank(current) ?? "")
-				.frame(maxWidth: .infinity)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .font(.system(size: 18))
-
-			Spacer()
-
-			switch next.type {
+			if Storage.shared.timetables.isEmpty {
+				Text("No data. Open Timetaber on your phone to initialise transfer (you may need to relaunch it).").multilineTextAlignment(.center)
+					.foregroundStyle(.secondary)
+			} else {
+				Spacer()
+				
+				// CURRENT CLASS
+				Group {
+					Image(systemName: current.icon)//data.currentCourse.icon)
+						.imageScale(.large)
+						.font(.system(size: 27).weight(.semibold))
+					
+					Text(current.name)//data.currentCourse.name)
+						.font(.system(size:25).weight(.bold))
+						.padding(
+							EdgeInsets(top: 0, leading: 0, bottom: (current.room != nil) ? -6 : 0, trailing: 0)
+						)
+				}.foregroundStyle(Colour(colour))
+				
+				// ROOM
+				Text(roomOrBlank(current) ?? "")
+					.frame(maxWidth: .infinity)
+					.multilineTextAlignment(.center)
+					.foregroundStyle(.secondary)
+					.font(.system(size: 18))
+				
+				Spacer()
+				
+				switch next.type {
 				case .noSchool(.beforeClass(startTime: _)), .standard:
 					// NEXT CLASS
 					Text(nextPrefix(next))
 						.font(.system(size: 15))
 						.bold()
-
+					
 					Text(getNextString(next))
 						.foregroundStyle(Colour(nextColour))
 						.font(.system(size: 15))
-
+					
 				default: EmptyView()
-
-            }
-			Spacer()
+					
+				}
+				Spacer()
+			}
         }
         //.onAppear() { Logger.<#logger#>.<#action#>("HomeView Updated") }
     }

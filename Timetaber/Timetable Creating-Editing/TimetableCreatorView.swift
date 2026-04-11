@@ -189,7 +189,19 @@ fileprivate struct timetableOptions: View {
 							Button("Send Full Timetable To Watch...", systemImage: "applewatch") {
 								do {
 									try Storage.shared.WCManager.transferFullTimetable(Storage.shared.timetables[tblIndex])
-								} catch {
+									Storage.shared.WCManager.updateTermContext(Storage.shared.termRunningGB, startDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB)
+								} catch {let isweekA = getIfWeekIsA_FromDateAndGhost(
+									originDate: Storage.shared.startDateGB,
+				  ghostWeek: Storage.shared.ghostWeekGB
+			  )
+			  var now: (current: DisplayCourse, next: DisplayCourse, timeslot: Timeslot)
+				  = (noSchool(.noTimetable), noSchool(.noTimetable), Timeslot(week: isweekA ? .a : .b, day: weekdayNumber(.now), time: -1))
+
+			  let activeIndex = Storage.shared.ActiveTimetable
+			  if Storage.shared.timetables.indices.contains(activeIndex) {
+				  let timetable = Storage.shared.timetables[activeIndex]
+				  now = getCurrentClass2(date: .now, timetable: timetable)
+			  }
 									Logger.general.critical("Could not send full timetable to watch!!")
 									sendFullFailed = true
 								}
@@ -203,7 +215,7 @@ fileprivate struct timetableOptions: View {
 				.alert("Couldn't export timetable", isPresented: $sendFullFailed) {
 					Button("OK", role: .cancel) { sendFullFailed = false }
 				} message: {
-					Text("JSON encoding failed.\nDon't edit your timetable. Show a/the developer your in-app timetable, in person.\nYou can safely continue using this app, however the watch app's data may be outdated.")
+					Text("JSON encoding failed. The watch app's data may also be outdated.")
 				}
 
 

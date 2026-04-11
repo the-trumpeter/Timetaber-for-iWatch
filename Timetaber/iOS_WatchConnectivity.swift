@@ -36,7 +36,7 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 		activationDidCompleteWith activationState: WCSessionActivationState,
 		error: (any Error)?
 	) {
-		Logger.connectivity.notice("WCSession activated. | State: \(String(reflecting: activationState), privacy: .public) | Error: \(String(describing: error), privacy: .public)")
+		Logger.connectivity.notice("WCSession initialising. | State: \(String(reflecting: activationState), privacy: .public) | Error: \(String(describing: error), privacy: .public)")
 		switch activationState {
 			case .activated:
 
@@ -54,26 +54,29 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 					}
 				}
 				pendingUserInfo = failedPend
-			
+
 				for send in pendingUserInfo {
 					session.transferUserInfo(send)
 				}
 
 				//if watch app not already installed
-			if Storage.shared.isWatchAppInstalledAndInitialised == false {
-
 				if session.isWatchAppInstalled {
-					do {
-						try transferFullTimetable(Storage.shared.timetables[Storage.shared.ActiveTimetable])
-						updateTermContext(Storage.shared.termRunningGB, startDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB)
-						Storage.shared.isWatchAppInstalledAndInitialised = true
-						Logger.connectivity.notice("Transferred full timetable to newly installed watch app")
-					} catch {
-						Logger.connectivity.critical("Failed to send full timetable & term info to newly installed watch app!")
+					Logger.connectivity.info("Watch app installed & already initialised.")
+					if !Storage.shared.isWatchAppInstalledAndInitialised {
+						Logger.connectivity.info("Watch app installed; attempting to initialise...")
+						do {
+							try transferFullTimetable(Storage.shared.timetables[Storage.shared.ActiveTimetable])
+							updateTermContext(Storage.shared.termRunningGB, startDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB)
+							Storage.shared.isWatchAppInstalledAndInitialised = true
+							Logger.connectivity.notice("Transferred full timetable to newly installed watch app")
+						} catch {
+							Logger.connectivity.critical("Failed to send full timetable & term info to newly installed watch app!")
+						}
 					}
+				} else {
+					Logger.connectivity.info("Watch app not installed. Noting.")
+					Storage.shared.isWatchAppInstalledAndInitialised = false
 				}
-
-			}
 
 			case .inactive:		Logger.connectivity.warning("WCSession inactive")
 			case .notActivated:	Logger.connectivity.fault("WCSession not activ(e/ated)")
@@ -84,7 +87,7 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 	func sessionDidBecomeInactive(_ session: WCSession) {
 		Logger.connectivity.notice("WCSession became inactive")
 	}
-	
+
 	func sessionDidDeactivate(_ session: WCSession) {
 		Logger.connectivity.notice("WCSession deactivated")
 		session.activate()
