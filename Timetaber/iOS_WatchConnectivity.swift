@@ -65,10 +65,11 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 				if session.isWatchAppInstalled {
 					do {
 						try transferFullTimetable(Storage.shared.timetables[Storage.shared.ActiveTimetable])
+						updateTermContext(Storage.shared.termRunningGB, startDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB)
 						Storage.shared.isWatchAppInstalledAndInitialised = true
 						Logger.connectivity.notice("Transferred full timetable to newly installed watch app")
 					} catch {
-						Logger.connectivity.critical("Failed to send full timetable to newly installed watch app!")
+						Logger.connectivity.critical("Failed to send full timetable & term info to newly installed watch app!")
 					}
 				}
 
@@ -165,6 +166,10 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 
 	//MARK: updateApplicationContext
 	func updateTermContext(_ termRunning: Bool, startDate: Date? = nil, ghostWeek: Bool? = nil) {
+		guard session.isWatchAppInstalled else {
+			Logger.connectivity.info("Watch counterpart app not installed, will not update context")
+			return
+		}
 		var send: [String: Any] = [:]
 		if termRunning {
 			guard let startDate, let ghostWeek else {
@@ -180,10 +185,6 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 		} else {
 			// Term stopped
 			send = [termKeyFormat("running"): termRunning]
-		}
-		guard session.isWatchAppInstalled else {
-			Logger.connectivity.info("Watch counterpart app not installed, will not update context")
-			return
 		}
 		guard session.activationState == .activated else {
 			Logger.connectivity.warning("Session inactive (how did that happen??!), queing context for dispatch when session activates")
