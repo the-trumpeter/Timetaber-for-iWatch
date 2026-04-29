@@ -234,7 +234,7 @@ fileprivate struct TimetablePeriodRow: View {
 							Image(systemName: course.icon.lowercased())
 							Text(course.name)
 						}.padding(2)
-							.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(Colour(course.colour.lowercased())) }//.secondary) }
+							.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(course.colour) }//.secondary) }
 					}
 					if let binding = roomIndexBinding, let course2 = course2, !course2.rooms.isEmpty {
 						Picker("Room", selection: binding) {

@@ -56,8 +56,8 @@ struct HomeView: View {
 		let current = data.currentCourse //DisplayCourse("LongName", icon: "clock", room: "AB1", colour: "blueberry")
 		let next = if current.name != "Error" { data.nextCourse } else { current }
 
-		let colour = if current.colour == "black" { "white" } else { current.colour }
-		let nextColour = if next.colour == "black" { "white" } else { next.colour }
+		let colour = if current.colour == Colour("black") { Colour("white") } else { Colour(current.colour) }
+		let nextColour = if next.colour == Colour("black") { Colour("white") } else { Colour(next.colour) }
 
 		VStack {
 			if Storage.shared.timetables.isEmpty {
@@ -77,7 +77,7 @@ struct HomeView: View {
 						.padding(
 							EdgeInsets(top: 0, leading: 0, bottom: (current.room != nil) ? -6 : 0, trailing: 0)
 						)
-				}.foregroundStyle(Colour(colour))
+				}.foregroundStyle(colour)
 				
 				// ROOM
 				Text(roomOrBlank(current) ?? "")
@@ -96,7 +96,7 @@ struct HomeView: View {
 						.bold()
 					
 					Text(getNextString(next))
-						.foregroundStyle(Colour(nextColour))
+						.foregroundStyle(nextColour)
 						.font(.system(size: 15))
 					
 				default: EmptyView()

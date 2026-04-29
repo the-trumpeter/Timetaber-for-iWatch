@@ -5,6 +5,8 @@
 //  Created by Gill Palmer on 31/12/2025.
 //
 
+import SwiftUI
+
 enum CourseType: Codable, Equatable {
 	case standard
 	case noSchool(TimeCase)
@@ -12,11 +14,9 @@ enum CourseType: Codable, Equatable {
 }
 
 
-
-
 /// Representing a class/course in a timetable.
 ///
-/// This was recreated from Course (now `DisplayCourse`) to allow for easier management of room variations, as well as other small things
+/// This was recreated from Course (now `DisplayCourse`) to allow for easier management of room variations, as well as other small things, hence Course**2**
 struct Course2: Codable, Equatable {
 	var name:	 String
 	var icon:	 String
@@ -24,7 +24,7 @@ struct Course2: Codable, Equatable {
 	///If a course has muliple rooms used, store all the variations here and refer to each in the timetable.
 	var rooms:	[Int: String]
 //	var room:	 String?
-	var colour:	 String
+	var colour:	 Colour
 
 	var listName:	String?
 	var listIcon:	String
@@ -40,7 +40,7 @@ struct Course2: Codable, Equatable {
 		self.name = name
 		self.icon = icon
 		self.rooms = Dictionary(uniqueKeysWithValues: zip(rooms.indices, rooms))
-		self.colour = colour.lowercased()
+		self.colour = Colour( colour.lowercased() )
 
 		self.listName = listName
 		self.listIcon = listIcon ?? (icon+".circle.fill")
@@ -56,7 +56,7 @@ struct Course2: Codable, Equatable {
 		self.name = course.name
 		self.icon = course.icon
 		self.rooms = if course.room != nil { [0: course.room!] } else { [:] }
-		self.colour = course.colour.lowercased()
+		self.colour = course.colour
 		self.listName = course.listName
 		self.listIcon = course.listIcon
 		self.joke = course.joke
@@ -74,7 +74,7 @@ struct DisplayCourse {
 	let name: String
 	let icon: String
 	let room: String?
-	let colour: String
+	let colour: Colour
 
 	let listName: String
 	let listIcon: String
@@ -95,7 +95,7 @@ struct DisplayCourse {
 		self.name = name
 		self.icon = icon
 		self.room = room
-		self.colour = colour.lowercased()
+		self.colour = Colour( colour.lowercased() )
 
 		self.listName = listName ?? name
 		self.listIcon = listIcon ?? (icon+".circle.fill")
@@ -109,7 +109,8 @@ struct DisplayCourse {
 		self.name = course2.name
 		self.icon = course2.icon
 		self.room = room
-		self.colour = course2.colour.lowercased()
+		self.colour =
+			course2.colour
 		self.listName = course2.listName ?? name
 		self.listIcon = course2.listIcon
 		self.joke = course2.joke

@@ -197,10 +197,10 @@ struct TimetableView: View {
 							) {
 								var bG: Colour? {
 									if (data.currentTime == timeslot) {
-										if colourScheme == .light && entry.listedCourse.colour.lowercased() == "white" {
+										if colourScheme == .light && entry.listedCourse.colour == Colour("white") {
 											return Colour("black")
 										}
-										if colourScheme == .dark &&	entry.listedCourse.colour.lowercased() == "black" {
+										if colourScheme == .dark &&	entry.listedCourse.colour == Colour("black") {
 											return Colour("white")
 										}
 										return Colour(entry.listedCourse.colour)
@@ -210,12 +210,12 @@ struct TimetableView: View {
 								}
 								var fG: Colour {
 									if bG == Colour("black") ||
-										coloursNeedWhiteForeground.contains( entry.listedCourse.colour.lowercased() ) && (data.currentTime == timeslot)
+										coloursNeedWhiteForeground.contains( entry.listedCourse.colour ) && (data.currentTime == timeslot)
 									{
 										return Colour("white")
 									}
 									if bG == Colour("white") ||
-										coloursNeedBlackForeground.contains( entry.listedCourse.colour.lowercased() ) && (data.currentTime == timeslot)
+										coloursNeedBlackForeground.contains( entry.listedCourse.colour ) && (data.currentTime == timeslot)
 									{
 										return Colour("black")
 									}

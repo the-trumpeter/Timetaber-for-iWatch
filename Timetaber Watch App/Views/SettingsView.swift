@@ -4,7 +4,7 @@
 //
 //  Created by Gill Palmer on 6/11/2024.
 //
-//  NB: While this is a view, it also generally handles all data and processes related to starting and stopping a term process.
+//  NB: While this is a view, it also generally handles all data and processes related to starting and stopping a term process, on the watch side of things
 
 import SwiftUI
 import OSLog
@@ -32,111 +32,111 @@ func endTermProcess() {
 }
 
 
-// MARK: Sheet
-struct NewTermSheet: View {
-	@State var isGhostWeek = false
-	@Environment(\.dismiss) var dismiss
-	//@Binding var termRunning: Bool
-	
-	@ObservedObject var data = Storage.shared
-
-	var body: some View {
-		ScrollView{
-			VStack{
-				
-				Button("Start") {
-					//try startTermProcess(ghostWeek: isGhostWeek)
-					//Logger.general.log("Started term")
-					//reload()
-					Logger.general.critical("Cannot start term from watch app")
-
-					dismiss()
-					
-				}
-				
-						.padding(.bottom, 30.0)
-				
-				Toggle("Ghost Week", isOn: $isGhostWeek)
-				Label("If ghost week is on, the term will start at Week B instead.", systemImage: "info.circle")
-					.foregroundStyle(.gray)
-					.font(.system(size: 13))
-				
-			}.background(Colour.clear)
-		}
-	}
-	
-}
-
-
-
-//MARK: View
-struct SettingsView: View {
-    
-    @ObservedObject var data = Storage.shared
-
-    @State var showingSheet = false
-//    @State var isTermRunning: Bool = false
-    @State private var showConf = false
-    
-    var body: some View {
-        
-        VStack {
-            
-			Button {
-				withAnimation {
-					//if !data.termRunningGB {
-					//    showingSheet.toggle()
-					//} else {
-					//    showConf = true
-					//}
-					Logger.general.critical("Cannot start/stop term from watch app")
-				}
-			} label: {
-				Label(data.termRunningGB ? "End Term": "Start Term", systemImage: data.termRunningGB ? "stop.circle": "play.circle")
-			}
-				.contentTransition(.symbolEffect(.replace))
-				.background(
-					RoundedRectangle(cornerRadius: 100)
-						.stroke(.white, lineWidth: data.termRunningGB ? 1: 0))
-
-				.sheet(isPresented: $showingSheet) {
-					NewTermSheet().environmentObject(LocalData.shared)
-				}
-
-				.padding(10)
-
-				.confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
-
-					Button("End Term") {
-						//⭐️on term end
-						//endTermProcess()
-						//NSLog("Ended Term")
-						Logger.general.critical("Cannot start/stop term from watch app")
-					}
-
-					Button("Cancel", role: .cancel) { }
-				} message: {
-					Text("This will reset weeks and move into holiday mode.")
-				}
-            
-            Spacer()
-        
-            
-            Text("Timetaber for iWatch\nGill Palmer, 2024")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.gray)
-                .font(.system(size: 13))
-                
-            
-        }//.onAppear { Logger.<#logger#>.<#action#>("SettingsView Updated") }
-    }
-}
-
-
-
-
-
-#Preview {
-    SettingsView()
-        .environmentObject(LocalData.shared)
-}
+//// MARK: Sheet
+//struct NewTermSheet: View {
+//	@State var isGhostWeek = false
+//	@Environment(\.dismiss) var dismiss
+//	//@Binding var termRunning: Bool
+//	
+//	@ObservedObject var data = Storage.shared
+//
+//	var body: some View {
+//		ScrollView{
+//			VStack{
+//				
+//				Button("Start") {
+//					//try startTermProcess(ghostWeek: isGhostWeek)
+//					//Logger.general.log("Started term")
+//					//reload()
+//					Logger.general.critical("Cannot start term from watch app")
+//
+//					dismiss()
+//					
+//				}
+//				
+//						.padding(.bottom, 30.0)
+//				
+//				Toggle("Ghost Week", isOn: $isGhostWeek)
+//				Label("If ghost week is on, the term will start at Week B instead.", systemImage: "info.circle")
+//					.foregroundStyle(.gray)
+//					.font(.system(size: 13))
+//				
+//			}.background(Colour.clear)
+//		}
+//	}
+//	
+//}
+//
+//
+//
+////MARK: View
+//struct SettingsView: View {
+//    
+//    @ObservedObject var data = Storage.shared
+//
+//    @State var showingSheet = false
+////    @State var isTermRunning: Bool = false
+//    @State private var showConf = false
+//    
+//    var body: some View {
+//        
+//        VStack {
+//            
+//			Button {
+//				withAnimation {
+//					//if !data.termRunningGB {
+//					//    showingSheet.toggle()
+//					//} else {
+//					//    showConf = true
+//					//}
+//					Logger.general.critical("Cannot start/stop term from watch app")
+//				}
+//			} label: {
+//				Label(data.termRunningGB ? "End Term": "Start Term", systemImage: data.termRunningGB ? "stop.circle": "play.circle")
+//			}
+//				.contentTransition(.symbolEffect(.replace))
+//				.background(
+//					RoundedRectangle(cornerRadius: 100)
+//						.stroke(.white, lineWidth: data.termRunningGB ? 1: 0))
+//
+//				.sheet(isPresented: $showingSheet) {
+//					NewTermSheet().environmentObject(LocalData.shared)
+//				}
+//
+//				.padding(10)
+//
+//				.confirmationDialog("Are you sure you want to end this term?", isPresented: $showConf) {
+//
+//					Button("End Term") {
+//						//⭐️on term end
+//						//endTermProcess()
+//						//NSLog("Ended Term")
+//						Logger.general.critical("Cannot start/stop term from watch app")
+//					}
+//
+//					Button("Cancel", role: .cancel) { }
+//				} message: {
+//					Text("This will reset weeks and move into holiday mode.")
+//				}
+//            
+//            Spacer()
+//        
+//            
+//            Text("Timetaber for iWatch\nGill Palmer, 2024")
+//                .multilineTextAlignment(.center)
+//                .foregroundStyle(.gray)
+//                .font(.system(size: 13))
+//                
+//            
+//        }//.onAppear { Logger.<#logger#>.<#action#>("SettingsView Updated") }
+//    }
+//}
+//
+//
+//
+//
+//
+//#Preview {
+//    SettingsView()
+//        .environmentObject(LocalData.shared)
+//}

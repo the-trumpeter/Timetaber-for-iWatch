@@ -1,10 +1,10 @@
+#error("No target membership")
 //
 //  ListView.swift
 //  Timetaber for iWatch
 //
 //  Created by Gill Palmer on 3/11/2024.
 //
-//MARK: NO TARGET MEMBERSHIP
 
 import SwiftUI
 import OSLog

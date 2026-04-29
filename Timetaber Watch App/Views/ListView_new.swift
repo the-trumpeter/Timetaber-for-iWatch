@@ -77,15 +77,15 @@ fileprivate struct DisplayEntry: View {
 
 	var body: some View {   
 
-		HStack{
-			let clr = if course.colour.lowercased() == "black" { "white" } else { course.colour.lowercased() }
+		HStack {
+			let clr = if course.colour == Colour("black") { Colour("white") } else { Colour(course.colour) }
 			if let img = customSymbols[course.icon] {
 				img
 					.resizable()
 					.aspectRatio(contentMode: .fit)
 					.symbolVariant(.circle)
 					.symbolVariant(.fill)
-					.foregroundStyle(Colour(clr))
+					.foregroundStyle(clr)
 					.frame(maxWidth: 25, maxHeight: 25)
 					.padding(.leading, 2)
 					.padding(.trailing, 3)
@@ -238,7 +238,7 @@ struct TimetableView: View {
 						) {
 							var bG: Colour? {
 								if (data.currentTime == timeslot) {
-									if entry.listedCourse.colour.lowercased() == "black" {
+									if entry.listedCourse.colour == Colour("black") {
 										return Colour("white")
 									}
 									return Colour(entry.listedCourse.colour)

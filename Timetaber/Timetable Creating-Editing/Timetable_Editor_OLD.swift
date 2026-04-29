@@ -1,3 +1,4 @@
+#error("No target membership")
 //
 //  Timetable_Editor.swift
 //  Timetaber
@@ -5,7 +6,6 @@
 //  Created by Gill Palmer on 27/12/2025.
 //
 
-//MARK: NO TARGET MEMBERSHIP
 
 import SwiftUI
 import OSLog

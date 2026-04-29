@@ -443,7 +443,7 @@ enum Change: Codable {
 		/// Change a course's icon
 		case icon(String)
 		/// Change a course's colour
-		case colour(String)
+		case colour(Colour)
 		/// Change (redefine) a course's rooms
 		case rooms([Int: String])
 	}

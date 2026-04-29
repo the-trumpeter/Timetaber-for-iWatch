@@ -8,7 +8,70 @@
 import SwiftUI
 import OSLog
 
-//TODO: Symbol chooser looks crap
+typealias ColourPicker = ColorPicker
+
+
+
+// Source - https://stackoverflow.com/a/79637700
+// Posted by Forrest, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-04-27, License - CC BY-SA 4.0
+
+private struct ColorPickerSizeModifier: ViewModifier {
+	let width: CGFloat
+	let height: CGFloat
+
+	@State private var systemSize: CGSize?
+
+	private var scale: CGSize {
+		guard let systemSize else { return CGSize(width: 1, height: 1) }
+
+		return CGSize(
+			width: width / systemSize.width,
+			height: height / systemSize.height
+		)
+	}
+
+	func body(content: Content) -> some View {
+		return content
+			.scaleEffect(scale)
+			.overlay {
+				GeometryReader { geometry in
+					Color.clear
+						.preference(key: SystemSizeKey.self, value: geometry.size)
+				}
+			}
+			.onPreferenceChange(SystemSizeKey.self) { [$systemSize] height in
+				$systemSize.wrappedValue = height
+			}
+			.frame(width: width, height: height)
+	}
+}
+
+private struct SystemSizeKey: PreferenceKey {
+	static let defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}
+
+extension View {
+	func colorPickerWheelFrame(width: CGFloat, height: CGFloat) -> some View {
+		modifier(ColorPickerSizeModifier(width: width, height: height))
+	}
+}
+
+// End copyrighted content
+
+
+
+
+
+
+
+
+
+
+
 
 fileprivate struct symbolchooser: View {
 	@Binding var course: Course2
@@ -102,7 +165,7 @@ fileprivate struct symbolchooser_new: View {
 		.padding(5)
 		.background {
 			RoundedRectangle(cornerRadius: 10)
-				.foregroundStyle(Colour(course.colour.lowercased()) )
+				.foregroundStyle(course.colour)
 		}//.secondary) }
 		.padding(.bottom, 10)
 
@@ -177,8 +240,8 @@ fileprivate struct courseEdit: View {
 	@State private var coloursSheet = false
 	@State private var iconSheetPopover = false
 
-	let colours = ["black", "graphite", "peach", "lemon", "rees1", "apricot",
-				   "white", "lime", "ice", "blueberry", "rose", "cherry"]
+	let colours = ["black", "graphite", "peach", "lemon", 	  "rees1", "apricot",
+							"lime", 	"ice", 	 "blueberry", "rose",  "cherry"]
 
 	@Environment(\.dismiss) var dismiss
 	@FocusState private var nameFieldIsFocused: Bool
@@ -226,7 +289,7 @@ fileprivate struct courseEdit: View {
 					.multilineTextAlignment(.leading)
 
 
-				//ICON
+				//MARK: Icon
 				Button { iconSheetPopover.toggle() } label: {
 					//let colour = Colour(course.colour)
 					Image(systemName: course.icon)
@@ -241,7 +304,8 @@ fileprivate struct courseEdit: View {
 						.presentationDetents([.height(200)])
 
 				}
-				//COLOURS
+
+				//MARK: Colours
 				Button { coloursSheet.toggle() } label: {
 					let colour = Colour(course.colour)
 					Circle()
@@ -254,29 +318,39 @@ fileprivate struct courseEdit: View {
 						.padding(5)
 
 				}.sheet(isPresented: $coloursSheet) {
+
+
+
+
+							//MARK: sheet
+					//Preview
 					HStack {
-						Image(systemName: course.icon.lowercased()).font(.title)
-						Text(course.name).font(.title)
+						HStack {
+							Image(systemName: course.icon.lowercased()).font(.title)
+							Text(course.name).font(.title)
+						}
+						.if(coloursNeedBlackForeground.contains(course.colour) ) {
+							$0.foregroundStyle(.black)
+						}
+						.if(coloursNeedWhiteForeground.contains(course.colour) ) {
+							$0.foregroundStyle(.white)
+						}
+						.padding(5)
+						.background {
+							RoundedRectangle(cornerRadius: 10)
+								.foregroundStyle(course.colour)
+						}
 					}
-					.if(coloursNeedBlackForeground.contains(course.colour.lowercased())) {
-						$0.foregroundStyle(.black)
-					}
-					.if(coloursNeedWhiteForeground.contains(course.colour.lowercased())) {
-						$0.foregroundStyle(.white)
-					}
+					.padding(.bottom, 12)
 
-					.padding(5)
-					.background {
-						RoundedRectangle(cornerRadius: 10)
-							.foregroundStyle(Colour(course.colour.lowercased()) )
-					}//.secondary) }
+					//Colour grid
+					VStack {
 
-
-					Grid {
-						GridRow {
+						//top 6
+						HStack {
 							ForEach(0...5, id: \.self) { index in
 								let colour = colours[index]
-								Button { course.colour = colour } label: {
+								Button { course.colour = Colour(colour) } label: {
 									Circle()
 										.fill(Colour(colour.lowercased()))
 										.frame(width: 30, height: 30)
@@ -286,7 +360,7 @@ fileprivate struct courseEdit: View {
 										}
 										.padding(5)
 										.overlay {
-											if course.colour == colour {
+											if course.colour == Colour(colour) {
 												Circle()
 													.stroke(Color.accentColor, lineWidth: 3)
 											}
@@ -295,10 +369,27 @@ fileprivate struct courseEdit: View {
 							}
 						}
 
-						GridRow {
-							ForEach(6...11, id: \.self) { index in
+						//bottom
+						HStack {
+							//custom colour
+							Circle() //put identical circle behind so layout doesn't change
+								.fill(Colour.clear)
+								.frame(width: 30, height: 30)
+								.overlay {
+									Circle()
+										.stroke(Colour.clear, lineWidth: 2)
+								}
+								.padding(5)
+								.overlay { //layout-insensitive overlay of ColourPicker
+									ColourPicker("Course colour", selection: $course.colour, supportsOpacity: false)
+										.labelsHidden()
+										.colorPickerWheelFrame(width: 35, height: 35)
+								}
+
+							//remaining 5 colours
+							ForEach(6...10, id: \.self) { index in
 								let colour = colours[index]
-								Button { course.colour = colour } label: {
+								Button { course.colour = Colour(colour) } label: {
 									Circle()
 										.fill(Colour(colour))
 										.frame(width: 30, height: 30)
@@ -308,7 +399,7 @@ fileprivate struct courseEdit: View {
 										}
 										.padding(5)
 										.overlay {
-											if course.colour == colour {
+											if course.colour == Colour(colour) {
 												Circle()
 													.stroke(Color.accentColor, lineWidth: 3)
 											}
@@ -316,8 +407,13 @@ fileprivate struct courseEdit: View {
 								}
 							}
 						}
-					}.presentationDetents([.height(200)])
+					}
 
+
+
+
+
+					.presentationDetents([.height(210)])
 				} // colour (&sheet)
 
 			}//.padding(.leading).padding(.bottom, 2)

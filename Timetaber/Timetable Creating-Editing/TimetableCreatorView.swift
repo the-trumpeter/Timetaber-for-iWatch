@@ -190,18 +190,21 @@ fileprivate struct timetableOptions: View {
 								do {
 									try Storage.shared.WCManager.transferFullTimetable(Storage.shared.timetables[tblIndex])
 									Storage.shared.WCManager.updateTermContext(Storage.shared.termRunningGB, startDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB)
-								} catch {let isweekA = getIfWeekIsA_FromDateAndGhost(
-									originDate: Storage.shared.startDateGB,
-				  ghostWeek: Storage.shared.ghostWeekGB
-			  )
-			  var now: (current: DisplayCourse, next: DisplayCourse, timeslot: Timeslot)
-				  = (noSchool(.noTimetable), noSchool(.noTimetable), Timeslot(week: isweekA ? .a : .b, day: weekdayNumber(.now), time: -1))
-
-			  let activeIndex = Storage.shared.ActiveTimetable
-			  if Storage.shared.timetables.indices.contains(activeIndex) {
-				  let timetable = Storage.shared.timetables[activeIndex]
-				  now = getCurrentClass2(date: .now, timetable: timetable)
-			  }
+								} catch {
+//									Commented out because this I think just fully reloads and is redundant
+//
+//									let isweekA = getIfWeekIsA_FromDateAndGhost(
+//										originDate: Storage.shared.startDateGB,
+//										ghostWeek: Storage.shared.ghostWeekGB
+//									)
+//									var now: (current: DisplayCourse, next: DisplayCourse, timeslot: Timeslot)
+//									= (noSchool(.noTimetable), noSchool(.noTimetable), Timeslot(week: isweekA ? .a : .b, day: weekdayNumber(.now), time: -1))
+//
+//									let activeIndex = Storage.shared.ActiveTimetable
+//									if Storage.shared.timetables.indices.contains(activeIndex) {
+//										let timetable = Storage.shared.timetables[activeIndex]
+//										now = getCurrentClass2(date: .now, timetable: timetable)
+//									}
 									Logger.general.critical("Could not send full timetable to watch!!")
 									sendFullFailed = true
 								}
