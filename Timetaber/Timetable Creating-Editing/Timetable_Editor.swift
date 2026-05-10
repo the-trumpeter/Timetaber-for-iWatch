@@ -234,7 +234,7 @@ fileprivate struct TimetablePeriodRow: View {
 							Image(systemName: course.icon.lowercased())
 							Text(course.name)
 						}.padding(2)
-							.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(Colour(course.colour.lowercased())) }//.secondary) }
+							.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(course.colour) }//.secondary) }
 					}
 					if let binding = roomIndexBinding, let course2 = course2, !course2.rooms.isEmpty {
 						Picker("Room", selection: binding) {
@@ -430,25 +430,34 @@ fileprivate struct EditTimetableDayView: View {
 
 	var body: some View {
 		NavigationStack {
-			List {
-				//list entry
-				let courses = origin.timetables[tblIndex].courses
-				ForEach(timesVariation.variant.sorted {$0.value.startTime<$1.value.startTime}, id: \.key
-				) { (pdID, period) in
+			Group {
+				if !timesVariation.variant.isEmpty {
+					List {
+						//list entry
+						let courses = origin.timetables[tblIndex].courses
+						ForEach(timesVariation.variant.sorted {$0.value.startTime<$1.value.startTime}, id: \.key
+						) { (pdID, period) in
 
-					TimetablePeriodRow(
-						period: period,
-						contents: Binding(
-							get: { day[pdID] ?? nil },
-							set: { day[pdID] = $0 }
-						),
-						courses: courses
-					)
-					.listRowInsets(EdgeInsets())
+							TimetablePeriodRow(
+								period: period,
+								contents: Binding(
+									get: { day[pdID] ?? nil },
+									set: { day[pdID] = $0 }
+								),
+								courses: courses
+							)
+							.listRowInsets(EdgeInsets())
 
 
-				}//foreach
-			}//list
+						}//foreach
+					}//list
+				} else {
+					VStack {
+						Text("Map courses to periods here").padding(.bottom, 10)
+						Text("There's no periods. Add some in Day Structure.")
+					}.padding(10).foregroundStyle(.secondary)
+				}
+			}
 			.toolbar {
 				ToolbarItem(placement: .confirmationAction) {
 					if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {

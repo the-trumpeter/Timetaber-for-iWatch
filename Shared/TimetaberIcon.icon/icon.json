@@ -1,20 +1,54 @@
 {
-  "fill-specializations" : [
+  "fill" : "system-light",
+  "groups" : [
     {
-      "value" : {
-        "automatic-gradient" : "srgb:0.83922,0.87843,0.89412,1.00000"
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill" : {
+            "automatic-gradient" : "srgb:0.00000,0.78431,0.70196,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "custom.backpack.fill.badge.clock.svg",
+          "name" : "custom.backpack.fill.badge.clock",
+          "position-specializations" : [
+            {
+              "value" : {
+                "scale" : 0.73,
+                "translation-in-points" : [
+                  -7,
+                  -14
+                ]
+              }
+            },
+            {
+              "idiom" : "watchOS",
+              "value" : {
+                "scale" : 0.79,
+                "translation-in-points" : [
+                  -27,
+                  -14
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "name" : "Original SF",
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
       }
     },
     {
-      "appearance" : "dark",
-      "value" : {
-        "automatic-gradient" : "srgb:0.83922,0.87843,0.89412,1.00000"
-      }
-    }
-  ],
-  "groups" : [
-    {
       "blur-material" : 0.5,
+      "hidden" : false,
       "layers" : [
         {
           "fill-specializations" : [
@@ -36,7 +70,7 @@
               }
             }
           ],
-          "hidden" : false,
+          "hidden" : true,
           "image-name" : "Asset 9.svg",
           "name" : "Cutout",
           "position-specializations" : [
@@ -78,6 +112,9 @@
           "glass" : false,
           "hidden-specializations" : [
             {
+              "value" : true
+            },
+            {
               "idiom" : "watchOS",
               "value" : true
             }
@@ -100,6 +137,7 @@
             }
           ],
           "glass" : true,
+          "hidden" : true,
           "image-name" : "Asset 11.svg",
           "name" : "Background colour"
         }
@@ -111,37 +149,6 @@
       },
       "translucency" : {
         "enabled" : true,
-        "value" : 0.5
-      }
-    },
-    {
-      "hidden" : true,
-      "layers" : [
-        {
-          "fill" : {
-            "automatic-gradient" : "srgb:0.00000,0.78431,0.70196,1.00000"
-          },
-          "glass" : true,
-          "hidden" : false,
-          "image-name" : "custom.backpack.fill.badge.clock.svg",
-          "name" : "custom.backpack.fill.badge.clock",
-          "position" : {
-            "scale" : 0.71,
-            "translation-in-points" : [
-              -47.796875,
-              -33.90625
-            ]
-          }
-        }
-      ],
-      "name" : "Original SF",
-      "shadow" : {
-        "kind" : "none",
-        "opacity" : 0.5
-      },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : false,
         "value" : 0.5
       }
     },

@@ -44,7 +44,9 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Courses_old.swift,
+				Timetable_Editor_OLD.swift,
 				Timetable_old.swift,
+				watchos_ListView.swift,
 			);
 			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
 		};
@@ -52,21 +54,9 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Courses_old.swift,
+				Timetable_Editor_OLD.swift,
 				Timetable_old.swift,
-			);
-			target = AE09C37D2E4D8A680032E777 /* Timetaber */;
-		};
-		AEAEF7B42F58E49F00E7F744 /* Exceptions for "Timetaber Watch App" folder in "Timetaber Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Views/ListView.swift,
-			);
-			target = AE5BB4C02D12962C009928BD /* Timetaber Watch App */;
-		};
-		AED478DE2F4D205B00EFBE35 /* Exceptions for "Timetaber" folder in "Timetaber" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Timetable Creating-Editing/Timetable_Editor_OLD.swift",
+				watchos_ListView.swift,
 			);
 			target = AE09C37D2E4D8A680032E777 /* Timetaber */;
 		};
@@ -80,17 +70,11 @@
 		};
 		AE1E65552EFF94E2006B238C /* Timetaber */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				AED478DE2F4D205B00EFBE35 /* Exceptions for "Timetaber" folder in "Timetaber" target */,
-			);
 			path = Timetaber;
 			sourceTree = "<group>";
 		};
 		AE5BB4C52D12962C009928BD /* Timetaber Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				AEAEF7B42F58E49F00E7F744 /* Exceptions for "Timetaber Watch App" folder in "Timetaber Watch App" target */,
-			);
 			path = "Timetaber Watch App";
 			sourceTree = "<group>";
 		};
@@ -277,6 +261,7 @@
 				CODE_SIGN_ENTITLEMENTS = Timetaber/Timetaber.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BQF6SA68S4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -313,6 +298,7 @@
 				CODE_SIGN_ENTITLEMENTS = Timetaber/Timetaber.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BQF6SA68S4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -471,6 +457,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Timetaber Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = BQF6SA68S4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Timetaber;
@@ -503,6 +490,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Timetaber Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = BQF6SA68S4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Timetaber;

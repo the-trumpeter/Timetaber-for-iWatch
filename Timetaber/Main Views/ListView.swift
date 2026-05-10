@@ -97,6 +97,8 @@ fileprivate struct DisplayEntry: View {
 struct TimetableView: View {
 	@EnvironmentObject var data: LocalData
 	@ObservedObject var storage: Storage = Storage.shared
+	@Environment(\.colorScheme) var colourScheme
+
 	var tblIndex: Int { Storage.shared.ActiveTimetable }
 	var week: WeekAB {
 		if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) {
@@ -122,13 +124,16 @@ struct TimetableView: View {
 
 
 	var sectionHeader: String {
+		if times.isEmpty || !Storage.shared.termRunningGB { return "" }
 		let suffix = if week == .a { " A" } else { " B" }
 		return switch weekdayNumber(.now) {
+			case 1: "Sunday"
 			case 2: "Monday"+suffix
 			case 3: "Tuesday"+suffix
 			case 4: "Wednesday"+suffix
 			case 5: "Thursday"+suffix
 			case 6: "Friday"+suffix
+			case 7: "Saturday"
 			default: ""
 		}
 	}
@@ -136,110 +141,138 @@ struct TimetableView: View {
 	@State var error = false
 	@State var fail: DisplayCourse? = nil
 
-//    init(week _week: WeekAB = { if getIfWeekIsA_FromDateAndGhost(originDate: Storage.shared.startDateGB, ghostWeek: Storage.shared.ghostWeekGB) { WeekAB.a } else { WeekAB.b } }(),
-//		 day _day: Int = weekdayNumber(.now),
-//		 tblIndex: Int = 0
-//	) {
-//		//May need to return early in case of weekend or no term
-//		//Logger._.("Start TimetableView init")
-//		let wkday = _day
-//        let wk = _week
-//		let tbl = Storage.shared.timetables[tblIndex]
-//
-//		self.weekday = wkday
-//		self.week = wk
-//
-//		self.day = if wkday >= 2 && wkday <= 6 {
-//			getTimetableDay2(isWeekA: { if(wk == .a){true}else{false} }(), weekDay: wkday, timetable: tbl)
-//		} else { [:] }
-//
-//		self.courses = Binding(get: {
-//			Storage.shared.timetables[tblIndex].courses
-//			}, set:{_ in}
-//			)
-//
-//		self.tblIndex = tblIndex
-//
-//		let suffix =  if week == .a { " A" } else { " B" }
-//		self.sectionHeader = switch weekday {
-//			case 2: "Monday"+suffix
-//			case 3: "Tuesday"+suffix
-//			case 4: "Wednesday"+suffix
-//			case 5: "Thursday"+suffix
-//			case 6: "Friday"+suffix
-//			default: ""
-//		  }
-//		//Logger.<#logger#>.<#action#>("End TimetableView init")
-//    }
-
 	@State var times: [(Time24, UUID?)] = []
 	//@State var dayKeys: [(Time24)] = []
 
-	@Environment(\.colorScheme) var colourScheme
 
+
+	private func pair_getPrevNextColours(currentPair pair: (Time24, UUID?) ) -> (previous: Colour, next: Colour) {
+		let myTime = pair.0
+		let prevPair = times.last(where: { $0.0 < myTime } )
+		let nextPair = times.first(where: { $0.0 > myTime } )
+		let previousProperties: Times.Period.Contents? = if let id = prevPair?.1 { day[id] } else { nil }
+		let nextProperties: Times.Period.Contents? = if let id = nextPair?.1 { day[id] } else { nil}
+		let prevColour = if let id = previousProperties?.courseID, let course = courses[id].wrappedValue { course.colour } else { Colour(.systemBackground) }
+		let nextColour = if let id = nextProperties?.courseID,     let course = courses[id].wrappedValue { course.colour } else { Colour(.systemBackground) }
+		return (prevColour, nextColour)
+	}
     var body: some View {
         NavigationStack {
 			Group {
 				if weekday != 1 && weekday != 7 &&
 					Storage.shared.termRunningGB == true &&
-					error == false
+					error == false &&
+					!times.isEmpty
 				{
 
 
 					List {
 						ForEach(times, id: \.0) { pair in
-							let timeslot = Timeslot(week: week, day: weekday, time: pair.0)
-							if let entry = DisplayEntry(
-								timetableDay: day,
-								timeslot: timeslot,
-								courses: courses.wrappedValue,
-								timesPair: pair
-							) {
-								var bG: Colour? {
-									if (data.currentTime == timeslot) {
-										if colourScheme == .light && entry.listedCourse.colour.lowercased() == "white" {
-											return Colour("black")
+							Group {
+								let timeslot = Timeslot(week: week, day: weekday, time: pair.0)
+								if let entry = DisplayEntry(
+									timetableDay: day,
+									timeslot: timeslot,
+									courses: courses.wrappedValue,
+									timesPair: pair
+								) {
+
+									var backgroundColour: Colour? {
+										if (data.currentTime == timeslot) {
+
+											let colour: Colour = entry.listedCourse.colour
+											let colourSchemeIsLight: Bool = (colourScheme == ColorScheme.light)
+
+											if colourSchemeIsLight && colour == Colour("white") {
+												return Colour("black")
+											}
+											if !colourSchemeIsLight && colour == Colour("black") {
+												return Colour("white")
+											}
+											return colour
+										} else {
+											return nil
 										}
-										if colourScheme == .dark &&	entry.listedCourse.colour.lowercased() == "black" {
-											return Colour("white")
-										}
-										return Colour(entry.listedCourse.colour)
-									} else {
-										return nil
-									}
-								}
-								var fG: Colour {
-									if bG == Colour("black") ||
-										coloursNeedWhiteForeground.contains( entry.listedCourse.colour.lowercased() ) && (data.currentTime == timeslot)
-									{
-										return Colour("white")
-									}
-									if bG == Colour("white") ||
-										coloursNeedBlackForeground.contains( entry.listedCourse.colour.lowercased() ) && (data.currentTime == timeslot)
-									{
-										return Colour("black")
 									}
 
-									return .primary
-								}
-								entry
-									.listRowBackground(
-										ZStack {
-											bG
-											HStack {
+									var foregroundColour: Colour {
+										var isCurrent: Bool = (data.currentTime == timeslot)
+										let colour: Colour = entry.listedCourse.colour
+
+										if backgroundColour == Colour("black") ||
+											coloursNeedWhiteForeground.contains(colour) && isCurrent
+										{
+											return Colour.white
+										}
+										if backgroundColour == Colour("white") ||
+											coloursNeedBlackForeground.contains(colour) && isCurrent
+										{
+											return Colour.black
+										}
+
+										return .primary
+									}
+
+									entry
+										.listRowBackground(
+											HStack(spacing: 0) {
 												Rectangle()
 													.foregroundStyle(Colour(entry.listedCourse.colour))
 													.frame(width: 5.0)
-												Spacer()
+												Spacer(minLength: 0)
 											}
+											.background(
+												Group {
+													if let backgroundColour {
+														backgroundColour
+													}
+												}
+											)
+										)
+										.foregroundStyle(foregroundColour)
+
+
+								} else {
+									HStack {
+										Spacer()
+											.frame(width: 30)
+
+										Text(timeslot.time.display())
+											.bold()
+
+										Spacer()
+
+										VStack(alignment: .trailing) {
+											let isBold = (LocalData.shared.currentTime == timeslot) ? true : false
+											Text("Free Period")
+												.bold(isBold)
+
 										}
+									}
+									.foregroundStyle(.secondary)
+									.listRowBackground(
+										{
+											let prevNextColours = pair_getPrevNextColours(currentPair: pair)
+											let gradient = LinearGradient(
+												stops: [
+													Gradient.Stop(color: Colour(prevNextColours.previous), location: 0),
+													Gradient.Stop(color: Colour(.systemBackground), location: 0.1),
+													Gradient.Stop(color: Colour(.systemBackground), location: 0.9),
+													Gradient.Stop(color: Colour(prevNextColours.next), location: 1)
+												],
+												startPoint: .top,
+												endPoint: .bottom
+											)
+											return HStack(spacing: 0) {
+												Rectangle()
+													.foregroundStyle(AnyShapeStyle(gradient))
+													.frame(width: 5.0)
+												Spacer(minLength: 0)
+											}
+										}()
 									)
-									.foregroundStyle(fG)
-
-
-							} else {
-								Text("Error \(#line) failed for \(pair.0)")
-							}
+								}
+							}//.frame(height: 67)
 						}
 					}
 					.listStyle(.inset)

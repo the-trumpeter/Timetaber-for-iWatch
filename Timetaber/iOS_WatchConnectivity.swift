@@ -75,7 +75,9 @@ class WatchConnectivityManager_iOS: NSObject, WCSessionDelegate, ObservableObjec
 					}
 				} else {
 					Logger.connectivity.info("Watch app not installed. Noting.")
-					Storage.shared.isWatchAppInstalledAndInitialised = false
+					DispatchQueue.main.async {
+						Storage.shared.isWatchAppInstalledAndInitialised = false
+					}
 				}
 
 			case .inactive:		Logger.connectivity.warning("WCSession inactive")

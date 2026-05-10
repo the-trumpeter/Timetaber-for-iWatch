@@ -8,7 +8,7 @@
 import Foundation
 
 //TODO: This UUID buisness is messy, need to come up with better way to format (again)
-///Gill's 2024 timetable, used for testing/debugging
+///Gill's 2026 timetable, used for testing/debugging
 ///
 ///This might also be used for things like intuivity testing, and may/may-not be a template at some point.
 var chaos: Timetable = {

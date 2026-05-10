@@ -343,19 +343,28 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 	//let times2Morrow: Array<Int>? = if todayWeekday<6 { weekdayTimes[todayWeekday-1] } else { nil }
 
 
-	let Storage = storagePing()
+	let storage = storagePing()
 
 	//MARK: —Guards
 
 	let isweekA = getIfWeekIsA_FromDateAndGhost(
-		originDate: Storage.startDateGB,
-		ghostWeek: Storage.ghostWeekGB
+		originDate: storage.startDateGB,
+		ghostWeek: storage.ghostWeekGB
 	)
 	let week = isweekA ? WeekAB.a : .b
 
 	Logger.dateTime.notice("The weekday today is \(todayWeekday, privacy: .public). It is week \(String(reflecting: week), privacy: .public)")
 
-	guard Storage.termRunningGB else { // if holidays then return
+	guard !timetable.isNew else{
+		Logger.dateTime.notice("Got current class. There's no school at the moment. [noTimetable]")
+		return (
+			current: noSchool(.noTimetable),
+			next: noSchool(.noTimetable),
+			timeslot: Timeslot(week: week, day: todayWeekday, time: -1)
+		) //MARK: Return 0
+	}
+
+	guard storage.termRunningGB else { // if holidays then return
 		Logger.dateTime.notice("Got current class. There's no school at the moment. [noTerm]")
 		return (
 			current: noSchool(.noTerm),

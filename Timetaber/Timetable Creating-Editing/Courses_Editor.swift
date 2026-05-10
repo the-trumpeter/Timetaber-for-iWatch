@@ -8,59 +8,69 @@
 import SwiftUI
 import OSLog
 
-//TODO: Symbol chooser looks crap
+typealias ColourPicker = ColorPicker
 
-fileprivate struct symbolchooser: View {
-	@Binding var course: Course2
-	//@Binding var debugDelayDismiss: Bool
-	@Environment(\.dismiss) var dismiss
 
-	var body: some View {
-		ScrollView {
-			LazyVGrid(
-				columns: [
-					GridItem(.fixed(50)),
-					GridItem(.fixed(50)),
-					GridItem(.fixed(50)),
-					GridItem(.fixed(50))
-				],
-			) {
-				ForEach(sfsymbols, id: \.self) { symbol in
-					Button(symbol, systemImage: symbol) {
-						course.icon = symbol
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {dismiss()} )
 
-					}
-					.if(coloursNeedBlackForeground.contains(course.colour) && course.icon == symbol) {
-						$0.foregroundStyle(.black)
-					}
-					.if(coloursNeedWhiteForeground.contains(course.colour) && course.icon == symbol) {
-						$0.foregroundStyle(.white)
-					}
-					.font(.title)
-					.labelStyle(.iconOnly)
-					.frame(width: 45, height: 45)
-					.buttonStyle(.plain)
-					.if(course.icon == symbol) {
-						$0.background {
-							RoundedRectangle(cornerRadius: 5.0).foregroundStyle(Colour(course.colour))
-						}
-					}
-					.if(course.icon != symbol) {
-						$0.background {
-							RoundedRectangle(cornerRadius: 5.0).opacity(0.0)
-						}
-					}
 
-					.padding(15)
 
+// Source - https://stackoverflow.com/a/79637700
+// Posted by Forrest, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-04-27, License - CC BY-SA 4.0
+
+private struct ColorPickerSizeModifier: ViewModifier {
+	let width: CGFloat
+	let height: CGFloat
+
+	@State private var systemSize: CGSize?
+
+	private var scale: CGSize {
+		guard let systemSize else { return CGSize(width: 1, height: 1) }
+
+		return CGSize(
+			width: width / systemSize.width,
+			height: height / systemSize.height
+		)
+	}
+
+	func body(content: Content) -> some View {
+		return content
+			.scaleEffect(scale)
+			.overlay {
+				GeometryReader { geometry in
+					Color.clear
+						.preference(key: SystemSizeKey.self, value: geometry.size)
 				}
-			}.padding()
-		}
-
+			}
+			.onPreferenceChange(SystemSizeKey.self) { [$systemSize] height in
+				$systemSize.wrappedValue = height
+			}
+			.frame(width: width, height: height)
 	}
 }
 
+private struct SystemSizeKey: PreferenceKey {
+	static let defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}
+
+extension View {
+	func colorPickerWheelFrame(width: CGFloat, height: CGFloat) -> some View {
+		modifier(ColorPickerSizeModifier(width: width, height: height))
+	}
+}
+
+// End copyrighted content
+
+
+
+
+
+
+
+//MARK: New Symbol Chooser
 fileprivate struct symbolBackground: View {
 	@Binding var course: Course2
 	let symbol: String
@@ -74,23 +84,15 @@ fileprivate struct symbolBackground: View {
 fileprivate struct symbolchooser_new: View {
 	@Binding var course: Course2
 	let colours: [String]
-	//@Binding var debugDelayDismiss: Bool
-//	@Environment(\.dismiss) var dismiss
 
-	@State var page = 0
-    @State private var pagingForward: Bool = true
-	let endPage = 11
-    
-    private struct PageIdentity: Hashable {
-        let page: Int
-        let forward: Bool
-    }
+	//	@Environment(\.dismiss) var dismiss
 
 	var body: some View {
 
 		HStack {
+			let name = if course.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { "Course" } else { course.name }
 			Image(systemName: course.icon.lowercased()).font(.title)
-			Text(course.name).font(.title)
+			Text(name).font(.title)
 		}
 		.if(coloursNeedBlackForeground.contains(course.colour)) {
 			$0.foregroundStyle(.black)
@@ -102,48 +104,51 @@ fileprivate struct symbolchooser_new: View {
 		.padding(5)
 		.background {
 			RoundedRectangle(cornerRadius: 10)
-				.foregroundStyle(Colour(course.colour.lowercased()) )
+				.foregroundStyle(course.colour)
 		}//.secondary) }
-		.padding(.bottom, 10)
+		.padding(.top, 30)
+		.padding(.bottom, 3)
 
-		ScrollView(.horizontal, showsIndicators: true) {//TODO: Open scroll on selected item
-			HStack(spacing: 12) {
+		ScrollView(.vertical, showsIndicators: true) {//TODO: Open scroll on selected item
+			Spacer().frame(height: 20)
+			ForEach(0...(sfsymbols.count)/4-1, id: \.self) { I in
 
-				ForEach(0..<sfsymbols.count, id: \.self) { i in
+				HStack(spacing: 12) {
 
-					if i == 0 {
-						Spacer().frame(width: 16)
+					let sI = if I==0 { 0 } else { (I*4) }
+					let symbolIndexes = sI...(sI+3)
+					ForEach(symbolIndexes, id: \.self) { i in
+
+						let symbol = sfsymbols[i]
+						if i == sI {
+							Spacer()
+						}
+						let colourDesc = course.colour
+						Image(systemName: symbol)
+							.onTapGesture {
+								course.icon = symbol
+							}
+							.if(coloursNeedBlackForeground.contains(colourDesc) && course.icon == symbol) {
+								$0.foregroundStyle(.black)
+							}
+							.if(coloursNeedWhiteForeground.contains(colourDesc) && course.icon == symbol) {
+								$0.foregroundStyle(.white)
+							}
+							.font(.title)
+						//							.labelStyle(.iconOnly)
+							.frame(width: 45, height: 45)
+							.background {
+								symbolBackground(course: $course, symbol: symbol)
+							}
+						Spacer().if(i != sI+3) { $0.frame(maxWidth: 2) }
 					}
-
-					let symbol = sfsymbols[i]
-
-					Image(systemName: symbol)
-						.onTapGesture {
-							course.icon = symbol
-						}
-						.if(coloursNeedBlackForeground.contains(course.colour) && course.icon == symbol) {
-							$0.foregroundStyle(.black)
-						}
-						.if(coloursNeedWhiteForeground.contains(course.colour) && course.icon == symbol) {
-							$0.foregroundStyle(.white)
-						}
-						.font(.title)
-						.labelStyle(.iconOnly)
-						.frame(width: 45, height: 45)
-						.background {
-							symbolBackground(course: $course, symbol: symbol)
-						}
-					if (i + 1) % 4 == 0 && i < sfsymbols.count - 1 {
-						Spacer().frame(width: 5)
-					}
-					if i == sfsymbols.count-1 {
-						Spacer().frame(width: 16)
-					}
-
 				}
-
+				if I != (sfsymbols.count)/4-1 {
+					Spacer().frame(height: 20)
+				}
 			}
-			.padding(.horizontal, 5)
+			//			.padding(.horizontal, 10)
+			Spacer().frame(height: 30)
 		}
 		.mask(
 			LinearGradient(
@@ -153,15 +158,20 @@ fileprivate struct symbolchooser_new: View {
 					.init(color: .black, location: 0.9),
 					.init(color: .clear, location: 1.0),
 				]),
-				startPoint: .leading,
-				endPoint: .trailing
+				startPoint: .top,
+				endPoint: .bottom
 			)
 		)
-
+		.padding(.bottom, -3)
+		.presentationDetents([.height(500)])
 	}
 }
 
-//MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton/courseEdit
+
+
+
+
+//MARK: ~/coursebutton/courseEdit
 fileprivate struct courseEdit: View {
 
 	let tblIndex: Int
@@ -177,8 +187,8 @@ fileprivate struct courseEdit: View {
 	@State private var coloursSheet = false
 	@State private var iconSheetPopover = false
 
-	let colours = ["black", "graphite", "peach", "lemon", "rees1", "apricot",
-				   "white", "lime", "ice", "blueberry", "rose", "cherry"]
+	let colours = ["black", "graphite", "peach", "lemon", 	  "rees1", "apricot",
+				   "white", "lime", 	"ice", 	 "blueberry", "rose",  "cherry"]
 
 	@Environment(\.dismiss) var dismiss
 	@FocusState private var nameFieldIsFocused: Bool
@@ -187,7 +197,7 @@ fileprivate struct courseEdit: View {
 	@State var debugSymbolDismissDelay = false
 
 	private func compileChanges() -> [Change] {
-		
+
 		var changes: [Change] = []
 
 		let origin = parentCourse
@@ -226,7 +236,7 @@ fileprivate struct courseEdit: View {
 					.multilineTextAlignment(.leading)
 
 
-				//ICON
+				//MARK: Icon
 				Button { iconSheetPopover.toggle() } label: {
 					//let colour = Colour(course.colour)
 					Image(systemName: course.icon)
@@ -238,10 +248,10 @@ fileprivate struct courseEdit: View {
 						.padding(5)
 				}.sheet(isPresented: $iconSheetPopover) {
 					symbolchooser_new(course: $course, colours: colours)//debugDelayDismiss: $debugSymbolDismissDelay)
-						.presentationDetents([.height(200)])
 
 				}
-				//COLOURS
+
+				//MARK: Colours
 				Button { coloursSheet.toggle() } label: {
 					let colour = Colour(course.colour)
 					Circle()
@@ -254,105 +264,157 @@ fileprivate struct courseEdit: View {
 						.padding(5)
 
 				}.sheet(isPresented: $coloursSheet) {
-					HStack {
-						Image(systemName: course.icon.lowercased()).font(.title)
-						Text(course.name).font(.title)
-					}
-					.if(coloursNeedBlackForeground.contains(course.colour.lowercased())) {
-						$0.foregroundStyle(.black)
-					}
-					.if(coloursNeedWhiteForeground.contains(course.colour.lowercased())) {
-						$0.foregroundStyle(.white)
-					}
 
-					.padding(5)
-					.background {
-						RoundedRectangle(cornerRadius: 10)
-							.foregroundStyle(Colour(course.colour.lowercased()) )
-					}//.secondary) }
+					VStack {
+						//MARK: sheet
+						//Preview
+						HStack {
+							HStack {
+								let name = if course.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { "Course" } else { course.name }
+								Image(systemName: course.icon.lowercased()).font(.title)
+								Text(name).font(.title)
+							}
+							.if(coloursNeedBlackForeground.contains(course.colour) ) {
+								$0.foregroundStyle(.black)
+							}
+							.if(coloursNeedWhiteForeground.contains(course.colour) ) {
+								$0.foregroundStyle(.white)
+							}
+							.padding(5)
+							.background {
+								RoundedRectangle(cornerRadius: 10)
+									.foregroundStyle(course.colour)
+							}
 
+							Spacer()
 
-					Grid {
-						GridRow {
-							ForEach(0...5, id: \.self) { index in
-								let colour = colours[index]
-								Button { course.colour = colour } label: {
+							//custom colour
+							Circle() //put identical circle behind so layout doesn't change
+								.fill(Colour.clear)
+								.frame(width: 30, height: 30)
+								.overlay {
 									Circle()
-										.fill(Colour(colour.lowercased()))
-										.frame(width: 30, height: 30)
-										.overlay {
-											Circle()
-												.stroke(Colour(colour.lowercased()).adjust(brightness: -0.2), lineWidth: 2)
-										}
-										.padding(5)
-										.overlay {
-											if course.colour == colour {
+										.stroke(Colour.clear, lineWidth: 2)
+								}
+								.padding(5)
+								.overlay { //layout-insensitive overlay of ColourPicker
+									ColourPicker("Course colour", selection: $course.colour, supportsOpacity: false)
+										.labelsHidden()
+										.colorPickerWheelFrame(width: 35, height: 35)
+								}
+						}
+						.padding(.bottom, 12)
+
+						//Colour grid
+						VStack {
+
+							//top 6, minus 'black'
+							HStack {
+								ForEach(1...5, id: \.self) { i in
+									let colour = colours[i]
+									Button { course.colour = Colour(colour) } label: {
+										Circle()
+											.fill(Colour(colour.lowercased()))
+											.frame(width: 30, height: 30)
+											.overlay {
 												Circle()
-													.stroke(Color.accentColor, lineWidth: 3)
+													.stroke(Colour(colour.lowercased()).adjust(brightness: -0.2), lineWidth: 2)
 											}
-										}
+											.padding(5)
+											.overlay {
+												if course.colour == Colour(colour) {
+													Circle()
+														.stroke(Color.accentColor, lineWidth: 3)
+												}
+											}
+										if i != 5 { Spacer() }
+									}
+								}
+							}
+
+							//bottom
+							HStack {
+								//bottom 5 colours, minus 'white'
+								ForEach(7...11, id: \.self) { i in
+									let colour = colours[i]
+									Button { course.colour = Colour(colour) } label: {
+										Circle()
+											.fill(Colour(colour))
+											.frame(width: 30, height: 30)
+											.overlay {
+												Circle()
+													.stroke(Colour(colour).adjust(brightness: -0.2), lineWidth: 2)
+											}
+											.padding(5)
+											.overlay {
+												if course.colour == Colour(colour) {
+													Circle()
+														.stroke(Color.accentColor, lineWidth: 3)
+												}
+											}
+										if i != 11 { Spacer() }
+									}
 								}
 							}
 						}
 
-						GridRow {
-							ForEach(6...11, id: \.self) { index in
-								let colour = colours[index]
-								Button { course.colour = colour } label: {
-									Circle()
-										.fill(Colour(colour))
-										.frame(width: 30, height: 30)
-										.overlay {
-											Circle()
-												.stroke(Colour(colour).adjust(brightness: -0.2), lineWidth: 2)
-										}
-										.padding(5)
-										.overlay {
-											if course.colour == colour {
-												Circle()
-													.stroke(Color.accentColor, lineWidth: 3)
-											}
-										}
-								}
-							}
-						}
-					}.presentationDetents([.height(200)])
+					}
+					.padding(.leading, 45)
+					.padding(.trailing, 45)
+
+					.presentationDetents([.height(210)])
 
 				} // colour (&sheet)
 
-			}//.padding(.leading).padding(.bottom, 2)
+
+
+			}
 			.padding()
+			//Header HStack end
 
-			// OLD ICON (sf symbol slug)
-			HStack {
-				/*Image(systemName:
-						UIImage(systemName: course.icon.lowercased()) != nil ?
-					  course.icon.lowercased() : "questionmark.square.dashed"
-				)
-				.font(.title)
-				.frame(width: 30)
-				.padding(5)
-				.foregroundStyle(
-					UIImage(systemName: course.icon.lowercased()) != nil ?
-						.primary : .secondary
-				)
-				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled(); #warning("TODO Create SF Symbol chooser")
-				 */
-			}//.padding(.leading)
 
-			// ROOMS
+
+
+
+
+			//MARK: Old icon
+			//			HStack {
+			//				Image(systemName:
+			//						UIImage(systemName: course.icon.lowercased()) != nil ?
+			//					  course.icon.lowercased() : "questionmark.square.dashed"
+			//				)
+			//				.font(.title)
+			//				.frame(width: 30)
+			//				.padding(5)
+			//				.foregroundStyle(
+			//					UIImage(systemName: course.icon.lowercased()) != nil ?
+			//						.primary : .secondary
+			//				)
+			//				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled(); #warning("TODO Create SF Symbol chooser")
+			//
+			//			}.padding(.leading)
+
+			//MARK: Rooms
 			List {
 				ForEach(Array(course.rooms.keys), id: \.self) { roomKey in
-					Text(course.rooms[roomKey]!)
+					Text(course.rooms[roomKey]!) //TODO: Make editable
 						.swipeActions {
-							Button("Delete", systemImage: "trash", role: .destructive) {
+							Button("Delete", systemImage: "trash", role: .destructive) { //TODO: Confirmation to delete course
 								course.rooms.removeValue(forKey: roomKey)
-							//	Logger.<#logger#>.<#action#>(course.rooms)
 							}.labelStyle(.iconOnly)
 						}
 				}
 				HStack {
-					TextField("Add Room", text: $pendingRoom).multilineTextAlignment(.leading); Spacer()
+					TextField("Add Room", text: $pendingRoom)
+						.multilineTextAlignment(.leading)
+						.onSubmit {
+							let trimmed = pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines)
+							guard !trimmed.isEmpty else { return }
+							let nextKey = (course.rooms.keys.max() ?? -1) + 1
+							course.rooms[nextKey] = trimmed
+							pendingRoom = ""
+						}
+					Spacer()
 					Button("Save room", systemImage: "plus") {
 						let trimmed = pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines)
 						guard !trimmed.isEmpty else { return }
@@ -366,33 +428,31 @@ fileprivate struct courseEdit: View {
 					.disabled(pendingRoom.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 
 				}
-				//Toggle("Symbols delay dismiss", systemImage: "stethoscope", isOn: $debugSymbolDismissDelay)
 			}.scrollContentBackground(.hidden)
 
-			.toolbar {
-				/*ToolbarItem(placement: .cancellationAction) {
-					Button("Cancel", systemImage: "xmark") {
-						dismiss()
-					}
-				}*/
-				ToolbarItem(placement: .confirmationAction) {
-					Button("Save", systemImage: "checkmark") {
-						let changes = compileChanges()
-						withAnimation {
-							pendingChanges = changes + (pendingChanges ?? [])
-							parentCourse = course
+
+
+			//MARK: Toolbar
+				.toolbar {
+					ToolbarItem(placement: .topBarTrailing) {
+						Button("Save", systemImage: "checkmark") {
+							let changes = compileChanges()
+							withAnimation {
+								pendingChanges = changes + (pendingChanges ?? [])
+								parentCourse = course
+							}
+							Logger.editCourses.debug("parent course is now \(String(reflecting: parentCourse), privacy: .public )")
+							dismiss()
 						}
-						Logger.editCourses.debug("parent course is now \(String(reflecting: parentCourse), privacy: .public )")
-						dismiss()
 					}
 				}
-			}
-			.navigationBarTitleDisplayMode(.inline)
+				.navigationBarTitleDisplayMode(.inline)
 
 		}//.padding()
 
 	}
 }
+
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton
 fileprivate struct coursebutton: View {
 	@State private var isPressed = false
@@ -427,11 +487,11 @@ fileprivate struct coursebutton: View {
 	}
 
 	var body: some View {
-        let roomsArray: [(Int, String)] = course.wrappedValue.rooms.map { ($0.key, $0.value) }
-        let sortedRooms: [(Int, String)] = roomsArray.sorted { (lhs: (Int, String), rhs: (Int, String)) -> Bool in
-            lhs.0 < rhs.0
-        }
-        let joinedRooms: String = sortedRooms.map { (pair: (Int, String)) in pair.1 }.joined(separator: "; ")
+		let roomsArray: [(Int, String)] = course.wrappedValue.rooms.map { ($0.key, $0.value) }
+		let sortedRooms: [(Int, String)] = roomsArray.sorted { (lhs: (Int, String), rhs: (Int, String)) -> Bool in
+			lhs.0 < rhs.0
+		}
+		let joinedRooms: String = sortedRooms.map { (pair: (Int, String)) in pair.1 }.joined(separator: "; ")
 
 		Button { showingSheet.toggle() } label: {
 
@@ -459,7 +519,7 @@ fileprivate struct coursebutton: View {
 		.sheet(isPresented: $showingSheet) {
 			courseEdit(tblIndex: tblIndex, pos: pos, isNewCourse: isNewCourse, parentCourse: course, course: course.wrappedValue, pendingChanges: pendingChanges)
 				.presentationDetents([.medium])
-				//INTERACTIVE DISMISS
+			//INTERACTIVE DISMISS
 				.interactiveDismissDisabled()
 		}
 		.onChange(of: courseExists) { _, exists in
@@ -484,11 +544,11 @@ fileprivate struct CoursesListRows: View {
 						 tblIndex: tblIndex,
 						 pos: key,
 						 pendingChanges: $pendingChanges)
-				.swipeActions(edge: .trailing) {
-					Button("Delete", role: .destructive) {
-						pendingChanges = [Change.course_delete(index: key, timetable: tblIndex)] + (pendingChanges ?? [])
-					}
+			.swipeActions(edge: .trailing) {
+				Button("Delete", role: .destructive) {
+					pendingChanges = [Change.course_delete(index: key, timetable: tblIndex)] + (pendingChanges ?? [])
 				}
+			}
 		}
 	}
 }
@@ -542,14 +602,14 @@ struct CoursesEditor: View {
 
 	var body: some View {
 		NavigationStack {
-            let alertTitle: String = {
-                if let id = alertIndex, let name = localCourses[id]?.name {
-                    return "Delete \"\(name)\"?"
-                } else {
-                    return "Delete \"Error \(#line)\"?"
-                }
-            }()
-            
+			let alertTitle: String = {
+				if let id = alertIndex, let name = localCourses[id]?.name {
+					return "Delete \"\(name)\"?"
+				} else {
+					return "Delete \"Error \(#line)\"?"
+				}
+			}()
+
 			List {
 
 				CoursesListRows(sortedIDs: sortedCourseIDs,
@@ -579,6 +639,8 @@ struct CoursesEditor: View {
 
 			}
 			.toolbar {
+
+				//MARK: Save
 				ToolbarItem(placement: .confirmationAction) {
 					if !(pendingChanges?.isEmpty ?? true) {
 						Button("Save", systemImage: "checkmark") {
@@ -598,7 +660,7 @@ struct CoursesEditor: View {
 					}
 
 				}
-
+				//MARK: Back
 				ToolbarItem(placement: .topBarLeading) {
 					Button(
 						"Back", systemImage:

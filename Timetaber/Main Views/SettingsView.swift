@@ -133,6 +133,7 @@ struct SettingsView: View {
 				}
 
 			}
+			.disabled(data.timetables[data.ActiveTimetable].isNew)
 			.font(.title3)
 			.if(data.termRunningGB) { $0.buttonStyle(.bordered			) }
 			.if(!data.termRunningGB){ $0.buttonStyle(.borderedProminent	) }

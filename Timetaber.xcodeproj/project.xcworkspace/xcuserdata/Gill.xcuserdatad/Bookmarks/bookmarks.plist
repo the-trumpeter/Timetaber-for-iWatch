@@ -59,13 +59,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>164</string>
+					<string>194</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>163</string>
+					<string>180</string>
 					<key>Timestamp</key>
-					<string>793328977.4679331</string>
+					<string>799814265.3021851</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -82,6 +82,19 @@
 			<dict>
 				<key>focused</key>
 				<string>		var monday, tuesday, wednesday, thursday, friday: [ UUID: Times.Period.Contents ]
+
+		init(monday: [UUID : Times.Period.Contents] = [:],
+			 tuesday: [UUID : Times.Period.Contents] = [:],
+			 wednesday: [UUID : Times.Period.Contents] = [:],
+			 thursday: [UUID : Times.Period.Contents] = [:],
+			 friday: [UUID : Times.Period.Contents] = [:]
+		) {
+			self.monday = monday
+			self.tuesday = tuesday
+			self.wednesday = wednesday
+			self.thursday = thursday
+			self.friday = friday
+		}
 </string>
 				<key>leading</key>
 				<string>	struct TimetabledWeek: Codable {
@@ -89,57 +102,12 @@
 </string>
 				<key>trailing</key>
 				<string>
-		subscript(index: Weekday) -&gt; [ UUID: Times.Period.Contents ]? {
-			switch index {
+		var isEmpty: Bool {
+			let mon = self.monday.isEmpty
 </string>
 			</dict>
 			<key>title</key>
 			<string>PoLAUNCH Make Contents optional, default unwrap to free period</string>
-			<key>type</key>
-			<string>bookmark</string>
-		</dict>
-		<dict>
-			<key>destination</key>
-			<dict>
-				<key>location-parameters</key>
-				<dict>
-					<key>EndingColumnNumber</key>
-					<string>0</string>
-					<key>EndingLineNumber</key>
-					<string>109</string>
-					<key>StartingColumnNumber</key>
-					<string>0</string>
-					<key>StartingLineNumber</key>
-					<string>108</string>
-					<key>Timestamp</key>
-					<string>797305147.962441</string>
-				</dict>
-				<key>rebasable-url</key>
-				<dict>
-					<key>base</key>
-					<string>workspace</string>
-					<key>payload</key>
-					<dict>
-						<key>relative-path</key>
-						<string>Timetaber/Timetable Creating-Editing/Courses_Editor.swift</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>text-context</key>
-			<dict>
-				<key>focused</key>
-				<string>		ScrollView(.horizontal, showsIndicators: true) {//TODO: Open scroll on selected item
-</string>
-				<key>leading</key>
-				<string>		.padding(.bottom, 10)
-
-</string>
-				<key>trailing</key>
-				<string>			HStack(spacing: 12) {
-
-				ForEach(0..&lt;sfsymbols.count, id: \.self) { i in
-</string>
-			</dict>
 			<key>type</key>
 			<string>bookmark</string>
 		</dict>

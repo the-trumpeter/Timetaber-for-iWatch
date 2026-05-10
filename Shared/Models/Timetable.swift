@@ -140,6 +140,11 @@ extension Array where Element == Timetable.TimetabledWeek  {
 //MARK: - Timetable
 ///Contains all data of a user's timetable.
 struct Timetable: Codable {
+
+
+
+	//MARK: Properties
+
 	var name: String
 	var icon: String
 
@@ -156,12 +161,48 @@ struct Timetable: Codable {
 	var timetable: [Timetable.TimetabledWeek]
 
 
+	var isNew: Bool {
+		let noCourses = courses.isEmpty
+		let noTimingVariants = times.variants.isEmpty
+		let noTimetable = self.timetable.allSatisfy(\.isEmpty)
+		return noCourses && (noTimingVariants || noTimetable)
+	}
+
+
+
+
+
+	//MARK: TimetabledWeek
 	///The mapping between periods, courses, and the rooms within those courses, for each day.
 	///
 //	///Format as follows: `[ (Period UUID): [(Course UUID), (Room index in course)] ]
 	struct TimetabledWeek: Codable {
 
 		var monday, tuesday, wednesday, thursday, friday: [ UUID: Times.Period.Contents ]
+
+		init(monday: [UUID : Times.Period.Contents] = [:],
+			 tuesday: [UUID : Times.Period.Contents] = [:],
+			 wednesday: [UUID : Times.Period.Contents] = [:],
+			 thursday: [UUID : Times.Period.Contents] = [:],
+			 friday: [UUID : Times.Period.Contents] = [:]
+		) {
+			self.monday = monday
+			self.tuesday = tuesday
+			self.wednesday = wednesday
+			self.thursday = thursday
+			self.friday = friday
+		}
+
+		var isEmpty: Bool {
+			let mon = self.monday.isEmpty
+			let tue = self.tuesday.isEmpty
+			let wed = self.wednesday.isEmpty
+			let thu = self.thursday.isEmpty
+			let fri = self.friday.isEmpty
+
+			return mon && tue && wed && thu && fri
+		}
+		
 
 		subscript(index: Weekday) -> [ UUID: Times.Period.Contents ]? {
 			switch index {
@@ -174,6 +215,8 @@ struct Timetable: Codable {
 			}
 		}
 	}
+
+
 
 
 	//MARK: Period Contents from Timeslot
@@ -220,6 +263,10 @@ struct Timetable: Codable {
 	}
 
 
+
+
+
+	//MARK: Manual init
 	init(_ name: String, icon: String, courses: [UUID: Course2], times: Times, timetable: [Timetable.TimetabledWeek] ) {
 		self.name = name
 		self.icon = icon
@@ -228,33 +275,124 @@ struct Timetable: Codable {
 		self.timetable = timetable
 	}
 
-	init() {
-		self.name = "Timetable"
-		self.icon = "backpack.badge.clock"
-		self.courses = [:]
-		self.times = Times(
-			standard: [:] as [UUID: Times.Period],
-			variants: [:] as [UUID: Times.Variant],
-			mapping: [:] as [Weekday: Times.TimingSet]
-		)
-		self.timetable = [
-			TimetabledWeek(
-				monday:		[:],
-				tuesday:	[:],
-				wednesday:	[:],
-				thursday:	[:],
-				friday:		[:]
-			),
-			TimetabledWeek(
-				monday:		[:],
-				tuesday:	[:],
-				wednesday:	[:],
-				thursday:	[:],
-				friday:		[:]
-			)
-		]
-	}
 
+
+
+
+	//MARK: Blank init
+	init(defaultValues: Bool = false) {
+
+		if !defaultValues {
+
+			self.name = "Timetable"
+			self.icon = "backpack.badge.clock"
+			self.courses = [:]
+			self.times = Times(
+				standard: [:] as [UUID: Times.Period],
+				variants: [:] as [UUID: Times.Variant],
+				mapping: [:] as [Weekday: Times.TimingSet]
+			)
+			self.timetable = [
+				TimetabledWeek(),
+				TimetabledWeek()
+			]
+
+		} else {
+
+			//Default values
+			let wedLunchID = UUID()
+			let stdLunchID = UUID()
+
+			let wedRecessID = UUID()
+			let stdRecessID = UUID()
+
+			let yaID = UUID()
+			let checkinID = UUID()
+
+
+			let wedSportID = UUID()
+			let wedSport = Times.Variant("Wed. Sport",		variant: [
+				UUID(): Times.Period ("1",		startTime: 0900,	duration: 60),
+				UUID(): Times.Period ("2",		startTime: 1000,	duration: 50),
+				yaID: Times.Period("YA",		startTime: 1050,	duration: 10),
+				wedRecessID: Times.Period ("Recess",startTime: 1100,	duration: 20),
+				UUID(): Times.Period ("3",		startTime: 1120,	duration: 50),
+				UUID(): Times.Period ("4",		startTime: 1210,	duration: 50),
+				wedLunchID: Times.Period ("Lunch",startTime: 1300,	duration: 30),
+				UUID(): Times.Period ("Sport",		startTime: 1330,	duration: 50+50)
+			]
+			)
+
+			let std = [
+				checkinID: Times.Period ("Check In",startTime: 0900,	duration: 10),
+				UUID(): Times.Period ("1",		startTime: 0910,	duration: 60),
+				UUID(): Times.Period ("2",		startTime: 1010,	duration: 60),
+				stdRecessID: Times.Period ("Recess",startTime: 1110,	duration: 20),
+				UUID(): Times.Period ("3",		startTime: 1130,	duration: 60),
+				UUID(): Times.Period ("4",		startTime: 1230,	duration: 60),
+				stdLunchID: Times.Period ("Lunch",startTime: 1330,	duration: 40),
+				UUID(): Times.Period ("5",		startTime: 1410,	duration: 60)
+			]
+
+			let checkInCourseID = UUID()
+			let lunchCourseID = UUID()
+			let recessCourseID = UUID()
+			let yaCourseID = UUID()
+
+
+			self.name = "Timetable"
+			self.icon = "backpack.badge.clock"
+			self.courses = [
+				checkInCourseID: Course2("Check In", icon: "face.smiling", colour: "Graphite"),
+				lunchCourseID: Course2("Lunch", icon: "fork.knife", colour: "Graphite"),
+				recessCourseID: Course2("Recess", icon: "fork.knife", colour: "Graphite"),
+				yaCourseID: Course2("Year Assembly", icon: "megaphone", colour: "Graphite"),
+			]
+
+
+			self.times = Times(
+				standard: std,
+				variants: [wedSportID: wedSport],
+				mapping: [4: .variant(wedSportID)]
+			)
+
+
+			typealias C = Times.Period.Contents
+			let stdDay = [
+				checkinID: C(courseID: checkInCourseID, roomIndex: -1),
+				stdRecessID:C(courseID: recessCourseID, roomIndex: -1),
+				stdLunchID:C(courseID: lunchCourseID, roomIndex: -1)
+			]
+			let wed = [
+				yaID: C(courseID: yaCourseID, roomIndex: -1),
+				wedRecessID: C(courseID: recessCourseID, roomIndex: -1),
+				wedLunchID: C(courseID: lunchCourseID, roomIndex: -1)
+			]
+
+			self.timetable = [
+				TimetabledWeek(
+					monday:		stdDay,
+					tuesday:	stdDay,
+					wednesday:	wed,
+					thursday:	stdDay,
+					friday:		stdDay
+				),
+				TimetabledWeek(
+					monday:		stdDay,
+					tuesday:	stdDay,
+					wednesday:	wed,
+					thursday:	stdDay,
+					friday:		stdDay
+				)
+			]
+		}
+	}//init
+
+
+
+
+
+	//MARK: JSON
 	func encode() throws -> Data {
 		let encoder = JSONEncoder()
 		encoder.outputFormatting = .prettyPrinted
@@ -273,6 +411,11 @@ struct Timetable: Codable {
 	}
 
 
+
+
+
+
+	//MARK: applyChanges
 	/**
 	 Apply a given set of `Change`s to the parent timetable.
 	 - Parameter changes: The changes to be applied to the timetable.
@@ -410,6 +553,16 @@ struct Timetable: Codable {
 }
 
 
+
+
+
+
+
+
+
+
+
+
 //MARK: - Device-persistent Mutation
 
 /**
@@ -443,7 +596,7 @@ enum Change: Codable {
 		/// Change a course's icon
 		case icon(String)
 		/// Change a course's colour
-		case colour(String)
+		case colour(Colour)
 		/// Change (redefine) a course's rooms
 		case rooms([Int: String])
 	}

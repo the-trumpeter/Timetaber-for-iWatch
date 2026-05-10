@@ -31,10 +31,12 @@ class Storage: ObservableObject {
 
 	static let shared = Storage() //there is LocalData.storage, but it points here
 
-	@AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = true//false
+	@AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = false
 	@AppStorage("timetaber.userdefaults.ghostWeek") var ghostWeekGB = false
+	
 	#if os(iOS)
 	@AppStorage("timetaber.userdefaults.isWatchAppInstalled") var isWatchAppInstalledAndInitialised = false
+	@AppStorage("timetaber.userdefaults.initialisationDialogue") var initialisationDialogue: Bool = true
 	#endif
 	#if os(watchOS)
 	@AppStorage("timetaber.userdefaults.globalErrorMessage") var globalErrorMessage: String = ""
@@ -60,19 +62,29 @@ class Storage: ObservableObject {
 	///All timetables that the user has created.
 	///
 	///The iOS app is the source of truth.
-	@Published var timetables: [Timetable] = []
+	@Published var timetables: [Timetable] = [] {
+		didSet {
+			do {
+				try saveTimetables()
+				Logger.general.trace("Auto-saved timetables after mutation.")
+			} catch {
+				Logger.general.fault("Failed to auto-save timetables after mutation: \(String(describing: error), privacy: .public)")
+			}
+		}
+	}
 
 	//Ease-of-access variables for current/active timetable
 	var ActiveTimetable: Int = 0
 	//@Published var timetable: Timetable
 
 
-
-	init(termRunningGB: Bool = true, ghostWeekGB: Bool = false) {
-		self.termRunningGB = termRunningGB
-		self.ghostWeekGB = ghostWeekGB
+	
+	init(termRunningGB: Bool = false, ghostWeekGB: Bool = false) {
+//		self.termRunningGB = termRunningGB
+//		self.ghostWeekGB = ghostWeekGB
 
 		self.ActiveTimetable = 0
+
 		#if os(watchOS)
 		if let loaded = try? loadTimetables(), !loaded.isEmpty {
 			self.timetables = loaded
@@ -89,8 +101,60 @@ class Storage: ObservableObject {
 		}
 		#endif
 		#if os(iOS)
-		self.timetables = [chaos] // [Timetable()]
+		if let loaded = try? loadTimetables(), !loaded.isEmpty {
+			self.timetables = loaded
+			Logger.general.trace("Loaded timetables from persistence: count=\(loaded.count, privacy: .public)")
+		} else {
+			self.timetables = [Timetable(defaultValues: false)]
+			Logger.general.error("Failed to load timetables; using empty timetable.")
+			do {
+				try saveTimetables()
+			} catch {
+				Logger.general.fault("Initial save failed: \(String(describing: error), privacy: .public)")
+			}
+			Logger.general.trace("Initialized default timetables and saved")
+		}
 		#endif
+	}
+
+
+	#if os(iOS)
+	enum TimetableInitialisation { case blank, template, demo }
+
+	func initialiseTimetables(_ value: TimetableInitialisation) {
+		guard initialisationDialogue == true else { return }
+		switch value {
+			case .blank:
+				self.timetables = [ Timetable(defaultValues: false) ]
+				Logger.general.log("Firsttime Initialised blank timetable")
+			case .template:
+				self.timetables = [ Timetable(defaultValues: true ) ]
+				Logger.general.log("Firsttime Initialised hspa template timetable")
+			case .demo:
+				self.timetables = [ chaos ]
+				Logger.general.log("Firsttime Initialised demo timetable (Gill's)")
+		}
+		initialisationDialogue = false
+		
+		do {
+			guard !self.timetables.isEmpty else { return }
+			try Storage.shared.sendFullTimetable(self.timetables.first!)
+		} catch {
+			Logger.general.error("Could not JSONEncode timetable")
+		}
+		reload()
+	}
+	#endif
+
+
+
+	//MARK: Storage, Deinit
+	deinit {
+		do {
+			try saveTimetables()
+		} catch {
+			Logger.general.critical("Could not save timetables")
+		}
 	}
 
 	private let timetablesStorageKey = "timetaber.userdefaults.timetables"
@@ -104,6 +168,7 @@ class Storage: ObservableObject {
 
 	private func loadTimetables() throws -> [Timetable] {
 		guard let data = UserDefaults.standard.data(forKey: timetablesStorageKey) else {
+			Logger.general.warning("No timetables saved")
 			return []
 		}
 		let decoder = JSONDecoder()
@@ -284,11 +349,11 @@ class Storage: ObservableObject {
 				var timetable = self.timetables[tblIndex]
 				var week = timetable.timetable[weekIndex]
 				switch wkday {
-				case 2: week.monday[pd]	= nil
+				case 2: week.monday[pd]		= nil
 				case 3: week.tuesday[pd]	= nil
 				case 4: week.wednesday[pd] = nil
 				case 5: week.thursday[pd]	= nil
-				case 6: week.friday[pd]	= nil
+				case 6: week.friday[pd]		= nil
 				default:
 					Logger.timetableChanges.fault("Invalid weekday \(wkday, privacy: .public)")
 					continue
