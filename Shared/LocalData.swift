@@ -13,9 +13,6 @@ import Foundation
 import SwiftUI
 import OSLog
 
-///Flippity-flopping American English
-typealias Colour = Color
-
 
 let bID = Bundle.main.bundleIdentifier!
 extension Logger {

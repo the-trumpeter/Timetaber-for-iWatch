@@ -94,12 +94,7 @@ fileprivate struct symbolchooser_new: View {
 			Image(systemName: course.icon.lowercased()).font(.title)
 			Text(name).font(.title)
 		}
-		.if(coloursNeedBlackForeground.contains(course.colour)) {
-			$0.foregroundStyle(.black)
-		}
-		.if(coloursNeedWhiteForeground.contains(course.colour)) {
-			$0.foregroundStyle(.white)
-		}
+		.foregroundColor(course.colour.contrastingTextColor)
 
 		.padding(5)
 		.background {
@@ -123,17 +118,12 @@ fileprivate struct symbolchooser_new: View {
 						if i == sI {
 							Spacer()
 						}
-						let colourDesc = course.colour
 						Image(systemName: symbol)
 							.onTapGesture {
 								course.icon = symbol
 							}
-							.if(coloursNeedBlackForeground.contains(colourDesc) && course.icon == symbol) {
-								$0.foregroundStyle(.black)
-							}
-							.if(coloursNeedWhiteForeground.contains(colourDesc) && course.icon == symbol) {
-								$0.foregroundStyle(.white)
-							}
+							.foregroundColor(course.icon == symbol ? course.colour.contrastingTextColor : .primary)
+
 							.font(.title)
 						//							.labelStyle(.iconOnly)
 							.frame(width: 45, height: 45)
@@ -274,12 +264,7 @@ fileprivate struct courseEdit: View {
 								Image(systemName: course.icon.lowercased()).font(.title)
 								Text(name).font(.title)
 							}
-							.if(coloursNeedBlackForeground.contains(course.colour) ) {
-								$0.foregroundStyle(.black)
-							}
-							.if(coloursNeedWhiteForeground.contains(course.colour) ) {
-								$0.foregroundStyle(.white)
-							}
+							.foregroundColor(course.colour.contrastingTextColor)
 							.padding(5)
 							.background {
 								RoundedRectangle(cornerRadius: 10)

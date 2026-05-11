@@ -179,10 +179,7 @@ fileprivate struct TimetablePeriodRow: View {
 						.frame(width: 25, height: 25)//, alignment: .trailing)
 						.font(.title3)
 						.padding(2)
-						.if(coloursNeedWhiteForeground.contains(course.colour)) { $0.foregroundStyle(.white)//If I have time, instead of using white, mask through the background to get same colour as list bg
-						}
-						.if(coloursNeedBlackForeground.contains(course.colour)) { $0.foregroundStyle(.black)//If I have time, instead of using white, mask through the background to get same colour as list bg
-						}
+						.foregroundColor(course.colour.contrastingTextColor)
 
 				}
 				.if(course2 != nil) {

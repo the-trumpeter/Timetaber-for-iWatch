@@ -50,6 +50,12 @@ struct HomeView: View {
 		return room
 	}
 
+	var nextUp: String {
+		if case .noSchool = data.nextCourse.type { return "" }
+		guard let room = roomOrBlank(data.nextCourse) else { return "" }
+		return "Next up: \(data.nextCourse.name) • \(room)"
+	}
+
 	var body: some View {
 		let course = data.currentCourse
 		ZStack {
@@ -68,31 +74,24 @@ struct HomeView: View {
 
 				Text(course.name)                   // NAME
 					.font(.system(size: 40).weight(.semibold))
-				
+
 				Text(roomOrBlank(course) ?? "")     // ROOM/JOKE
 					.font(.system(size: 20))
-				
+
 				Spacer()
 				
 				//MARK: Next Course
 				
-				Text({
-					//Logger.<#logger#>.<#action#>(data.nextCourse)
-					if case .noSchool = data.nextCourse.type { return "" }
-					guard let room = roomOrBlank(data.nextCourse) else { return "" }
-
-					return "Next up: \(data.nextCourse.name) • \(room)"
-					}()
-				)
+				Text(nextUp)
 				.font(.system(size: 20))
 				
 			}
-
-			.foregroundStyle(
-				colourScheme == .light ? (coloursNeedBlackForeground.contains(course.colour) ? Colour.black : .primary)
-							/* dark */	: Colour(course.colour)
-			)
-			.if(!coloursNeedBlackForeground.contains(course.colour) && colourScheme == .light) { $0.colorInvert() }
+			.foregroundColor(course.colour.contrastingTextColor)
+//			.foregroundStyle(
+//				colourScheme == .light ? (coloursNeedBlackForeground.contains(course.colour) ? Colour.black : .primary)
+//							/* dark */	: Colour(course.colour)
+//			)
+//			.if(!coloursNeedBlackForeground.contains(course.colour) && colourScheme == .light) { $0.colorInvert() }
 
 			.padding()
 		}

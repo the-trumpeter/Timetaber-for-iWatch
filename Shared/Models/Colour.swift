@@ -5,10 +5,47 @@
 //  Created by Gill Palmer on 27/4/2026.
 //
 
-
-// Code from Apple's Scrumdinger sample/tutorial
-
 import SwiftUI
+
+
+
+//MARK: typealias
+///Flippity-flopping American English
+typealias Colour = Color
+
+
+
+//MARK: Foreground B/W Switch
+// .foregroundColor(<#colour#>.contrastingTextColor)
+extension Colour {
+	var isDark: Bool {
+		var red: CGFloat = 0
+		var green: CGFloat = 0
+		var blue: CGFloat = 0
+
+		UIColor(self).getRed(&red, green: &green, blue: &blue, alpha: nil)
+
+		// Luminance formula
+		let luminance = 0.299 * red + 0.587 * green + 0.114 * blue
+
+		let luminanceThreshold = 0.6 //below is white fg, above is black fg
+		return luminance < luminanceThreshold
+	}
+
+	// Returns black or white depending on the background
+	var contrastingTextColor: Color {
+
+//		let coloursWantBlackForeground = [Colour("peach"), Colour("lemon"), Colour("ice"), Colour("lime")]
+//		let coloursWantWhiteForeground = [Colour("blueberry")]
+
+		return self.isDark ? .white : .black
+	}
+}
+
+
+
+//MARK: Codable
+// Code from Apple's Scrumdinger sample/tutorial
 
 extension Color: Codable {
 	private struct Components {

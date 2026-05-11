@@ -74,7 +74,7 @@ fileprivate struct DisplayEntry: View {
 			}
 */
 			Image(systemName: listedCourse.iOSListIcon ?? listedCourse.icon)
-				.bold(isBold)
+//				.bold(isBold)
 				.font(.title)
 				.frame(width: 30)
 
@@ -196,20 +196,9 @@ struct TimetableView: View {
 									}
 
 									var foregroundColour: Colour {
-										var isCurrent: Bool = (data.currentTime == timeslot)
+										let isCurrent: Bool = (data.currentTime == timeslot)
 										let colour: Colour = entry.listedCourse.colour
-
-										if backgroundColour == Colour("black") ||
-											coloursNeedWhiteForeground.contains(colour) && isCurrent
-										{
-											return Colour.white
-										}
-										if backgroundColour == Colour("white") ||
-											coloursNeedBlackForeground.contains(colour) && isCurrent
-										{
-											return Colour.black
-										}
-
+										if isCurrent { return colour.contrastingTextColor }
 										return .primary
 									}
 
