@@ -79,7 +79,7 @@ class Storage: ObservableObject {
 
 
 	
-	init(termRunningGB: Bool = false, ghostWeekGB: Bool = false) {
+	init() {
 //		self.termRunningGB = termRunningGB
 //		self.ghostWeekGB = ghostWeekGB
 
