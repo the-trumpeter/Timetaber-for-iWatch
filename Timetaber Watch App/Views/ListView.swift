@@ -23,6 +23,8 @@ let customSymbols = [
 
 fileprivate struct DisplayEntry: View {
 
+	@Environment(\.self) var env
+
 	let listedCourse: Course2
 	let course: DisplayCourse
 	let timeslotIdentifier: Timeslot
@@ -78,7 +80,7 @@ fileprivate struct DisplayEntry: View {
 	var body: some View {   
 
 		HStack{
-			let clr = if course.colour == Colour("black") { Colour("white") } else { course.colour }
+			let clr = if course.colour.resolve(in: env) == Colour("black").resolve(in: env) { Colour("white") } else { course.colour }
 			Group {
 				if let img = customSymbols[course.icon] {
 					img

@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject var data: LocalData
+	@Environment(\.self) var env
 
 	private func getNextString(_ course: DisplayCourse) -> String {
 /*
@@ -56,8 +57,8 @@ struct HomeView: View {
 		let current = data.currentCourse //DisplayCourse("LongName", icon: "clock", room: "AB1", colour: "blueberry")
 		let next = if current.name != "Error" { data.nextCourse } else { current }
 
-		let colour = if current.colour == Colour("black") { Colour("white") } else { current.colour }
-		let nextColour = if next.colour == Colour("black") { Colour("white") } else { next.colour }
+		let colour = if current.colour.resolve(in: env) == Colour("black").resolve(in: env) { Colour("white") } else { current.colour }
+		let nextColour = if next.colour.resolve(in: env) == Colour("black").resolve(in: env) { Colour("white") } else { next.colour }
 
 		VStack {
 			if Storage.shared.timetables.isEmpty {
