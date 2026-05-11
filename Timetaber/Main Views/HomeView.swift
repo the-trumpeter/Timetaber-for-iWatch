@@ -52,7 +52,7 @@ struct HomeView: View {
 
 	var nextUp: String {
 		if case .noSchool = data.nextCourse.type { return "" }
-		guard let room = roomOrBlank(data.nextCourse) else { return "" }
+		guard let room = roomOrBlank(data.nextCourse) else { return "Next up: \(data.nextCourse.name)" }
 		return "Next up: \(data.nextCourse.name) • \(room)"
 	}
 
