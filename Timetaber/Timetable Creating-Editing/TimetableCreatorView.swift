@@ -142,6 +142,15 @@ fileprivate struct timetableOptions: View {
 						.tint(.primary)
 				} */
 
+				NavigationLink {
+									EditTimetableView()
+										.toolbar(.hidden, for: .tabBar)
+								} label: {
+									HStack {
+										Text("Timetable").foregroundStyle(.primary); Spacer();
+										Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
+									}
+								} //Timetable
 
 				NavigationLink {
 					CoursesEditor(tblIndex: tblIndex)
@@ -150,7 +159,7 @@ fileprivate struct timetableOptions: View {
 					HStack {
 						Text("Courses").foregroundStyle(.primary); Spacer();
 						Text(String(timetable.courses.count)).foregroundStyle(.secondary) }
-				}
+				} //Courses
 
 				NavigationLink {
 					TimesEditor(tblIndex: tblIndex)
@@ -161,24 +170,16 @@ fileprivate struct timetableOptions: View {
 						Text("Day Structure").foregroundStyle(.primary); Spacer()
 						Text(String(timetable.times.variants.count+1)).foregroundStyle(.secondary)
 					}
-				}.buttonStyle(.plain)
+				}.buttonStyle(.plain) //Day Structure
 				NavigationLink {
 					TimesMapping(tblIndex: tblIndex)
 						.toolbar(.hidden, for: .tabBar)
 				} label: {
 					Text("Week Structure")
-				}
+				} // Week Structure
 
 
-				NavigationLink {
-					EditTimetableView()
-						.toolbar(.hidden, for: .tabBar)
-				} label: {
-					HStack {
-						Text("Timetable").foregroundStyle(.primary); Spacer();
-						Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
-					}
-				}
+
 
 				// Button("Delete \"\(name, privacy: .public)\"", systemImage: "trash", role: .destructive) { }
 
