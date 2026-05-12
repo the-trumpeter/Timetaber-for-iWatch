@@ -301,6 +301,7 @@ fileprivate struct EditTimetableDayView: View {
 	@State var saveFailed = false
 
 	init(tblIndex: Int, week: WeekAB, day: Weekday) {
+
 		let store = Storage.shared
 
 		self.timingDetails = (week, day)
@@ -425,6 +426,19 @@ fileprivate struct EditTimetableDayView: View {
     }
 
 
+	var navTitle: String {
+		let suffix = if timingDetails.weekab == .a { " A" } else { " B" }
+		return switch timingDetails.weekday {
+			case 2: "Monday"+suffix
+			case 3: "Tuesday"+suffix
+			case 4: "Wednesday"+suffix
+			case 5: "Thursday"+suffix
+			case 6: "Friday"+suffix
+			case 7: "Saturday"
+			default: "Error \(#line)"
+		}
+	}
+
 	var body: some View {
 		NavigationStack {
 			Group {
@@ -519,6 +533,7 @@ fileprivate struct EditTimetableDayView: View {
 				}
 			}
 			.navigationBarBackButtonHidden(true)
+			.navigationTitle(navTitle)
 		}
 
 	}//body
