@@ -39,6 +39,7 @@ struct HomeView: View {
 	
 	@EnvironmentObject var data: LocalData
 	@Environment(\.colorScheme) var colourScheme
+	@Environment(\.self) var env
 
 	private func roomOrBlank(_ course: DisplayCourse) -> String? {
 		guard let room = course.room else {
@@ -54,6 +55,17 @@ struct HomeView: View {
 		if case .noSchool = data.nextCourse.type { return "" }
 		guard let room = roomOrBlank(data.nextCourse) else { return "Next up: \(data.nextCourse.name)" }
 		return "Next up: \(data.nextCourse.name) • \(room)"
+	}
+
+	var foregroundColour: Colour {
+		let courseCol = data.currentCourse.colour
+		if colourScheme == .light {
+			return courseCol.contrastingTextColor
+		}
+		if courseCol.resolve(in: env) == Colour("black").resolve(in: env) {
+			return .white
+		}		
+		return courseCol
 	}
 
 	var body: some View {
@@ -86,7 +98,7 @@ struct HomeView: View {
 				.font(.system(size: 20))
 				
 			}
-			.foregroundColor(course.colour.contrastingTextColor)
+			.foregroundColor(foregroundColour)
 //			.foregroundStyle(
 //				colourScheme == .light ? (coloursNeedBlackForeground.contains(course.colour) ? Colour.black : .primary)
 //							/* dark */	: Colour(course.colour)

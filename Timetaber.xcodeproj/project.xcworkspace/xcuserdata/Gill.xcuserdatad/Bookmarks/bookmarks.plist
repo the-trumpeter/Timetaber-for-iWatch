@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>1012</string>
+					<string>1190</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>1011</string>
+					<string>1190</string>
 					<key>Timestamp</key>
-					<string>797392028.620258</string>
+					<string>800248986.454965</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -34,17 +34,13 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>struct TimesMapping: View {
-</string>
+				<string></string>
 				<key>leading</key>
-				<string>//MARK: Public access mapping editor
-///Edit the structure of each week.
-</string>
-				<key>trailing</key>
-				<string>
-	@Environment(\.dismiss) var dismiss
+				<string>}
 
 </string>
+				<key>trailing</key>
+				<string></string>
 			</dict>
 			<key>title</key>
 			<string>PoLAUNCH 1week/2week timetable options to ultimately go here; add methods to time-map weeks differently</string>
