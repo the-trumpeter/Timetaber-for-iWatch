@@ -409,6 +409,7 @@ fileprivate struct TimesVariantEditor: View {
 		hasPendingChanges = (localTimes != store.timetables[tblIndex].times)
 	}
 
+	//MARK: Edit variant init
 	/// Edit existing variant
 	init(_ editing: Times.TimingSet, tblIndex: Int = 0) {
 		self.tblIndex = tblIndex
@@ -422,43 +423,32 @@ fileprivate struct TimesVariantEditor: View {
 
 
 	private var isNewVariant: Bool = false
-	private var originalNew: Times.Variant? = nil
+	@State private var originalNew: Times.Variant? = nil //Not sure if this is redundant or not
 	private var newIndex: UUID? = nil
 
-	enum NewVariantError: Error { case couldntGetNextKey(keys: Dictionary<Int, Times.Variant>.Keys, attempt: [Int]) }
+//	enum NewVariantError: Error { case couldntGetNextKey(keys: Dictionary<Int, Times.Variant>.Keys, attempt: [Int]) }
 
+
+	//MARK: New variant init
 	/// New variant
-	init(blank fromBlank: Bool = true, tblIndex: Int = 0) throws {
+	init(blank fromBlank: Bool = true, tblIndex: Int = 0) {
 
 		self.tblIndex = tblIndex
 		self.isNewVariant = true
 
-		let tobelocaltimes = Storage.shared.timetables[tblIndex].times
-/*
-		var attempts: [Int] = []
-		var nextKey: Int = (tobelocaltimes.variants.keys.max() ?? 0) + 1
-		var loopedTimes = 0
-		while tobelocaltimes.variants[nextKey] != nil && loopedTimes <= 5 {
-			attempts.append(nextKey)
-			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys, privacy: .public) for key \(nextKey, privacy: .public). Trying again with \(nextKey+1, privacy: .public)...")
-			nextKey += 1
-			loopedTimes += 1
-		}
-		if loopedTimes >= 5 {
-			Logger.dateTime.fault("Couldn't find empty value in \(tobelocaltimes.variants.keys, privacy: .public) in five tries.")
-			throw NewVariantError.couldntGetNextKey(keys: tobelocaltimes.variants.keys, attempt: attempts)
-		}
+		let originTimes = Storage.shared.timetables[tblIndex].times
+		var tobelocaltimes = originTimes
 
-		if fromBlank {
-			tobelocaltimes.variants[nextKey] = Times.Variant("Variant", variant: [:])
-			Logger.editTimes.debug("Built blank variant of \(String(describing: tobelocaltimes.variants[nextKey]), privacy: .public)")
-		} else {
-			tobelocaltimes.variants[nextKey] = Times.Variant("Variant", variant: tobelocaltimes.standard)
-		}
-*/		let newkey = UUID()
+		let newkey = UUID()
+
+		let standard = tobelocaltimes.standard
+		let variantPreexistingContent = if fromBlank { Times.Variant("Blank Variant", variant: [:]) } else { Times.Variant("New Variant", variant: standard) }
+
+		tobelocaltimes.variants[newkey] = variantPreexistingContent
+
 		self.editing = .variant(newkey)
 		self.localTimes = tobelocaltimes
-		self.originalNew = tobelocaltimes.variants[newkey]
+		self.originalNew = variantPreexistingContent
 		self.newIndex = newkey
 		self.debugID = if fromBlank { "New from Blank" } else { "New from Standard" }
 
@@ -476,8 +466,13 @@ fileprivate struct TimesVariantEditor: View {
 
 		if isNewVariant {
 			guard let key: UUID = switch editing {
-			case .standard: { Logger.editTimes.fault("Desync between editing=\(String(reflecting: editing), privacy: .public) and isNewVariant=\(isNewVariant, privacy: .public)"); return nil }()
+			case .standard:
+				{
+					Logger.editTimes.fault("Desync between editing=\(String(reflecting: editing), privacy: .public) and isNewVariant=\(isNewVariant, privacy: .public)")
+					return nil
+				}()
 			case .variant(let vkey): vkey
+
 			} else { return [] }
 			//guard key != -1 else { return [] }
 			return [.times_variants_add(key: key, localTimes.variants[key]!, timetable: tblIndex)]
@@ -627,11 +622,12 @@ fileprivate struct TimesVariantEditor: View {
 						let namebinding = Binding<String>(get: {
 							switch editing {
 							case .standard:
-								Logger.editTimes.critical("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								Logger.editTimes.critical("Variant \(debugID, privacy: .public) - [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
 								return "Error \(#line)"
+
 							case .variant(let key):
 								guard let variant = localTimes.variants[key] else {
-									Logger.editTimes.fault("Variant \(debugID, privacy: .public) Given variant key \(key, privacy: .public) not available in local times [TimesVariantEditor]")
+									Logger.editTimes.fault("Variant \(debugID, privacy: .public) - Given variant key \(key, privacy: .public) not available in local times [TimesVariantEditor]")
 									return "Error \(#line)"
 								}
 								return variant.name
@@ -639,11 +635,11 @@ fileprivate struct TimesVariantEditor: View {
 						}, set: { name in
 							switch editing {
 							case .standard:
-								Logger.editTimes.critical("Variant \(debugID, privacy: .public) [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
+								Logger.editTimes.critical("Variant \(debugID, privacy: .public) - [get] Name binding | Editing changed values between 'if' and 'switch', switch returned standard inside 'if editing != .standard'")
 								return
 							case .variant(let key):
 								guard localTimes.variants[key] != nil else {
-									Logger.editTimes.fault("Variant \(debugID, privacy: .public) Given variant key not available in local times")
+									Logger.editTimes.fault("Variant \(debugID, privacy: .public) - Given variant key not available in local times")
 									return
 								}
 								localTimes.variants[key]!.name = name
@@ -688,7 +684,7 @@ fileprivate struct TimesVariantEditor: View {
 							hasPendingChanges = (localTimes != store.timetables[tblIndex].times)
 							//alertIndex = index
 							//showingAlert = true
-							Logger.editTimes.log("Variant \(debugID, privacy: .public) Unconfirmedly removed period from UI timesvariant")
+							Logger.editTimes.log("Variant \(debugID, privacy: .public) - Unconfirmedly removed period from UI timesvariant")
 						}.labelStyle(.iconOnly)
 							.tint(.red)
 					}
@@ -731,6 +727,7 @@ fileprivate struct TimesVariantEditor: View {
 					NavigationStack {
 						NewPeriodView(period: $newPeriod)
 							.padding()
+							.interactiveDismissDisabled()
 							.presentationDetents([.height(250.0)])
 							.toolbar {
 								ToolbarItem(placement: .confirmationAction) {
@@ -788,6 +785,8 @@ fileprivate struct TimesVariantEditor: View {
 			}
 		 */
 
+
+
 		//	MARK: Toolbar • Editing set, Save
 
 			.toolbar {
@@ -833,6 +832,9 @@ fileprivate struct TimesVariantEditor: View {
 							}
 							withAnimation {
 								localTimes = store.timetables[tblIndex].times
+								if isNewVariant {
+									originalNew = localTimes.variants[newIndex!]
+								}
 								hasPendingChanges = (localTimes == store.timetables[tblIndex].times)
 								syncPendingFlag()
 							}
@@ -911,6 +913,12 @@ fileprivate struct TimesVariantEditor: View {
 //MARK: Public access variant editor
 struct TimesEditor: View {
 	@ObservedObject var store = Storage.shared
+
+	@State var deleteFailed: String? = nil
+	@State var confirmVariantDelete: UUID? = nil
+
+	@State var variantKeys: [UUID] = []
+
 	let tblIndex: Int
 	var body: some View {
 		let times = store.timetables[tblIndex].times
@@ -921,55 +929,59 @@ struct TimesEditor: View {
 				}
 
 				Section {
-					let variantKeys: [UUID] = Array(times.variants.keys)
 					ForEach(variantKeys, id: \.self) { vKey in
-						NavigationLink(times.variants[vKey]!.name) { TimesVariantEditor(.variant(vKey), tblIndex: tblIndex) }
+
+						NavigationLink(times.variants[vKey]!.name) { TimesVariantEditor(.variant(vKey), tblIndex: tblIndex)
+						}
+						.swipeActions(allowsFullSwipe: false) {
+							Button("Delete", systemImage: "trash") {
+								confirmVariantDelete = vKey
+//								Logger.editTimes.debug("Set delete confirmation show-er to \(confirmVariantDelete)")
+							}
+							.tint(.red)
+							.labelStyle(.iconOnly)
+						}
+						.confirmationDialog(
+							"Delete timing variant '\(times.variants[vKey]!.name)'?",
+							isPresented: Binding(
+								get: { confirmVariantDelete == vKey },
+								set: {
+									if $0  { confirmVariantDelete = vKey
+									} else { confirmVariantDelete = nil  }
+								}
+							),
+							titleVisibility: .visible
+						) {
+							Button("Delete", role: .destructive) {
+								confirmVariantDelete = nil
+								DispatchQueue.main.async {
+									withAnimation {
+										variantKeys.removeAll(where: { $0 == vKey } )
+									}
+									let changes: [Change] = [.times_variants_delete(vKey, timetable: tblIndex)]
+									do {
+										try store.distributeChanges(changes)
+										store.applyChanges(changes)
+									} catch {
+										Logger.editTimes.fault("Saving failed. Undoing visual deletion and notifying user...")
+										variantKeys = Array(times.variants.keys)
+										deleteFailed = times.variants[vKey]!.name
+									}
+								}
+							}
+//							.onAppear { Logger.editTimes.debug("Confirmation dialogue triggered for \(vKey) as \(confirmVariantDelete)") }
+						}
+					}
+					.alert("Couldn't delete \(deleteFailed ?? "-")", isPresented: Binding(get: {deleteFailed != nil}, set: {deleteFailed = $0 ? "-" : nil})) {
+						Button("OK") { deleteFailed = nil }
 					}
 
 					Menu {
 						NavigationLink("From Standard...") {
-							{
-								do {
-									return try AnyView( TimesVariantEditor(blank: false, tblIndex: 0) )
-								} catch TimesVariantEditor.NewVariantError.couldntGetNextKey(keys: let keys, attempt: let attempts) {
-									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys, privacy: .public). Tried \(attempts, privacy: .public)")
-									return AnyView( VStack {
-										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
-										Text("Error \(#line)").bold()
-										Text(String(describing: keys))
-										Text(String(describing: attempts))
-									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
-								} catch {
-									Logger.editTimes.fault("TimesVariantEditor threw other than TimesVariantEditor.NewVariantError.couldntGetNextKeys")
-									return AnyView( VStack {
-										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
-										Text("Catastrophic Error (\(#line))").bold()
-										Text("Variant editor threw other than .couldntGetNextKeys")
-									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
-								}
-							}()
+							TimesVariantEditor(blank: false, tblIndex: 0)
 						}
 						NavigationLink("Blank...") {
-							{
-								do {
-									return try AnyView( TimesVariantEditor(blank: true, tblIndex: 0) )
-								} catch TimesVariantEditor.NewVariantError.couldntGetNextKey(keys: let keys, attempt: let attempts) {
-									Logger.editTimes.fault("Couldn't get a blank opening for a new variant in \(keys, privacy: .public). Tried \(attempts, privacy: .public)")
-									return AnyView( VStack {
-										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
-										Text("Error \(#line)").bold()
-										Text(String(describing: keys))
-										Text(String(describing: attempts))
-									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
-								} catch {
-									Logger.editTimes.fault("TimesVariantEditor threw other than TimesVariantEditor.NewVariantError.couldntGetNextKeys")
-									return AnyView( VStack {
-										Image(systemName: "exclamationmark.triangle").font(.title).bold(false)
-										Text("Catastrophic Error (\(#line))").bold()
-										Text("Variant editor threw other than .couldntGetNextKeys")
-									}.foregroundStyle(.secondary).multilineTextAlignment(.center) )
-								}
-							}()
+							TimesVariantEditor(blank: true, tblIndex: 0)
 						}
 					} label: {
 						HStack {
@@ -981,6 +993,9 @@ struct TimesEditor: View {
 					}
 				}
 			}
+
+		}.onAppear {
+			variantKeys = Array(times.variants.keys)
 		}
 	}
 }

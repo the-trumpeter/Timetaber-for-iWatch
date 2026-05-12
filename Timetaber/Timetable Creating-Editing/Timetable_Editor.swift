@@ -179,7 +179,7 @@ fileprivate struct TimetablePeriodRow: View {
 						.frame(width: 25, height: 25)//, alignment: .trailing)
 						.font(.title3)
 						.padding(2)
-						.foregroundColor(course.colour.contrastingTextColor)
+						.foregroundColor((course2 != nil) ? course.colour.contrastingTextColor : .primary)
 
 				}
 				.if(course2 != nil) {

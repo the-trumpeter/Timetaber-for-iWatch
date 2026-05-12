@@ -353,10 +353,10 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 	)
 	let week = isweekA ? WeekAB.a : .b
 
-	Logger.dateTime.notice("The weekday today is \(todayWeekday, privacy: .public). It is week \(String(reflecting: week), privacy: .public)")
+	Logger.dateTime.warning("The weekday today is \(todayWeekday, privacy: .public). It is week \(String(reflecting: week), privacy: .public)")
 
 	guard !timetable.isNew else{
-		Logger.dateTime.notice("Got current class. There's no school at the moment. [noTimetable]")
+		Logger.dateTime.warning("Got current class. There's no school at the moment. [noTimetable]")
 		return (
 			current: noSchool(.noTimetable),
 			next: noSchool(.noTimetable),
@@ -365,7 +365,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 	}
 
 	guard storage.termRunningGB else { // if holidays then return
-		Logger.dateTime.notice("Got current class. There's no school at the moment. [noTerm]")
+		Logger.dateTime.warning("Got current class. There's no school at the moment. [noTerm]")
 		return (
 			current: noSchool(.noTerm),
 			next: noSchool(.noTerm),
@@ -375,7 +375,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 	guard todayWeekday >= 2, todayWeekday <= 6 else {
-		Logger.dateTime.notice("Got current class. There's no school at the moment. [weekend]")
+		Logger.dateTime.warning("Got current class. There's no school at the moment. [weekend]")
 		return (
 			current: noSchool(.weekend),
 			next: noSchool(.weekend),
@@ -414,7 +414,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 	if time24Now < times2Day.first!.0 { // before first course/period/time
 		setCourseChangeAlarm(for: times2Day.first!.0)
-		Logger.dateTime.notice("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!.0, privacy: .public))]")
+		Logger.dateTime.warning("Got current class. There's no school at the moment. [beforeClass(startTime: \(times2Day.first!.0, privacy: .public))]")
 
 		return (
 			current: noSchool(.beforeClass(startTime: times2Day.first!.0)),
@@ -429,7 +429,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 		) //MARK: Return D
 
 	} else if time24Now >= times2Day.last!.0 { // after last course/period/time
-		Logger.dateTime.notice("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!.0, privacy: .public)")
+		Logger.dateTime.warning("Got current class. There's no school at the moment. [afterClass]—ended at \(times2Day.last!.0, privacy: .public)")
 		//try setCourseChangeAlarm(for: times2Morrow!.first!) // TODO: setCourseChangeAlarm not configured for future days
 		return (
 			current: noSchool(.afterClass),
@@ -472,7 +472,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) == compare(\(compare, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public). Next class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(), privacy: .public)")
+			Logger.dateTime.warning("Got current class | now(\(now, privacy: .public)) == compare(\(compare, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public). Next class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(), privacy: .public)")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,
@@ -503,7 +503,7 @@ func getCurrentClass2(date: Date, timetable: Timetable) -> (current: DisplayCour
 
 
 			setCourseChangeAlarm(for: next)
-			Logger.dateTime.notice("Got current class | now(\(now, privacy: .public)) > compare(\(compare, privacy: .public)) && now(\(now, privacy: .public)) < next(\(next, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public)\nNext class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(), privacy: .public)")
+			Logger.dateTime.warning("Got current class | now(\(now, privacy: .public)) > compare(\(compare, privacy: .public)) && now(\(now, privacy: .public)) < next(\(next, privacy: .public)) \nThe current class is \(currentCourseLocal.name, privacy: .public)\nNext class is \(nextCourseLocal.name, privacy: .public), due at \(next.display(), privacy: .public)")
 			return (
 				current: currentCourseLocal,
 				next: nextCourseLocal,
