@@ -26,15 +26,24 @@ struct Course2: Codable, Equatable {
 //	var room:	 String?
 	var colour:	 Colour
 
-	var listName:	String?
-	var listIcon:	String
-	var iOSListIcon:String?
+//	var listName:	String?
+//	var listIcon:	String
+//	var iOSListIcon:String?
 	var joke:		String?
 
 	let type:	CourseType?
     
-	init(_ name: String, icon: String, rooms: [String] = [], colour: String,
-		 listName: String? = nil, listIcon: String? = nil, iOSListIcon: String? = nil, joke: String? = nil, identifier: CourseType? = nil)
+	init(
+		_ name: String,
+		icon: String,
+		rooms: [String] = [],
+		colour: String,
+//		listName: String? = nil,
+//		listIcon: String? = nil,
+//		iOSListIcon: String? = nil,
+		joke: String? = nil,
+		identifier: CourseType? = nil
+	)
 	{
 
 		self.name = name
@@ -42,9 +51,9 @@ struct Course2: Codable, Equatable {
 		self.rooms = Dictionary(uniqueKeysWithValues: zip(rooms.indices, rooms))
 		self.colour = Colour(colour.lowercased())
 
-		self.listName = listName
-		self.listIcon = listIcon ?? (icon+".circle.fill")
-		self.iOSListIcon = iOSListIcon ?? nil
+//		self.listName = listName
+//		self.listIcon = listIcon ?? (icon+".circle.fill")
+//		self.iOSListIcon = iOSListIcon ?? nil
 
 		self.joke = joke
 
@@ -57,8 +66,8 @@ struct Course2: Codable, Equatable {
 		self.icon = course.icon
 		self.rooms = if course.room != nil { [0: course.room!] } else { [:] }
 		self.colour = course.colour
-		self.listName = course.listName
-		self.listIcon = course.listIcon
+//		self.listName = course.listName
+//		self.listIcon = course.listIcon
 		self.joke = course.joke
 		self.type = identifier ?? course.type ?? nil
 	}
@@ -76,8 +85,8 @@ struct DisplayCourse {
 	let room: String?
 	let colour: Colour
 
-	let listName: String
-	let listIcon: String
+//	let listName: String
+//	let listIcon: String
 	let joke: String?
 	let type: CourseType? //TODO: What on earth is this used for?
 
@@ -85,8 +94,8 @@ struct DisplayCourse {
 			icon: 		String,
 			room: 		String? 	= nil,
 			colour: 	String,
-			listName: 	String? 	= nil,
-			listIcon: 	String? 	= nil,
+//			listName: 	String? 	= nil,
+//			listIcon: 	String? 	= nil,
 			joke: 		String? 	= nil,
 			identifier:	CourseType? = nil
 	)
@@ -97,8 +106,8 @@ struct DisplayCourse {
 		self.room = room
 		self.colour = Colour(colour.lowercased())
 
-		self.listName = listName ?? name
-		self.listIcon = listIcon ?? (icon+".circle.fill")
+//		self.listName = listName ?? name
+//		self.listIcon = listIcon ?? (icon+".circle.fill")
 
 		self.joke = joke
 		self.type = identifier
@@ -110,8 +119,8 @@ struct DisplayCourse {
 		self.icon = course2.icon
 		self.room = room
 		self.colour = course2.colour
-		self.listName = course2.listName ?? name
-		self.listIcon = course2.listIcon
+//		self.listName = course2.listName ?? name
+//		self.listIcon = course2.listIcon
 		self.joke = course2.joke
 		self.type = identifier ?? course2.type ?? CourseType.standard
 	}

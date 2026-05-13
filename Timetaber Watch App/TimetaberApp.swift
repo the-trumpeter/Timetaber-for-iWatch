@@ -26,20 +26,20 @@ struct Timetaber_Watch_AppApp: App {
 				}
 			}
 		)
-        WindowGroup {
-            
-            TabView{
-                HomeView()
-                    .environmentObject(LocalData.shared)
-                
-                TimetableView()//ListView()
-                    .environmentObject(LocalData.shared)
-                
-                //SettingsView()
-                //    .environmentObject(LocalData.shared)
+		WindowGroup {
 
-            }
-            .tabViewStyle(.carousel)
+			TabView{
+				HomeView()
+					.environmentObject(LocalData.shared)
+
+				TimetableView()//ListView()
+					.environmentObject(LocalData.shared)
+
+				//SettingsView()
+				//    .environmentObject(LocalData.shared)
+
+			}
+			.tabViewStyle(.carousel)
             .onAppear() {
                 log()
             }

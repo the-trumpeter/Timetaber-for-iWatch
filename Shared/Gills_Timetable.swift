@@ -38,7 +38,7 @@ var chaos: Timetable = {
 	let uniID = 			UUID()
 
 	let courses = [
-		checkInID: Course2("Check In",    icon: "face.smiling",                rooms: ["HG1"],                 colour: "Graphite",                                listIcon: "face.smiling.inverse"),
+		checkInID: Course2("Check In",    icon: "face.smiling",                rooms: ["HG1"],                 colour: "Graphite"),
 		englishID: Course2("English",         icon: "book.closed",                 rooms: ["BT4", "BT2"],            colour: "Lemon"),
 		hsieID: Course2("HSIE",            icon: "building.columns",                 rooms: ["BG8"],                 colour: "Rees1"),
 		juniorCBID: Course2("Junior C.B.", icon: "music.note",                                                 colour: "Cherry"),
@@ -47,16 +47,16 @@ var chaos: Timetable = {
 		mathsID: Course2("Maths",        icon: "number",                     rooms: ["FT2", "FT8"],                 colour: "Rose"),
 		musicLessonID: Course2("Music Lesson", icon: "music.note",                                             colour: "Graphite"),
 		multimediaID: Course2("Multimedia",     icon: "movieclapper",                rooms: ["GG2"],                 colour: "Blueberry"),
-		marchingBandID: Course2("Marching Band",icon: "flag.filled.and.flag.crossed",                                 colour: "Cherry",    listName:"Marching Bd.",    listIcon: "flag.2.crossed.circle.fill", iOSListIcon: "flag"),
+		marchingBandID: Course2("Marching Band",icon: "flag.filled.and.flag.crossed",                                 colour: "Cherry"),
 		crixID: Course2("Creative Ind.",     icon: "theatermasks",                    rooms: ["GG3"],    colour: "Blueberry"),
 		pdhpeID: Course2("PDHPE",         icon: "figure.run",                 rooms: ["PRAC", "THEORY"],        colour: "Lime"),
 		recessID: Course2("Recess",         icon: "fork.knife",                                                 colour: "Graphite"),
 		seniorCBID: Course2("Senior C.B.",     icon: "music.note",                                                 colour: "Cherry"),
-		scienceID: Course2("Science",         icon: "flask",                         rooms: ["FG5"],                 colour: "Ice",                                    listIcon: "flame.circle.fill"),
-		stageBandID: Course2("Stage Band",    icon: "music.note",                                                 colour: "Cherry",     listName: "Senior S.B."),
+		scienceID: Course2("Science",         icon: "flask",                         rooms: ["FG5"],                 colour: "Ice"),
+		stageBandID: Course2("Stage Band",    icon: "music.note",                                                 colour: "Cherry"),
 		iStemID: Course2("iSTEM",             icon: "cpu",                     rooms: ["GG2"],                 colour: "Blueberry"),
 		theatreCrewID: Course2("Theatre Crew", icon: "headset",                                                 colour: "Peach"),
-		yearAssemblyID: Course2("Year Assembly",icon: "megaphone",                                                 colour: "Graphite",    listName: "Assembly",        listIcon: "person.2.circle.fill"),
+		yearAssemblyID: Course2("Year Assembly",icon: "megaphone",                                                 colour: "Graphite"),	
 		travelID: Course2("Travel", 				icon: "bus.fill", colour: "graphite"),
 		gdgID: Course2("GDGs", 				icon: "book.closed", rooms: [], colour: "graphite"),
 		uniID: Course2("Law @ UoN", 				icon: "graduationcap", rooms: ["X502"], colour: "black")

@@ -52,5 +52,5 @@ func noSchool(_ key: TimeCase? = nil) -> DisplayCourse {
 ///
 /// With the planned use of TestFlight, the direction to the user to file bug report(s) may change.
 func failCourse(feedback: String? = "None") -> DisplayCourse {
-	return DisplayCourse("Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "Graphite", listIcon: "exclamationmark.triangle")
+	return DisplayCourse("Error", icon: "exclamationmark.triangle", room: feedback ?? "None", colour: "Graphite")
 }

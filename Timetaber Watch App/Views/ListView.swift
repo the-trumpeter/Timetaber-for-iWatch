@@ -12,12 +12,6 @@ import UIKit
 
 
 
-let customSymbols = [
-	"cpu": Image("cpu.circle.fill"),
-	"movieclapper": Image("movieclapper.circle.fill"),
-	"bus.fill": Image("bus.circle.fill"),
-	"music.note": Image("music.note.circle.fill"),
-]
 
 
 
@@ -44,7 +38,7 @@ fileprivate struct DisplayEntry: View {
 		timesPair: (Time24, UUID?)
 	)
 	{
-		//Logger.<#logger#>.<#action#>("Start DisplayEntry init")
+
 		self.isBold = (LocalData.shared.currentTime == timeslot) ? true : false
 
 		self.day = timetableDay
@@ -81,29 +75,42 @@ fileprivate struct DisplayEntry: View {
 
 		HStack{
 			let clr = if course.colour.resolve(in: env) == Colour("black").resolve(in: env) { Colour("white") } else { course.colour }
-			Group {
-				if let img = customSymbols[course.icon] {
-					img
+
+			ZStack {
+				if course.icon == "face.smiling" {
+					Image(systemName: "face.smiling.inverse")
 						.resizable()
 						.aspectRatio(contentMode: .fit)
-						.symbolVariant(.circle)
-						.symbolVariant(.fill)
+						.foregroundStyle(clr)
 				} else {
-					Image(systemName: course.listIcon)
-						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.symbolVariant(.circle)
-						.symbolVariant(.fill)
+					Circle()
+						.foregroundStyle(clr)
+						.frame(maxWidth: 25, maxHeight: 25)
+
+					// I tried using circle.fill variants but so many of the symbols didn't support that that it would be inefficient to bundle assets for them. This is the alternative approach.
+					Group {
+						if let img = UIImage(named: course.icon) {
+							Image(uiImage: img)
+							//							.resizable()
+							//							.aspectRatio(contentMode: .fit)
+						} else {
+							Image(systemName: course.icon)
+							//							.resizable()
+							//							.aspectRatio(contentMode: .fit)
+						}
+					}
+					//				.frame(maxWidth: 25, maxHeight: 25)
+					.scaleEffect(0.9)
+					.foregroundStyle(.black)
 				}
 			}
-			.foregroundStyle(clr)
 			.frame(maxWidth: 25, maxHeight: 25)
 			.padding(.leading, 2)
 			.padding(.trailing, 3)
 
 			VStack {
 				HStack {
-					Text(course.listName)
+					Text(course.name)
 						.bold()
 					Spacer()
 

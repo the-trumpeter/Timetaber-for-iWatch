@@ -73,7 +73,7 @@ fileprivate struct DisplayEntry: View {
 					.transition(.opacity.combined(with: .move(edge: .leading)))
 			}
 */
-			Image(systemName: listedCourse.iOSListIcon ?? listedCourse.icon)
+			Image(systemName: listedCourse.icon)
 //				.bold(isBold)
 				.font(.title)
 				.frame(width: 30)

@@ -69,10 +69,15 @@ struct HomeView: View {
 				
 				// CURRENT CLASS
 				Group {
-					Image(systemName: current.icon)//data.currentCourse.icon)
-						.imageScale(.large)
-						.font(.system(size: 27).weight(.semibold))
-					
+					if let img = UIImage(named: current.icon) {
+						Image(uiImage: img)
+							.imageScale(.large)
+							.font(.system(size: 27).weight(.semibold))
+					} else {
+						Image(systemName: current.icon)//data.currentCourse.icon)
+							.imageScale(.large)
+							.font(.system(size: 27).weight(.semibold))
+					}
 					Text(current.name)//data.currentCourse.name)
 						.font(.system(size:25).weight(.bold))
 						.padding(
