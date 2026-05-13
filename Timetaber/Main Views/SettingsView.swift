@@ -153,7 +153,7 @@ struct SettingsView: View {
 					Button("Start Week B") {
 						withAnimation {
 							do {
-								try startTermProcess(ghostWeek: false)
+								try startTermProcess(ghostWeek: true)
 							} catch {
 								alerting = false
 								alertingFail = #line
