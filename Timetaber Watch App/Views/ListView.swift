@@ -85,7 +85,7 @@ fileprivate struct DisplayEntry: View {
 				} else {
 					Circle()
 						.foregroundStyle(clr)
-						.frame(maxWidth: 25, maxHeight: 25)
+						.frame(maxWidth: 30, maxHeight: 30)
 
 					// I tried using circle.fill variants but so many of the symbols didn't support that that it would be inefficient to bundle assets for them. This is the alternative approach.
 					Group {
@@ -100,11 +100,12 @@ fileprivate struct DisplayEntry: View {
 						}
 					}
 					//				.frame(maxWidth: 25, maxHeight: 25)
-					.scaleEffect(0.9)
+					//.scaleEffect(0.9)
+					.font(.system(size: 17)) //14pt for 25ptø circle
 					.foregroundStyle(.black)
 				}
 			}
-			.frame(maxWidth: 25, maxHeight: 25)
+			.frame(maxWidth: 30, maxHeight: 30)
 			.padding(.leading, 2)
 			.padding(.trailing, 3)
 
@@ -284,7 +285,7 @@ struct TimetableView: View {
 							.padding(.bottom, 1)
 							.listRowBackground(
 								Colour.clear
-									.opacity(0.2)
+									.opacity(0.3)
 									.clipShape(RoundedRectangle(cornerRadius: 10))
 							)
 						}
