@@ -422,6 +422,7 @@ struct Timetable: Codable {
 
 	 Do not run `applyChanges` unless you have first successfully sent those changes to a user's Apple Watch via `distrubuteChanges`. If no Apple Watch is present, `distributeChanges` will return success.
 	 */
+	@available(*, deprecated, message: "Use 'Storage.applyChanges()' instead.")
 	mutating func applyChanges(_ changes: [Change] ) {
 		let name = self.name
 		var successChanges: [Change] = []
@@ -538,6 +539,17 @@ struct Timetable: Codable {
 					self.timetable.remove(at: wkIndex)
 					successChanges.append(change)
 
+				case .times_variants_delete(let del, timetable: _):
+					self.times.variants.removeValue(forKey: del)
+					// Replace mappings referencing the deleted variant with .standard
+					for (wkday, mapping) in self.times.mapping {
+						if case .variant(let key) = mapping, key == del {
+							self.times.mapping[wkday] = .standard
+							Logger.timetableChanges.notice("Timetable removed variant from mapping for day \(wkday), replaced with .standard")
+						}
+					}
+					successChanges.append(change)
+
 				default:
 				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change), privacy: .public) to timetable \(name, privacy: .public)")
 
@@ -644,5 +656,4 @@ enum Change: Codable {
 	case	times_variant_key(weekday: Weekday, variant: Times.TimingSet?, timetable: Int)
 
 }
-
 
