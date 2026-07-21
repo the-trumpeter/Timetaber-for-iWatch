@@ -422,238 +422,145 @@ struct Timetable: Codable {
 
 	 Do not run `applyChanges` unless you have first successfully sent those changes to a user's Apple Watch via `distrubuteChanges`. If no Apple Watch is present, `distributeChanges` will return success.
 	 */
-	@available(*, deprecated, message: "Use 'Storage.applyChanges()' instead.")
-	mutating func applyChanges(_ changes: [Change] ) {
-		let name = self.name
-		var successChanges: [Change] = []
-		var failChanges: [Change] = []
-		for change in changes {
+//	@available(*, deprecated, message: "Use 'Storage.applyChanges()' instead.")
+//	mutating func applyChanges(_ changes: [Change] ) {
+//		let name = self.name
+//		var successChanges: [Change] = []
+//		var failChanges: [Change] = []
+//		for change in changes {
+//
+//			switch change {
+//
+//				case .course_create(index: let index, let value, timetable: _):
+//					self.courses.updateValue(value, forKey:  index )
+//				successChanges.append(change)
+//
+//				case .course_delete(index: let index, timetable: _):
+//					self.courses.removeValue(forKey: index)
+//				successChanges.append(change)
+//
+//				case .course_modify(index: let index, let coursechange, timetable: _):
+//					switch coursechange {
+//						case .colour(let new): self.courses[index]?.colour = new
+//						case .rooms(let new): self.courses[index]?.rooms = new
+//						case .icon(let new): self.courses[index]?.icon = new
+//						case .name(let new): self.courses[index]?.name = new
+//					}
+//				successChanges.append(change)
+//
+//
+//				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: _):
+//					guard let variant else {
+//						self.times.mapping.updateValue(.standard, forKey: wkday)
+//						break
+//					}
+//					self.times.mapping.updateValue(variant, forKey: wkday)
+//				successChanges.append(change)
+//
+//				case .times_variants_add(key: let key, let variant, timetable: _):
+//					self.times.variants.updateValue(variant, forKey: key)
+//				successChanges.append(change)
+//
+//
+//
+//				case .times_variant_modify(target: let target, let variantChange, timetable: _):
+//					switch variantChange {
+//
+//						case .rename(let name):
+//							switch target {
+//							case .standard: failChanges.append(change); continue
+//							case .variant(let key):
+//								self.times.variants[key]?.name = name
+//							}
+//
+//						case .modifyEntry(let setIdx, to: let value):
+//							switch target {
+//								case .standard: self.times.standard[setIdx] = value
+//								case .variant(let key): self.times.variants[key]?.variant[setIdx] = value
+//							}
+//
+//						case .deleteEntry(let deletee):
+//							switch target {
+//								case .standard: self.times.standard.removeValue(forKey: deletee)
+//								case .variant(let key): self.times.variants[key]?.variant.removeValue(forKey: deletee)
+//							}
+//					}
+//				successChanges.append(change)
+//
+//				case .timetable_icon(let icon, timetable: _):
+//				self.icon = icon
+//				successChanges.append(change)
+//
+//				case .timetable_name(let name, timetable: _):
+//					self.name = name
+//				successChanges.append(change)
+//
+//
+//				case .week_add(let week, position: let pos, timetable: _):
+//					guard self.timetable.count < 2 else {
+//						Logger.timetableChanges.fault("Timetable cannot have more than 2 alternating weeks due to current beta limitations. \(String(reflecting: change), privacy: .public)")
+//						failChanges.append(change)
+//						continue
+//					}
+//					self.timetable.insert(week, at: pos)
+//				successChanges.append(change)
+//
+//				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, period: let period, let data, timetable: _):
+//					switch wkday {
+//						case 2: self.timetable[wkIndex].monday 	[period] 	= data
+//						case 3: self.timetable[wkIndex].tuesday	[period] 	= data
+//						case 4: self.timetable[wkIndex].wednesday	[period]	= data
+//						case 5: self.timetable[wkIndex].thursday	[period]	= data
+//						case 6: self.timetable[wkIndex].friday 	[period] 	= data
+//						default: failChanges.append(change); continue
+//					}
+//					successChanges.append(change)
+//
+//				case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: _):
+//					let weekIndex: Int = (wkIndex == .a) ? 0 : 1
+//					guard self.timetable.indices.contains(weekIndex) else {
+//						Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(reflecting: wkIndex), privacy: .public)")
+//						failChanges.append(change)
+//						continue
+//					}
+//					switch wkday {
+//						case 2: self.timetable[weekIndex].monday[pd] = nil
+//						case 3: self.timetable[weekIndex].tuesday[pd] = nil
+//						case 4: self.timetable[weekIndex].wednesday[pd] = nil
+//						case 5: self.timetable[weekIndex].thursday[pd] = nil
+//						case 6: self.timetable[weekIndex].friday[pd] = nil
+//						default:
+//							failChanges.append(change)
+//							continue
+//					}
+//					successChanges.append(change)
+//
+//				case .week_remove(let wkIndex, timetable: _):
+//					self.timetable.remove(at: wkIndex)
+//					successChanges.append(change)
+//
+//				case .times_variants_delete(let del, timetable: _):
+//					self.times.variants.removeValue(forKey: del)
+//					// Replace mappings referencing the deleted variant with .standard
+//					for (wkday, mapping) in self.times.mapping {
+//						if case .variant(let key) = mapping, key == del {
+//							self.times.mapping[wkday] = .standard
+//							Logger.timetableChanges.notice("Timetable removed variant from mapping for day \(wkday), replaced with .standard")
+//						}
+//					}
+//					successChanges.append(change)
+//
+//				default:
+//				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change), privacy: .public) to timetable \(name, privacy: .public)")
+//
+//			}//switch
+//
+//		}//for each
+//
+//		Logger.timetableChanges.notice("Successfully applied changes to timetable \(name, privacy: .public): \n\t\(successChanges, privacy: .public)")
+//		if !failChanges.isEmpty { Logger.timetableChanges.error("Couldn't apply changes:\n\t\t\(failChanges, privacy: .public)") }
+//	}//func applyChanges(_)
 
-			switch change {
-
-				case .course_create(index: let index, let value, timetable: _):
-					self.courses.updateValue(value, forKey:  index )
-				successChanges.append(change)
-
-				case .course_delete(index: let index, timetable: _):
-					self.courses.removeValue(forKey: index)
-				successChanges.append(change)
-
-				case .course_modify(index: let index, let coursechange, timetable: _):
-					switch coursechange {
-						case .colour(let new): self.courses[index]?.colour = new
-						case .rooms(let new): self.courses[index]?.rooms = new
-						case .icon(let new): self.courses[index]?.icon = new
-						case .name(let new): self.courses[index]?.name = new
-					}
-				successChanges.append(change)
-
-
-				case .times_variant_key(weekday: let wkday, variant: let variant, timetable: _):
-					guard let variant else {
-						self.times.mapping.updateValue(.standard, forKey: wkday)
-						break
-					}
-					self.times.mapping.updateValue(variant, forKey: wkday)
-				successChanges.append(change)
-
-				case .times_variants_add(key: let key, let variant, timetable: _):
-					self.times.variants.updateValue(variant, forKey: key)
-				successChanges.append(change)
-
-
-
-				case .times_variant_modify(target: let target, let variantChange, timetable: _):
-					switch variantChange {
-
-						case .rename(let name):
-							switch target {
-							case .standard: failChanges.append(change); continue
-							case .variant(let key):
-								self.times.variants[key]?.name = name
-							}
-
-						case .modifyEntry(let setIdx, to: let value):
-							switch target {
-								case .standard: self.times.standard[setIdx] = value
-								case .variant(let key): self.times.variants[key]?.variant[setIdx] = value
-							}
-
-						case .deleteEntry(let deletee):
-							switch target {
-								case .standard: self.times.standard.removeValue(forKey: deletee)
-								case .variant(let key): self.times.variants[key]?.variant.removeValue(forKey: deletee)
-							}
-					}
-				successChanges.append(change)
-
-				case .timetable_icon(let icon, timetable: _):
-				self.icon = icon
-				successChanges.append(change)
-
-				case .timetable_name(let name, timetable: _):
-					self.name = name
-				successChanges.append(change)
-
-
-				case .week_add(let week, position: let pos, timetable: _):
-					guard self.timetable.count < 2 else {
-						Logger.timetableChanges.fault("Timetable cannot have more than 2 alternating weeks due to current beta limitations. \(String(reflecting: change), privacy: .public)")
-						failChanges.append(change)
-						continue
-					}
-					self.timetable.insert(week, at: pos)
-				successChanges.append(change)
-
-				case .week_modifyEntry(weekIndex: let wkIndex, weekday: let wkday, period: let period, let data, timetable: _):
-					switch wkday {
-						case 2: self.timetable[wkIndex].monday 	[period] 	= data
-						case 3: self.timetable[wkIndex].tuesday	[period] 	= data
-						case 4: self.timetable[wkIndex].wednesday	[period]	= data
-						case 5: self.timetable[wkIndex].thursday	[period]	= data
-						case 6: self.timetable[wkIndex].friday 	[period] 	= data
-						default: failChanges.append(change); continue
-					}
-					successChanges.append(change)
-
-				case .week_makeFreeEntry(weekab: let wkIndex, weekday: let wkday, period: let pd, timetable: _):
-					let weekIndex: Int = (wkIndex == .a) ? 0 : 1
-					guard self.timetable.indices.contains(weekIndex) else {
-						Logger.timetableChanges.fault("Invalid week index when making free entry: \(String(reflecting: wkIndex), privacy: .public)")
-						failChanges.append(change)
-						continue
-					}
-					switch wkday {
-						case 2: self.timetable[weekIndex].monday[pd] = nil
-						case 3: self.timetable[weekIndex].tuesday[pd] = nil
-						case 4: self.timetable[weekIndex].wednesday[pd] = nil
-						case 5: self.timetable[weekIndex].thursday[pd] = nil
-						case 6: self.timetable[weekIndex].friday[pd] = nil
-						default:
-							failChanges.append(change)
-							continue
-					}
-					successChanges.append(change)
-
-				case .week_remove(let wkIndex, timetable: _):
-					self.timetable.remove(at: wkIndex)
-					successChanges.append(change)
-
-				case .times_variants_delete(let del, timetable: _):
-					self.times.variants.removeValue(forKey: del)
-					// Replace mappings referencing the deleted variant with .standard
-					for (wkday, mapping) in self.times.mapping {
-						if case .variant(let key) = mapping, key == del {
-							self.times.mapping[wkday] = .standard
-							Logger.timetableChanges.notice("Timetable removed variant from mapping for day \(wkday), replaced with .standard")
-						}
-					}
-					successChanges.append(change)
-
-				default:
-				Logger.timetableChanges.fault("Couldn't compile \(String(reflecting: change), privacy: .public) to timetable \(name, privacy: .public)")
-
-			}//switch
-
-		}//for each
-
-		Logger.timetableChanges.notice("Successfully applied changes to timetable \(name, privacy: .public): \n\t\(successChanges, privacy: .public)")
-		if !failChanges.isEmpty { Logger.timetableChanges.error("Couldn't apply changes:\n\t\t\(failChanges, privacy: .public)") }
-	}//func applyChanges(_)
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-//MARK: - Device-persistent Mutation
-
-/**
- A modification to a user's timetable(s).
-
- In order to save battery and processing power when syncing WatchOS and iOS apps, instead of copying over the whole timetable again when it is modified (or similar), compile the changes that the user has made into a smaller-sized 'list of instructions' that the WatchOS app can follow in order to produce an identical timetable to what is on the source-of-truth iOS app.
-
- Changes can be applied to a `Timetable`, or to `Storage` by calling the function `applyChanges(_:)`.
-
- See `applyChanges(_:)` and `distributeChanges(_:)` for more information on the application of changes.
- */
-enum Change: Codable {
-
-	//MARK: Timetables
-		///	Create a timetable
-	case	timetable_create(Timetable, index: Int)
-		///	Change a timetable's name
-	case	timetable_name(String, timetable: Int)
-		///	Change a timetable's icon
-	case	timetable_icon(String, timetable: Int)
-		///	Delete a timetable
-	case	timetable_delete(Int)
-
-
-
-	//MARK: Courses
-	/// Subproperty of `Change`, specifically dealing with changes within a `Course2`.
-	enum Course2Change: Codable {
-		/// Change a course's name
-		case name(String)
-		/// Change a course's icon
-		case icon(String)
-		/// Change a course's colour
-		case colour(Colour)
-		/// Change (redefine) a course's rooms
-		case rooms([Int: String])
-	}
-
-	
-		/// Create a `Course2` inside the timetable
-	case	course_create(index: UUID, Course2, timetable: Int)
-		/// Modify a course using a `Course2Change`
-	case	course_modify(index: UUID, Course2Change, timetable: Int)
-		/// Delete a course
-	case	course_delete(index: UUID, timetable: Int)
-
-
-
-	//MARK: Weeks
-		/// Add a week to the timetable
-	case	week_add(Timetable.TimetabledWeek, position: Int, timetable: Int)
-		/// Modify an entry in a week of the timetable
-	case	week_modifyEntry(weekIndex: Int, weekday: Weekday, period: UUID, Times.Period.Contents, timetable: Int)
-		///	Clear an entry of a week; make it a free period
-	case 	week_makeFreeEntry(weekab: WeekAB, weekday: Weekday, period: UUID, timetable: Int)
-		/// Remove a timetabled week
-	case	week_remove(Int, timetable: Int)
-
-
-
-	//MARK: Times
-
-	enum TimesVariantChange: Codable {
-		/// Rename a variation of day-period timing
-		case rename(_ to: String)
-		/// Change a `Period` in a variation of day-period timing
-		case modifyEntry(_ entry: UUID, to: Times.Period)
-		/// Delete a `Period` **in** a variation of day-period timing
-		case deleteEntry(_ entry: UUID)
-	}
-
-		/// Add a variation of period times
-	case	times_variants_add(key: UUID, Times.Variant, timetable: Int)
-		///	Modify a variation of day-period timing
-	case	times_variant_modify(target: Times.TimingSet, _ change: TimesVariantChange, timetable: Int)
-		/// Delete **a** variation of period times. Not to be confused with `times_variants_deleteEntry`
-	case 	times_variants_delete(_ key: UUID, timetable: Int)
-		/// Change the  period-times variation mapping for a day
-	case	times_variant_key(weekday: Weekday, variant: Times.TimingSet?, timetable: Int)
 
 }
 
