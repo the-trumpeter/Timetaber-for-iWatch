@@ -33,7 +33,7 @@ class Storage: ObservableObject {
 
 	static let shared = Storage() //there is LocalData.storage, but it points here
 
-	@AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = false
+	@AppStorage("timetaber.userdefaults.termRunning") var termRunningGB = true
 	@AppStorage("timetaber.userdefaults.ghostWeek") var ghostWeekGB = false
 	
 	#if os(iOS)
@@ -92,7 +92,7 @@ class Storage: ObservableObject {
 			self.timetables = loaded
 			Logger.general.trace("Loaded timetables from persistence: count=\(loaded.count, privacy: .public)")
 		} else {
-			self.timetables = []
+			self.timetables = [chaos]
 			Logger.general.warning("Could not load timetables; leaving empty.")
 			do {
 				try saveTimetables()
