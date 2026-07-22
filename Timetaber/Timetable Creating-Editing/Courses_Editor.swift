@@ -160,9 +160,66 @@ fileprivate struct symbolchooser_new: View {
 
 
 
+//MARK: Room row
+fileprivate struct individualEditor_roomRow: View {
+	@Binding var course: Course2
+
+	let roomKey: Int
+
+	@State private var roomField = ""
+	@FocusState private var roomFieldIsFocused: Bool
+	@State private var animateableFocus = false
+
+	private func submit() {
+		withAnimation {
+			course.rooms.updateValue(roomField, forKey: roomKey)
+			roomFieldIsFocused = false
+		}
+	}
+
+	var body: some View {
+
+//		let text = Binding(
+//			get: { course.rooms[roomKey]! },
+//			set: { course.rooms.updateValue($0, forKey: roomKey) }
+//		)
+
+		HStack {
+			TextField("Room", text: $roomField) //TODO: Make editable
+				.swipeActions {
+					Button("Delete", systemImage: "trash", role: .destructive) { //TODO: Confirmation to delete course
+						course.rooms.removeValue(forKey: roomKey)
+					}.labelStyle(.iconOnly)
+				}
+				.multilineTextAlignment(.leading)
+				.focused($roomFieldIsFocused)
+				.onSubmit {
+					submit()
+				}
+
+			Spacer()
+			if animateableFocus /*roomField != course.rooms[roomKey]*/ {
+				Button("Save room", systemImage: "checkmark") {
+					submit()
+				}
+				.buttonStyle(.borderedProminent)
+				.labelStyle(.iconOnly)
+			}
+		}
+		.frame(minHeight: 31)
+		.onAppear {
+			roomField = course.rooms[roomKey]!
+		}
+		.onChange(of: roomFieldIsFocused) { _, new in
+			withAnimation(.interactiveSpring) { animateableFocus = new }
+		}
+
+
+	}
+}
 
 //MARK: ~/coursebutton/courseEdit
-fileprivate struct courseEdit: View {
+fileprivate struct individualEditor: View {
 
 	let tblIndex: Int
 	let pos: UUID
@@ -253,103 +310,7 @@ fileprivate struct courseEdit: View {
 						}
 						.padding(5)
 
-				}.sheet(isPresented: $coloursSheet) {
-
-					VStack {
-						//MARK: sheet
-						//Preview
-						HStack {
-							HStack {
-								let name = if course.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { "Course" } else { course.name }
-								Image(systemName: course.icon.lowercased()).font(.title)
-								Text(name).font(.title)
-							}
-							.foregroundColor(course.colour.contrastingTextColor)
-							.padding(5)
-							.background {
-								RoundedRectangle(cornerRadius: 10)
-									.foregroundStyle(course.colour)
-							}
-
-							Spacer()
-
-							//custom colour
-							Circle() //put identical circle behind so layout doesn't change
-								.fill(Colour.clear)
-								.frame(width: 30, height: 30)
-								.overlay {
-									Circle()
-										.stroke(Colour.clear, lineWidth: 2)
-								}
-								.padding(5)
-								.overlay { //layout-insensitive overlay of ColourPicker
-									ColourPicker("Course colour", selection: $course.colour, supportsOpacity: false)
-										.labelsHidden()
-										.colorPickerWheelFrame(width: 35, height: 35)
-								}
-						}
-						.padding(.bottom, 12)
-
-						//Colour grid
-						VStack {
-
-							//top 6, minus 'black'
-							HStack {
-								ForEach(1...5, id: \.self) { i in
-									let colour = colours[i]
-									Button { course.colour = Colour(colour) } label: {
-										Circle()
-											.fill(Colour(colour.lowercased()))
-											.frame(width: 30, height: 30)
-											.overlay {
-												Circle()
-													.stroke(Colour(colour.lowercased()).adjust(brightness: -0.2), lineWidth: 2)
-											}
-											.padding(5)
-											.overlay {
-												if course.colour == Colour(colour) {
-													Circle()
-														.stroke(Color.accentColor, lineWidth: 3)
-												}
-											}
-										if i != 5 { Spacer() }
-									}
-								}
-							}
-
-							//bottom
-							HStack {
-								//bottom 5 colours, minus 'white'
-								ForEach(7...11, id: \.self) { i in
-									let colour = colours[i]
-									Button { course.colour = Colour(colour) } label: {
-										Circle()
-											.fill(Colour(colour))
-											.frame(width: 30, height: 30)
-											.overlay {
-												Circle()
-													.stroke(Colour(colour).adjust(brightness: -0.2), lineWidth: 2)
-											}
-											.padding(5)
-											.overlay {
-												if course.colour == Colour(colour) {
-													Circle()
-														.stroke(Color.accentColor, lineWidth: 3)
-												}
-											}
-										if i != 11 { Spacer() }
-									}
-								}
-							}
-						}
-
-					}
-					.padding(.leading, 45)
-					.padding(.trailing, 45)
-
-					.presentationDetents([.height(210)])
-
-				} // colour (&sheet)
+				}.sheet(isPresented: $coloursSheet) { SentralColourPicker } // colour (&sheet)
 
 
 
@@ -358,36 +319,10 @@ fileprivate struct courseEdit: View {
 			//Header HStack end
 
 
-
-
-
-
-			//MARK: Old icon
-			//			HStack {
-			//				Image(systemName:
-			//						UIImage(systemName: course.icon.lowercased()) != nil ?
-			//					  course.icon.lowercased() : "questionmark.square.dashed"
-			//				)
-			//				.font(.title)
-			//				.frame(width: 30)
-			//				.padding(5)
-			//				.foregroundStyle(
-			//					UIImage(systemName: course.icon.lowercased()) != nil ?
-			//						.primary : .secondary
-			//				)
-			//				TextField("SF Symbol slug", text: $course.icon).font(.system(size: 20)).autocorrectionDisabled(); #warning("TODO Create SF Symbol chooser")
-			//
-			//			}.padding(.leading)
-
 			//MARK: Rooms
 			List {
 				ForEach(Array(course.rooms.keys), id: \.self) { roomKey in
-					Text(course.rooms[roomKey]!) //TODO: Make editable
-						.swipeActions {
-							Button("Delete", systemImage: "trash", role: .destructive) { //TODO: Confirmation to delete course
-								course.rooms.removeValue(forKey: roomKey)
-							}.labelStyle(.iconOnly)
-						}
+					individualEditor_roomRow(course: $course, roomKey: roomKey)
 				}
 				HStack {
 					TextField("Add Room", text: $pendingRoom)
@@ -435,11 +370,111 @@ fileprivate struct courseEdit: View {
 
 		}//.padding()
 
+
+	}
+}
+fileprivate extension individualEditor {
+
+	var SentralColourPicker: some View {
+
+		VStack {
+				  //Preview
+				  HStack {
+					  HStack {
+						  let name = if course.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { "Course" } else { course.name }
+						  Image(systemName: course.icon.lowercased()).font(.title)
+						  Text(name).font(.title)
+					  }
+					  .foregroundColor(course.colour.contrastingTextColor)
+					  .padding(5)
+					  .background {
+						  RoundedRectangle(cornerRadius: 10)
+							  .foregroundStyle(course.colour)
+					  }
+
+					  Spacer()
+
+					  //custom colour
+					  Circle() //put identical circle behind so layout doesn't change
+						  .fill(Colour.clear)
+						  .frame(width: 30, height: 30)
+						  .overlay {
+							  Circle()
+								  .stroke(Colour.clear, lineWidth: 2)
+						  }
+						  .padding(5)
+						  .overlay { //layout-insensitive overlay of ColourPicker
+							  ColourPicker("Course colour", selection: $course.colour, supportsOpacity: false)
+								  .labelsHidden()
+								  .colorPickerWheelFrame(width: 35, height: 35)
+						  }
+				  }
+				  .padding(.bottom, 12)
+
+				  //Colour grid
+				  VStack {
+
+					  //top 6, minus 'black'
+					  HStack {
+						  ForEach(1...5, id: \.self) { i in
+							  let colour = colours[i]
+							  Button { course.colour = Colour(colour) } label: {
+								  Circle()
+									  .fill(Colour(colour.lowercased()))
+									  .frame(width: 30, height: 30)
+									  .overlay {
+										  Circle()
+											  .stroke(Colour(colour.lowercased()).adjust(brightness: -0.2), lineWidth: 2)
+									  }
+									  .padding(5)
+									  .overlay {
+										  if course.colour == Colour(colour) {
+											  Circle()
+												  .stroke(Color.accentColor, lineWidth: 3)
+										  }
+									  }
+								  if i != 5 { Spacer() }
+							  }
+						  }
+					  }
+
+					  //bottom
+					  HStack {
+						  //bottom 5 colours, minus 'white'
+						  ForEach(7...11, id: \.self) { i in
+							  let colour = colours[i]
+							  Button { course.colour = Colour(colour) } label: {
+								  Circle()
+									  .fill(Colour(colour))
+									  .frame(width: 30, height: 30)
+									  .overlay {
+										  Circle()
+											  .stroke(Colour(colour).adjust(brightness: -0.2), lineWidth: 2)
+									  }
+									  .padding(5)
+									  .overlay {
+										  if course.colour == Colour(colour) {
+											  Circle()
+												  .stroke(Color.accentColor, lineWidth: 3)
+										  }
+									  }
+								  if i != 11 { Spacer() }
+							  }
+						  }
+					  }
+				  }
+
+			  }
+			  .padding(.leading, 45)
+			  .padding(.trailing, 45)
+
+			  .presentationDetents([.height(210)])
 	}
 }
 
+
 //MARK: TimetablesListEditor/timetableOptions/CoursesEditor/coursebutton
-fileprivate struct coursebutton: View {
+fileprivate struct listRow: View {
 	@State private var isPressed = false
 	let tblIndex: Int
 	var localCourses: Binding<[UUID: Course2]>
@@ -502,7 +537,7 @@ fileprivate struct coursebutton: View {
 		.disabled(!courseExists)
 
 		.sheet(isPresented: $showingSheet) {
-			courseEdit(tblIndex: tblIndex, pos: pos, isNewCourse: isNewCourse, parentCourse: course, course: course.wrappedValue, pendingChanges: pendingChanges)
+			individualEditor(tblIndex: tblIndex, pos: pos, isNewCourse: isNewCourse, parentCourse: course, course: course.wrappedValue, pendingChanges: pendingChanges)
 				.presentationDetents([.medium])
 			//INTERACTIVE DISMISS
 				.interactiveDismissDisabled()
@@ -517,7 +552,7 @@ fileprivate struct coursebutton: View {
 
 
 
-fileprivate struct CoursesListRows: View {
+fileprivate struct coursesListRows: View {
 	let sortedIDs: [UUID]
 	@Binding var localCourses: [UUID: Course2]
 	let tblIndex: Int
@@ -525,7 +560,7 @@ fileprivate struct CoursesListRows: View {
 
 	var body: some View {
 		ForEach(sortedIDs, id: \.self) { key in
-			coursebutton(localCourses: $localCourses,
+			listRow(localCourses: $localCourses,
 						 tblIndex: tblIndex,
 						 pos: key,
 						 pendingChanges: $pendingChanges)
@@ -597,7 +632,7 @@ struct CoursesEditor: View {
 
 			List {
 
-				CoursesListRows(sortedIDs: sortedCourseIDs,
+				coursesListRows(sortedIDs: sortedCourseIDs,
 								localCourses: $localCourses,
 								tblIndex: tblIndex,
 								pendingChanges: $pendingChanges)
@@ -616,7 +651,7 @@ struct CoursesEditor: View {
 						localCourses.applyCourseChanges([Change.course_create(index: id, newCourse_fakeNewCourse, timetable: tblIndex)])
 					}
 				} content: {
-					courseEdit(tblIndex: 0, pos: UUID(), isNewCourse: true, parentCourse: $newCourse_fakeNewCourse, course: Course2("Course", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard), pendingChanges: $newCourse_fakePending)
+					individualEditor(tblIndex: 0, pos: UUID(), isNewCourse: true, parentCourse: $newCourse_fakeNewCourse, course: Course2("Course", icon: "book.closed", rooms: [], colour: "Graphite", identifier: .standard), pendingChanges: $newCourse_fakePending)
 						.presentationDetents([.medium])
 				}
 
