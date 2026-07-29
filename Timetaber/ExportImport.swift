@@ -194,4 +194,5 @@ struct ExportView: View {
 
 #Preview {
 	ExportView()
+		.environmentObject(Storage.preview)
 }

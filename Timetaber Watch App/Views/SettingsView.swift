@@ -139,4 +139,5 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environmentObject(LocalData.shared)
+		.environmentObject(Storage.preview)
 }

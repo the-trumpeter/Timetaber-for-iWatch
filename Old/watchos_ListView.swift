@@ -190,5 +190,6 @@ struct ListView: View {
 #Preview {
     ListView()
         .environmentObject(LocalData.shared)
+		.environmentObject(Storage.preview)
 }
 

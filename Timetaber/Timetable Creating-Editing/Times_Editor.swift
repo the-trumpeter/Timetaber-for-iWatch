@@ -1183,8 +1183,10 @@ struct TimesMapping: View {
 //MARK: #Preview(s)
 #Preview("Day Structure") {
 	TimesEditor(tblIndex: 0)
+		.environmentObject(Storage.preview)
 }
 #Preview("Week Structure") {
 	TimesMapping(tblIndex: 0)
+		.environmentObject(Storage.preview)
 }
 

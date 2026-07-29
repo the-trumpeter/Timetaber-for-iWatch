@@ -731,5 +731,6 @@ struct CoursesEditor: View {
 
 #Preview {
 	CoursesEditor(tblIndex: 0)
+		.environmentObject(Storage.preview)
 }
 

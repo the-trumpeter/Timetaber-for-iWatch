@@ -549,5 +549,6 @@ fileprivate struct EditTimetableDayView: View {
 
 #Preview {
 	EditTimetableDayView(tblIndex: 0, week: .a, day: 2)
+		.environmentObject(Storage.preview)
 }
 

@@ -20,9 +20,20 @@ struct TimetaberApp: App {
     var body: some Scene {
         WindowGroup {
             TabView{
-                Tab("Home", systemImage: "clock") { HomeView().environmentObject(LocalData.shared) }
-                Tab("Timetable", systemImage: "list.bullet") { TimetableView().environmentObject(LocalData.shared) }
-				Tab("Settings", systemImage: "gear") { SettingsView() }
+				Tab("Home", systemImage: "clock") {
+					HomeView()
+						.environmentObject(LocalData.shared)
+						.environmentObject(Storage.shared)
+				}
+				Tab("Timetable", systemImage: "list.bullet") {
+					TimetableView()
+						.environmentObject(LocalData.shared)
+						.environmentObject(Storage.shared)
+				}
+				Tab("Settings", systemImage: "gear") {
+					SettingsView()
+						.environmentObject(Storage.shared)
+				}
             }
 			.sheet(isPresented: $storage.initialisationDialogue) {
 				Onboarder().padding()

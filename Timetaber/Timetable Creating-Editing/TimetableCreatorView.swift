@@ -143,17 +143,19 @@ fileprivate struct timetableOptions: View {
 				} */
 
 				NavigationLink {
-									EditTimetableView()
-										.toolbar(.hidden, for: .tabBar)
-								} label: {
-									HStack {
-										Text("Timetable").foregroundStyle(.primary); Spacer();
-										Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
-									}
-								} //Timetable
+					EditTimetableView()
+						.environmentObject(Storage.shared)
+						.toolbar(.hidden, for: .tabBar)
+				} label: {
+					HStack {
+						Text("Timetable").foregroundStyle(.primary); Spacer();
+						Text("\(timetable.timetable.count) week\( timetable.timetable.count != 1 ? "s":"")").foregroundStyle(.secondary)
+					}
+				} //Timetable
 
 				NavigationLink {
 					CoursesEditor(tblIndex: tblIndex)
+						.environmentObject(Storage.shared)
 						.toolbar(.hidden, for: .tabBar)
 				} label: {
 					HStack {
@@ -163,6 +165,7 @@ fileprivate struct timetableOptions: View {
 
 				NavigationLink {
 					TimesEditor(tblIndex: tblIndex)
+						.environmentObject(Storage.shared)
 						.toolbar(.hidden, for: .tabBar)
 				} label: {
 					HStack {
@@ -173,6 +176,7 @@ fileprivate struct timetableOptions: View {
 				}.buttonStyle(.plain) //Day Structure
 				NavigationLink {
 					TimesMapping(tblIndex: tblIndex)
+						.environmentObject(Storage.shared)
 						.toolbar(.hidden, for: .tabBar)
 				} label: {
 					Text("Week Structure")
@@ -274,6 +278,7 @@ struct TimetablesListEditor: View {
 */
 
 	TimetablesListEditor()
+		.environmentObject(Storage.preview)
 
 //	CoursesEditor(tblIndex: 0)
 

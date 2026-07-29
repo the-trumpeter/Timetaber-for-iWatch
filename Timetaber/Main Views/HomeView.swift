@@ -113,4 +113,5 @@ struct HomeView: View {
 #Preview {
 	HomeView()
 		.environmentObject(LocalData.shared)
+		.environmentObject(Storage.preview)
 }

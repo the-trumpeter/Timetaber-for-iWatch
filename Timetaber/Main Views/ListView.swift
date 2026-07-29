@@ -297,6 +297,8 @@ struct TimetableView: View {
 
 
 #Preview {
-	TimetableView().environmentObject(LocalData.shared)
+	TimetableView()
+		.environmentObject(LocalData.shared)
+		.environmentObject(Storage.preview)
 }
 
