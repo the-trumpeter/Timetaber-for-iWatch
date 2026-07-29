@@ -8,11 +8,59 @@
 import SwiftUI
 import OSLog
 
+
+
+
+//MARK: Entry point
+struct EditTimetableView: View {
+	@EnvironmentObject var storage: Storage
+	let tblIndex: Int
+	var weekAOnly: Bool { storage.timetables[tblIndex].timetable.count == 1 }
+	init(tblIndex: Int = 0) {
+		self.tblIndex = tblIndex
+	}
+	var body: some View {
+		NavigationStack {
+			List {
+
+				let sectA = if weekAOnly { "" } else { "Week A" }
+				Section(sectA) { // Week A days
+					//let suffix = if weekAOnly { "" } else { "A" } //if only one week, don't show A/B
+					ForEach(2...6, id: \.self) { wkday in
+						dayLink(tblIndex: tblIndex, wkAB: .a, day: wkday)
+					}
+				}
+
+				if !weekAOnly {
+					Section("Week B") { // Week B days
+						ForEach(2...6, id: \.self) { wkday in
+							dayLink(tblIndex: tblIndex, wkAB: .b, day: wkday)
+						}
+					}
+
+				}//end if wkAonly
+
+			}//end List
+
+		}//end NavigationStack
+	}//end var body
+}// end struct EditTimetableView
+
+
+
+
+
+
+
+
+
+
+
 /*
 I'm gonna plan this well
 
 
-MARK: - Public access editor
+MARK: - Link to Timetabled Day
 Routing Weekday/WeekAB
 • Navigate timetable view
 	• 2WEEKS LEVEL 1
@@ -22,7 +70,7 @@ Routing Weekday/WeekAB
 */
 
 fileprivate struct dayLink: View {
-	@ObservedObject var storage = Storage.shared
+	@EnvironmentObject var storage: Storage
 	var tblIndex: Int = 0
 	var wkAB: WeekAB = .a
 	var day: Weekday = 2
@@ -79,202 +127,16 @@ fileprivate struct dayLink: View {
 	}
 }
 
-struct EditTimetableView: View {
-	@ObservedObject var store = Storage.shared
-	let tblIndex: Int
-	let weekAOnly: Bool
-	init(tblIndex: Int = 0) {
-		self.weekAOnly = (Storage.shared.timetables[tblIndex].timetable.count == 1)
-		self.tblIndex = tblIndex
-	}
-	var body: some View {
-		NavigationStack {
-			List {
-				
-				let sectA = if weekAOnly { "" } else { "Week A" }
-				Section(sectA) { // Week A days
-					//let suffix = if weekAOnly { "" } else { "A" } //if only one week, don't show A/B
-					ForEach(2...6, id: \.self) { wkday in
-						dayLink(tblIndex: tblIndex, wkAB: .a, day: wkday)
-					}
-				}
-
-				if !weekAOnly {
-					Section("Week B") { // Week B days
-						ForEach(2...6, id: \.self) { wkday in
-							dayLink(tblIndex: tblIndex, wkAB: .b, day: wkday)
-						}
-					}
-
-				}//end if wkAonly
-
-			}//end List
-
-		}//end NavigationStack
-	}//end var body
-}// end struct EditTimetableView
-
-//MARK: Period Row / Button
-/// Row displaying a single period in the day editor.
-/// Now takes a Binding to the period contents so edits can propagate.
-fileprivate struct TimetablePeriodRow: View {
-	let period: Times.Period
-	@Binding var contents: Times.Period.Contents?
-	let courses: [UUID: Course2]
-
-	@State private var isSheetPresented: Bool = false
-
-	var course2: Course2? {
-		if let cts = contents {
-			return courses[cts.courseID]
-		} else {
-			return nil
-		}
-	}
-	var course: DisplayCourse {
-		if let c2 = course2, let cts = contents {
-			return DisplayCourse(c2, room: c2.rooms[cts.roomIndex])
-		} else {
-			return noSchool(.freePeriod)
-		}
-	}
-
-	/// Binding that maps the optional contents' courseID for the Picker, using nil for Free period
-	private var selectedCourseIDBinding: Binding<UUID?> {
-		Binding<UUID?> (
-			get: { contents?.courseID },
-			set: { newValue in
-				if let id = newValue {
-					// Update or create contents
-					if contents == nil {
-						contents = Times.Period.Contents(courseID: id, roomIndex: 0)
-					} else {
-						contents?.courseID = id
-					}
-				} else {
-					// nil value means Free period
-					contents = nil
-				}
-			}
-		)
-	}
-
-	/// Binding for the roomIndex only if contents is non-nil
-	private var roomIndexBinding: Binding<Int>? {
-		guard contents != nil else { return nil }
-		return Binding<Int>(
-			get: { contents?.roomIndex ?? -1 },
-			set: { contents?.roomIndex = $0 }
-		)
-	}
-
-	var body: some View {
-		Button {
-			isSheetPresented = true
-		} label: {
-			HStack {
-
-				HStack {
-					Image(systemName: course2?.icon ?? "clock")
-						.frame(width: 25, height: 25)//, alignment: .trailing)
-						.font(.title3)
-						.padding(2)
-						.foregroundColor((course2 != nil) ? course.colour.contrastingTextColor : .primary)
-
-				}
-				.if(course2 != nil) {
-					$0.background {
-						RoundedRectangle(cornerRadius: 5.0).foregroundStyle( Colour(course.colour) )
-
-					}
-				}
-				.padding(.trailing, 2)
-				.padding(.leading)
-				Text(period.name)
-				Spacer()
 
 
-				Text(course.name)
-				//.foregroundStyle(Colour(course.colour))
-					.if(course2 == nil) {
-						$0.foregroundStyle(.secondary).padding(.trailing)
-					}
-				if course2 != nil {
-					HStack {
-						if let room = course.room {
-							Text(room).foregroundStyle(.secondary)
-						}
-					}
-					.frame(width: 45, alignment: .trailing)
-					.padding(.trailing)
-
-				}
-			}
-			.contentShape(Rectangle())
-		}
-		.buttonStyle(.plain)
-
-		.sheet(isPresented: $isSheetPresented) {
-			//MARK: Period contents editor
-			NavigationStack {
-
-				HStack(alignment: .center) {
-					Picker(selection: selectedCourseIDBinding) {
-						Text("Free period").tag(Optional<UUID>.none)
-						Divider()
-						ForEach(courses.map {(id: $0, course: $1)}.sorted(by: {$0.course.name < $1.course.name}), id: \.0) { entry in
-							Label(entry.course.name, systemImage: entry.course.icon).tag(entry.id)
-						}
-
-					} label: {
-						HStack {
-							Image(systemName: course.icon.lowercased())
-							Text(course.name)
-						}.padding(2)
-							.background { RoundedRectangle(cornerRadius: 10).foregroundStyle(course.colour) }//.secondary) }
-					}
-					if let binding = roomIndexBinding, let course2 = course2, !course2.rooms.isEmpty {
-						Picker("Room", selection: binding) {
-							ForEach(course2.rooms.map{(key:$0,room:$1)}, id: \.key) { tuple in
-								Text(tuple.room).tag(tuple.key)
-							}
-						}
-					}
-				}
-				Spacer().frame(height: 20)
-
-				.toolbar {
-					ToolbarItem(placement: .confirmationAction) {
-						Button("Save", systemImage: "checkmark") {
-							isSheetPresented = false
-						}
-					}
-
-					ToolbarItem(placement: .title) {
-						if let intPdNm = Int(period.name) {
-							HStack {
-								Text("Period").foregroundStyle(.secondary)
-								Text(String(intPdNm)).bold()
-							}
-						} else {
-							Text(period.name).bold()
-						}
-					}
-
-				}
-				.toolbarTitleDisplayMode(.inline)
-			}
-
-			.interactiveDismissDisabled()
-			.presentationDetents([.height(160)])
-		}
 
 
-	}
-}
+
+
 
 /*
-MARK: - Edit day view
+MARK: -
+MARK: - EditTimetableDayView
 • Day view
 	• 1DAY LEVEL 2
 	• SAVE CHANGES FROM HERE
@@ -282,14 +144,32 @@ MARK: - Edit day view
 	• from here, view periods and tap one to open editing sheet for that period
 */
 fileprivate struct EditTimetableDayView: View {
-	@ObservedObject var origin = Storage.shared
+	@EnvironmentObject var storage: Storage
 
 	let tblIndex: Int
-
-	let timesVariation: (set: Times.TimingSet, variant: [UUID: Times.Period], name: String?)
 	let timingDetails: (weekab: WeekAB, weekday: Weekday)
 
+	var timesVariation: (set: Times.TimingSet, variant: [UUID: Times.Period], name: String?) {
+		let times = storage.timetables[tblIndex].times
+		let timingSet = times.mapping[timingDetails.weekday] ?? .standard
+		var variantName: String? = nil
+		var variant: [UUID: Times.Period]? = nil
+		switch timingSet {
+			case .standard: variant = times.standard
+			case .variant(let key):
+				if !times.variants.keys.contains(key) {
+					Logger.views.fault("Invalid mapping for day \(day, privacy: .public)")
+				}
+				let vnt = times.variants[key]!
+				variantName = vnt.name
 
+				variant = vnt.variant
+		}
+		return (timingSet, variant!, variantName)
+	}
+
+
+	@State private var didSyncWithEnvironment = false
 	@State var day: [ UUID: Times.Period.Contents? ] //THIS IS WHAT WE'RE EDITING
 
 	var pendingChanges: [Change] = []
@@ -300,80 +180,54 @@ fileprivate struct EditTimetableDayView: View {
 
 	@State var saveFailed = false
 
+	@State var maximumRoomWidth: CGFloat = 0
+
+
+
 	init(tblIndex: Int, week: WeekAB, day: Weekday) {
-
-		let store = Storage.shared
-
 		self.timingDetails = (week, day)
-
-		//note if timetable doesn't have specified week before crashing. that's a Testflight Me probem.
-		if !store.timetables.indices.contains(tblIndex) {
-			Logger.views.fault("Timetables don't contain timetable for index \(tblIndex, privacy: .public)")
-		}
 		self.tblIndex = tblIndex
 
+		_day = State(initialValue: Storage.shared.timetables[tblIndex].timetable[week]![day]!)
 
-		let times = store.timetables[tblIndex].times
-		// gather stuff for timing information
-		let timingSet = times.mapping[day] ?? .standard
-		var variantName: String? = nil
-		let variant = switch timingSet {
-			case .standard: times.standard
-			case .variant(let key): {
-					if  !times.variants.keys.contains(key) {
-						Logger.views.fault("Invalid mapping for day \(day, privacy: .public)")
-					}
-					let Vnt = times.variants[key]!
-					variantName = Vnt.name
-					return Vnt.variant
-				}()
-		}
-
-		self.timesVariation = (timingSet, variant, variantName)
-
-
-		if store.timetables[tblIndex].timetable[week]![day] == nil {
-			Logger.views.fault("Invalid weekday \(day, privacy: .public)")
-		}
-		self.day = store.timetables[tblIndex].timetable[week]![day]!
 	}
 
 
-    func compileChanges() -> [Change] {
-        // Original snapshot for this week/day from storage (non-optional contents)
-        guard let originalDay = origin.timetables[tblIndex]
-            .timetable[timingDetails.weekab]?[timingDetails.weekday] else {
-            Logger.editTimetable.fault("Couldn't load original day for week/day \(String(reflecting: timingDetails), privacy: .public)")
-            return []
-        }
+	func compileChanges() -> [Change] {
+		// Original snapshot for this week/day from storage (non-optional contents)
+		guard let originalDay = storage.timetables[tblIndex]
+			.timetable[timingDetails.weekab]?[timingDetails.weekday] else {
+			Logger.editTimetable.fault("Couldn't load original day for week/day \(String(reflecting: timingDetails), privacy: .public)")
+			return []
+		}
 
-        var changes: [Change] = []
+		var changes: [Change] = []
 
-        // Union of keys between original (non-optional) and edited (optional) dictionaries
-        let allKeys = Set(originalDay.keys).union(day.keys)
+		// Union of keys between original (non-optional) and edited (optional) dictionaries
+		let allKeys = Set(originalDay.keys).union(day.keys)
 
-        for periodID in allKeys {
-            let originalValue: Times.Period.Contents? = originalDay[periodID]
-            let editedValue: Times.Period.Contents?? = day[periodID] // outer optional: key existence; inner optional: free period
+		for periodID in allKeys {
+			let originalValue: Times.Period.Contents? = originalDay[periodID]
+			let editedValue: Times.Period.Contents?? = day[periodID] // outer optional: key existence; inner optional: free period
 
-            switch (originalValue, editedValue) {
-            case (nil, nil):
-                // Neither had a value (unlikely because original is non-optional, but safe to ignore)
-                break
+			switch (originalValue, editedValue) {
+			case (nil, nil):
+				// Neither had a value (unlikely because original is non-optional, but safe to ignore)
+				break
 
-            case (nil, .some(let maybeNew)):
-                // Newly assigned contents where there wasn't one before
-                if let newValue = maybeNew {
-                    changes.append(
-                        .week_modifyEntry(
-                            weekIndex: (timingDetails.weekab == .a ? 0 : 1),
-                            weekday: timingDetails.weekday,
-                            period: periodID,
-                            newValue,
-                            timetable: tblIndex
-                        )
-                    )
-                } else {
+			case (nil, .some(let maybeNew)):
+				// Newly assigned contents where there wasn't one before
+				if let newValue = maybeNew {
+					changes.append(
+						.week_modifyEntry(
+							weekIndex: (timingDetails.weekab == .a ? 0 : 1),
+							weekday: timingDetails.weekday,
+							period: periodID,
+							newValue,
+							timetable: tblIndex
+						)
+					)
+				} else {
 					changes.append(
 						.week_makeFreeEntry(
 							weekab: timingDetails.weekab,
@@ -382,23 +236,23 @@ fileprivate struct EditTimetableDayView: View {
 							timetable: tblIndex
 						)
 					)
-                }
+				}
 
-            case (.some(let old), .some(let maybeNew)):
-                // Had a value before; may be updated or cleared now
-                if let newValue = maybeNew {
-                    if old.courseID != newValue.courseID || old.roomIndex != newValue.roomIndex {
-                        changes.append(
-                            .week_modifyEntry(
-                                weekIndex: (timingDetails.weekab == .a ? 0 : 1),
-                                weekday: timingDetails.weekday,
-                                period: periodID,
-                                newValue,
-                                timetable: tblIndex
-                            )
-                        )
-                    }
-                } else {
+			case (.some(let old), .some(let maybeNew)):
+				// Had a value before; may be updated or cleared now
+				if let newValue = maybeNew {
+					if old.courseID != newValue.courseID || old.roomIndex != newValue.roomIndex {
+						changes.append(
+							.week_modifyEntry(
+								weekIndex: (timingDetails.weekab == .a ? 0 : 1),
+								weekday: timingDetails.weekday,
+								period: periodID,
+								newValue,
+								timetable: tblIndex
+							)
+						)
+					}
+				} else {
 					changes.append(
 						.week_makeFreeEntry(
 							weekab: timingDetails.weekab,
@@ -407,23 +261,23 @@ fileprivate struct EditTimetableDayView: View {
 							timetable: tblIndex
 						)
 					)
-                }
+				}
 
-            case (.some, nil):
-                // Previous value existed, key now missing: treat as free period
-                changes.append(
-                    .week_makeFreeEntry(
-                        weekab: timingDetails.weekab,
-                        weekday: timingDetails.weekday,
-                        period: periodID,
-                        timetable: tblIndex
-                    )
-                )
-            }
-        }
+			case (.some, nil):
+				// Previous value existed, key now missing: treat as free period
+				changes.append(
+					.week_makeFreeEntry(
+						weekab: timingDetails.weekab,
+						weekday: timingDetails.weekday,
+						period: periodID,
+						timetable: tblIndex
+					)
+				)
+			}
+		}
 
-        return changes
-    }
+		return changes
+	}
 
 
 	var navTitle: String {
@@ -445,7 +299,7 @@ fileprivate struct EditTimetableDayView: View {
 				if !timesVariation.variant.isEmpty {
 					List {
 						//list entry
-						let courses = origin.timetables[tblIndex].courses
+						let courses = storage.timetables[tblIndex].courses
 						ForEach(timesVariation.variant.sorted {$0.value.startTime<$1.value.startTime}, id: \.key
 						) { (pdID, period) in
 
@@ -455,7 +309,8 @@ fileprivate struct EditTimetableDayView: View {
 									get: { day[pdID] ?? nil },
 									set: { day[pdID] = $0 }
 								),
-								courses: courses
+								courses: courses,
+								maximumRoomWidth: $maximumRoomWidth
 							)
 							.listRowInsets(EdgeInsets())
 
@@ -466,38 +321,38 @@ fileprivate struct EditTimetableDayView: View {
 					VStack {
 						Text("Map courses to periods here").padding(.bottom, 10)
 						Text("There's no periods. Add some in Day Structure.")
-					}.padding(10).foregroundStyle(.secondary)
+					}.padding().foregroundStyle(.secondary)
 				}
 			}
 			.toolbar {
 				ToolbarItem(placement: .confirmationAction) {
-					if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
+					if day != storage.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
 
 						Button("Save changes", systemImage: "checkmark") {
 							let changes = compileChanges()
 							Logger.editTimetable.log("Saving \(changes.count, privacy: .public) Changes to timetable.")
 
 							do {
-								try origin.distributeChanges(changes)
-								origin.applyChanges(changes)
+								try storage.distributeChanges(changes)
+								storage.applyChanges(changes)
 							} catch {
 								saveFailed = true
 							}
 							Logger.editTimetable.notice("Saved changes")
 							// Reset local `day` to match the updated model so Save button disappears
-							day = origin.timetables[tblIndex].timetable[timingDetails.weekab]![timingDetails.weekday]!
+							day = storage.timetables[tblIndex].timetable[timingDetails.weekab]![timingDetails.weekday]!
 						}.tint(.blue)
 					}
 				}
 				ToolbarItem(placement: .topBarLeading) {
 					Button {
-						if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
+						if day != storage.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
 							discardConfirmation = true
 						} else {
 							dismiss()
 						}
 					} label: {
-						if day != origin.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
+						if day != storage.timetables[tblIndex].timetable[timingDetails.weekab]?[timingDetails.weekday] {
 							Label("Back", systemImage: "xmark")
 						} else {
 							Label("Back", systemImage: "chevron.left")
@@ -509,7 +364,7 @@ fileprivate struct EditTimetableDayView: View {
 					) {
 						Button("Discard Changes", role: .destructive) {
 							withAnimation {
-								guard let week = origin.timetables[tblIndex].timetable[timingDetails.weekab] else {
+								guard let week = storage.timetables[tblIndex].timetable[timingDetails.weekab] else {
 									Logger.editTimetable.fault("Week \(String(reflecting: timingDetails.weekab), privacy: .public ) invalid, cannot discard changes.")
 									return
 								}
@@ -518,6 +373,7 @@ fileprivate struct EditTimetableDayView: View {
 									return
 								}
 								day = d
+
 							}
 							Logger.views.info("Discarded changes to timetabled day")
 						}
@@ -529,11 +385,21 @@ fileprivate struct EditTimetableDayView: View {
 			}
 			.alert("Couldn't send changes to watch.", isPresented: $saveFailed) {
 				Button("OK") {
-					saveFailed = false 
+					saveFailed = false
 				}
 			}
 			.navigationBarBackButtonHidden(true)
 			.navigationTitle(navTitle)
+			.navigationBarTitleDisplayMode(.inline)
+
+			.onAppear {
+				if !didSyncWithEnvironment {
+					day = storage.timetables[tblIndex].timetable[timingDetails.weekab]![timingDetails.weekday]!
+					didSyncWithEnvironment = true
+					Logger.editTimetable.log("synced with environment for 'day' - \(String(reflecting: timingDetails))")
+				}
+			}
+
 		}
 
 	}//body
@@ -545,7 +411,204 @@ fileprivate struct EditTimetableDayView: View {
 
 
 
+//MARK: - TimetablePeriodRow
+/// Row displaying a single period in the day editor.
+/// ## Discussion
+/// Now takes a Binding to the period contents so edits can be propagated.
+/// As of July 26, editing has been moved into Pickers embedded in the row itself rather than an external sheet. This is intended to streamline the process of 'bulk-editing' a day, especially when first creating the timetable.
+fileprivate struct TimetablePeriodRow: View {
+	let period: Times.Period
+	@Binding var contents: Times.Period.Contents?
+	let courses: [UUID: Course2]
 
+	@State private var isSheetPresented: Bool = false
+	@Binding var maximumRoomWidth: CGFloat
+
+	var course2: Course2? {
+		if let cts = contents {
+			return courses[cts.courseID]
+		} else {
+			return nil
+		}
+	}
+	var course: DisplayCourse {
+		if let c2 = course2, let cts = contents {
+			return DisplayCourse(c2, room: c2.rooms[cts.roomIndex])
+		} else {
+			return noSchool(.freePeriod)
+		}
+	}
+
+	/// Bind the optional 'contents'' courseID for the Picker, using nil to represent a free period
+	private var selectedCourseIDBinding: Binding<UUID?> {
+		Binding<UUID?> (
+			get: { contents?.courseID },
+			set: { newValue in
+				withAnimation {
+					if let id = newValue {
+						// Update or create contents
+						if contents == nil {
+							contents = Times.Period.Contents(courseID: id, roomIndex: 0)
+						} else {
+							contents?.courseID = id
+						}
+					} else {
+						// nil value means Free period
+						contents = nil
+					}
+				}
+			}
+		)
+	}
+	func setNewCourse(_ courseId: UUID?) {
+		if let id = courseId {
+			// Update or create contents
+			if contents == nil {
+				contents = Times.Period.Contents(courseID: id, roomIndex: 0)
+			} else {
+				contents?.courseID = id
+			}
+		} else {
+			// nil value means Free period
+			contents = nil
+		}
+	}
+
+	/// Binding for the roomIndex only if contents is non-nil
+	private var roomIndexBinding: Binding<Int>? {
+		guard contents != nil else { return nil }
+		return Binding<Int>(
+			get: { contents?.roomIndex ?? -1 },
+			set: { n in withAnimation { contents?.roomIndex = n } }
+		)
+	}
+
+
+
+
+	
+	var coursePicker: some View {
+		ZStack(alignment: .trailing) {
+			Picker("Course", selection: selectedCourseIDBinding) {
+				Text("Free period").tag(Optional<UUID>.none)
+				Divider()
+				ForEach(courses.map {(id: $0, course: $1)}.sorted(by: {$0.course.name < $1.course.name}), id: \.0) { entry in
+					Label(entry.course.name, systemImage: entry.course.icon).tag(entry.id)
+				}
+
+			}
+			.opacity(0)
+			.labelsHidden()
+
+
+
+			let fakeBinding: Binding<String> = Binding(get: { course.name }, set: { _ in } )
+			Picker("fake picker!!", selection: fakeBinding) { Text(course.name).tag(course.name) }
+			.labelsHidden().allowsHitTesting(false).tint(Colour.primary)
+
+		}
+		.layoutPriority(1)
+		.if(course2 == nil) {
+			$0.padding(.trailing)
+		}
+		.contentShape(Rectangle())
+	}
+
+
+
+	var roomPicker: some View {
+		Group {
+			if course2 != nil {
+				HStack {
+					if let binding = roomIndexBinding, let course2 = course2, !course2.rooms.isEmpty {
+						Picker("Room", selection: binding) {
+							ForEach(course2.rooms.map{(key:$0,room:$1)}, id: \.key) { tuple in
+								Text(tuple.room).tag(tuple.key)
+							}
+						}
+						.labelsHidden()
+						.lineLimit(1)
+						.foregroundStyle(.secondary)
+						.onGeometryChange(for: CGFloat.self, of: { $0.size.width }) { myWidth in
+							if myWidth > maximumRoomWidth {
+								maximumRoomWidth = myWidth
+								Logger.editTimetable.debug("updated max width")
+							}
+						}
+					} else {
+						Colour.clear
+					}
+				}
+				.frame(width: maximumRoomWidth, alignment: .trailing)
+				.padding(.trailing).padding(.leading, -10)
+
+			}
+		}
+	}
+
+
+
+	var body: some View {
+
+//		Button {
+//			isSheetPresented = true
+		//		} label: {
+		HStack {
+
+			//MARK: Period Display
+
+
+			//MARK: Course Icon
+			Image(systemName: course2?.icon ?? "clock")
+				.frame(width: 25, height: 25)//, alignment: .trailing)
+				.font(.title3)
+				.padding(2)
+				.foregroundColor((course2 != nil) ? course.colour.contrastingTextColor : .primary)
+
+				.if(course2 != nil) {
+					$0.background {
+						RoundedRectangle(cornerRadius: 5.0).foregroundStyle( Colour(course.colour) )
+
+					}
+				}
+				.padding(.trailing, 2)
+				.padding(.leading)
+
+			//MARK: Period Name
+			Text(period.name)
+				.lineLimit(1)
+				.layoutPriority(2)
+				.fixedSize()
+
+			//period display
+
+
+			Spacer()
+
+			//MARK: Edit
+
+			//course
+			coursePicker
+
+
+			//room
+			roomPicker
+
+
+		}//Row HStack
+
+
+	}//body
+}//TimetablePeriodRow - See extension below for viewbuilder stuff
+
+
+
+
+
+
+
+
+//MARK: #Preview
 
 #Preview {
 	EditTimetableDayView(tblIndex: 0, week: .a, day: 2)
